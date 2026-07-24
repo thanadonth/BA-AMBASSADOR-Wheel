@@ -1,469 +1,542 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบจับฉลากเลือกโค้ชพร้อมวงล้อสุ่ม 5 วินาที</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        h1, h2, h3 {
-            text-align: center;
-            color: #2c3e50;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 20px;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        .control-panel {
-            text-align: center;
-            margin: 20px 0;
-            padding: 20px;
-            background: #eef2f3;
-            border-radius: 8px;
-        }
-        button {
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 18px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin: 5px;
-            font-weight: bold;
-        }
-        button:hover {
-            background-color: #27ae60;
-        }
-        button:disabled {
-            background-color: #bdc3c7;
-            cursor: not-allowed;
-        }
-        
-        /* โซนวงล้อและแสดงผล */
-        .wheel-zone {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 20px 0;
-            position: relative;
-        }
-        .wheel-container {
-            position: relative;
-            width: 360px;
-            height: 360px;
-        }
-        /* ลูกศรชี้ผลลัพธ์ */
-        .pointer {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 30px solid #e74c3c;
-            z-index: 10;
-        }
-        canvas {
-            border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BA Ambassador 2026 - Wheel Randomizer & Data Management</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+    }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
+    h1, h2, h3 { color: #0f172a; margin-top: 0; }
+    
+    /* Navigation Tabs */
+    .tab-container { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+    .tab-btn { padding: 10px 20px; font-size: 16px; font-weight: bold; border: none; background: #e2e8f0; color: #475569; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .tab-btn.active { background: var(--primary); color: white; }
 
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .box {
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 8px;
-            background: #fff;
-        }
-        .available { border-top: 5px solid #2ecc71; }
-        .unavailable { border-top: 5px solid #e74c3c; }
-        ul { list-style: none; padding: 0; }
-        li { padding: 8px 0; border-bottom: 1px solid #eee; }
-        .reason { color: #e74c3c; font-size: 14px; font-weight: bold; }
-        .current-person {
-            font-size: 24px;
-            color: #e67e22;
-            font-weight: bold;
-            margin: 15px 0;
-            min-height: 35px;
-        }
-        .result-box {
-            background: #f1c40f;
-            color: #2c3e50;
-            padding: 15px;
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            border-radius: 8px;
-            margin-top: 20px;
-            display: none;
-            width: 80%;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        th { background-color: #34495e; color: white; }
-    </style>
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Input Form Styles */
+    .section-card { background: var(--card-bg); padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .input-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .input-row label { width: 90px; font-weight: bold; }
+    input[type="text"], select { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+    
+    .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .btn-success { background-color: #16a34a; color: white; width: 100%; }
+    .btn-success:hover { background-color: #15803d; }
+    .btn-spin { background-color: #eab308; color: #0f172a; font-size: 20px; padding: 15px 30px; width: 100%; }
+    .btn-spin:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+    .btn-reset { background-color: #dc2626; color: white; margin-top: 10px; width: 100%; font-size: 14px; padding: 8px; }
+
+    /* Wheel Arena Layout */
+    .arena-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+    .wheel-box { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+    #wheel-canvas { border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
+    .pointer { position: absolute; top: 10px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ef4444; z-index: 10; }
+    
+    /* Result Table & Branch Tags */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 14px; }
+    th { background-color: #f1f5f9; }
+    
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; margin-top: 4px; }
+    
+    /* Branch Colors */
+    .tag-acc { background-color: #0284c7; } /* การบัญชี */
+    .tag-mkt { background-color: #dc2626; } /* การตลาด */
+    .tag-fin { background-color: #16a34a; } /* การเงิน */
+    .tag-mgt { background-color: #ea580c; } /* การจัดการ */
+    .tag-mis { background-color: #db2777; } /* ระบบสารสนเทศ */
+    .tag-default { background-color: #64748b; }
+
+    .history-badge { background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>ระบบจับฉลากเลือกโค้ชอัตโนมัติ + วงล้อนำโชค 🎯</h1>
-    <div style="text-align: center;"><span id="currentRoundText" class="status-badge">รอบการแข่งขัน: เตรียมความพร้อม</span></div>
+  <h1>🏆 BA AMBASSADOR 2026 - System & Wheel Randomizer</h1>
 
-    <div class="control-panel">
-        <button id="btnOrder" onclick="generateSafeOrder()">1. สุ่มลำดับผู้จับในรอบนี้</button>
-        <button id="btnDraw" onclick="startWheel()" disabled>2. กดหมุนวงล้อสุ่มโค้ช (5 วินาที)</button>
-        <div id="orderList" style="margin-top: 10px; font-weight: bold; color: #7f8c8d;"></div>
-        <div id="currentPersonDisplay" class="current-person"></div>
+  <!-- Navigation Tabs -->
+  <div class="tab-container">
+    <button class="tab-btn active" onclick="switchTab('tab-input')">📋 1. ลงทะเบียนรายชื่อ</button>
+    <button class="tab-btn" onclick="switchTab('tab-wheel')">🎡 2. เวทีหมุนวงล้อสุ่มทีม</button>
+  </div>
+
+  <!-- TAB 1: FORM INPUT -->
+  <div id="tab-input" class="tab-content active">
+    <div class="grid-2">
+      <div class="section-card">
+        <h3>👑 รายชื่อโค้ชประจำทีม (ทีม 1 - 5)</h3>
+        <div id="coaches-inputs"></div>
+      </div>
+      <div class="section-card">
+        <h3>🤝 รายชื่อพี่เลี้ยง (รอสรุปจับคู่เข้าทีมท้ายสุด)</h3>
+        <div id="mentors-inputs"></div>
+      </div>
     </div>
 
-    <!-- โซนวงล้อกราฟิก -->
-    <div class="wheel-zone">
-        <div class="wheel-container">
-            <div class="pointer"></div>
-            <canvas id="wheelCanvas" width="360" height="360"></canvas>
+    <div class="section-card">
+      <h3>🌟 รายชื่อผู้เข้าประกวด (แยกประเภท & สาขาวิชา)</h3>
+      <div class="grid-3">
+        <div>
+          <h4>♂️ Boy (B1 - B5)</h4>
+          <div id="boys-inputs"></div>
         </div>
-        <div id="resultDisplay" class="result-box"></div>
+        <div>
+          <h4>♀️ Girl (G1 - G5)</h4>
+          <div id="girls-inputs"></div>
+        </div>
+        <div>
+          <h4>👑 Queen (Q1 - Q5)</h4>
+          <div id="queens-inputs"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="grid">
-        <div class="box available">
-            <h3>🟢 โค้ชที่วงล้อเปิดให้มีสิทธิ์สุ่มได้ในคิวนี้</h3>
-            <ul id="availableCoachesList"></ul>
-        </div>
-        <div class="box unavailable">
-            <h3>🔴 โค้ชที่ระบบล็อกเอาไว้ชั่วคราว (เพื่อกันสาขาซ้ำ)</h3>
-            <ul id="unavailableCoachesList"></ul>
-        </div>
-    </div>
+    <button class="btn btn-success" onclick="saveData()">💾 บันทึกข้อมูล และไปหน้าหมุนวงล้อ</button>
+  </div>
 
-    <h2>📊 สรุปสมาชิกในทีมโค้ชแต่ละท่าน (ห้ามซ้ำสาขากันในแถว)</h2>
-    <table>
-        <thead>
+  <!-- TAB 2: WHEEL ARENA -->
+  <div id="tab-wheel" class="tab-content">
+    <div class="arena-grid">
+      <!-- Left: Wheel Control -->
+      <div class="section-card wheel-box">
+        <div class="pointer"></div>
+        <canvas id="wheel-canvas" width="300" height="300"></canvas>
+        <h3 id="current-turn" style="margin-top: 15px; color: #2563eb; text-align: center;">เตรียมพร้อมหมุนวงล้อ</h3>
+        <button id="spin-btn" class="btn btn-spin" onclick="spinWheel()">สุ่มเลือกทีม! (5s)</button>
+        <button class="btn btn-reset" onclick="resetAndReSpin()">🔄 สุ่มใหม่ทั้งหมด (เพื่อความโปร่งใส/การันตีไม่ซ้ำเดิม)</button>
+      </div>
+
+      <!-- Right: Live Teams Summary -->
+      <div class="section-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3>📊 ตารางสรุปผลการเข้าทีม (5 ทีม)</h3>
+          <span id="history-badge" class="history-badge">รอบสุ่มครั้งที่: 1</span>
+        </div>
+        <table>
+          <thead>
             <tr>
-                <th>โค้ช (สาขา)</th>
-                <th>นักศึกษาชาย (รอบ 1)</th>
-                <th>นักศึกษาหญิง (รอบ 2)</th>
-                <th>ควีน (รอบ 3)</th>
+              <th>ทีม</th>
+              <th>โค้ช</th>
+              <th>♂️ Boy</th>
+              <th>♀️ Girl</th>
+              <th>👑 Queen</th>
+              <th>🤝 พี่เลี้ยง</th>
             </tr>
-        </thead>
-        <tbody id="teamSummaryTable">
-        </tbody>
-    </table>
-</div>
+          </thead>
+          <tbody id="teams-table-body">
+            <!-- Dynamic Content -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
 <script>
-    const coaches = [
-        { id: 'A', name: 'โค้ช เอ', dept: 'บัญชี', color: '#e74c3c', male: null, female: null, queen: null },
-        { id: 'B', name: 'โค้ช บี', dept: 'การตลาด', color: '#3498db', male: null, female: null, queen: null },
-        { id: 'C', name: 'โค้ช ซี', dept: 'การเงิน', color: '#9b59b6', male: null, female: null, queen: null },
-        { id: 'D', name: 'โค้ช ดี', dept: 'สารสนเทศ', color: '#f1c40f', male: null, female: null, queen: null },
-        { id: 'E', name: 'โค้ช อี', dept: 'ดิจิทัล', color: '#1abc9c', male: null, female: null, queen: null }
-    ];
+  const BRANCHES = [
+    { name: "การบัญชี", class: "tag-acc" },
+    { name: "การตลาด", class: "tag-mkt" },
+    { name: "การเงิน", class: "tag-fin" },
+    { name: "การจัดการ", class: "tag-mgt" },
+    { name: "ระบบสารสนเทศ", class: "tag-mis" }
+  ];
+  
+  let appData = {
+    teams: Array.from({length: 5}, (_, i) => ({ teamId: i + 1, coach: {}, mentor: null, boy: null, girl: null, queen: null })),
+    mentorsList: [],
+    queue: [],
+    currentQueueIndex: 0,
+    historyPatterns: [], // บันทึกประวัติรูปแบบผลลัพธ์ที่เคยเกิดขึ้นเพื่อไม่ให้ซ้ำเดิม
+    runCount: 1
+  };
 
-    const students = {
-        male: [
-            { name: 'ก', dept: 'บัญชี' }, { name: 'ข', dept: 'การตลาด' }, { name: 'ค', dept: 'การเงิน' },
-            { name: 'ง', dept: 'สารสนเทศ' }, { name: 'จ', dept: 'ดิจิทัล' }
-        ],
-        female: [
-            { name: 'หนึ่ง', dept: 'บัญชี' }, { name: 'สอง', dept: 'การตลาด' }, { name: 'สาม', dept: 'การเงิน' },
-            { name: 'สี่', dept: 'สารสนเทศ' }, { name: 'ห้า', dept: 'ดิจิทัล' }
-        ],
-        queen: [
-            { name: 'วัน', dept: 'บัญชี' }, { name: 'ทรู', dept: 'การตลาด' }, { name: 'ทรี', dept: 'การเงิน' },
-            { name: 'โฟว์', dept: 'สารสนเทศ' }, { name: 'ไฟว์', dept: 'ดิจิทัล' }
-        ]
-    };
-
-    let rounds = ['male', 'female', 'queen'];
-    let currentRoundIndex = 0;
-    let drawingQueue = [];
-    let currentQueueIndex = 0;
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     
-    // ตัวแปรควบคุมวงล้อ
-    let currentAngle = 0;
-    let isSpinning = false;
-    const canvas = document.getElementById('wheelCanvas');
+    if(tabId === 'tab-input') document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    if(tabId === 'tab-wheel') document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  function initForm() {
+    let coachHtml = '', mentorHtml = '';
+    for(let i=1; i<=5; i++) {
+      coachHtml += `<div class="input-row"><label>ทีม ${i}:</label><input type="text" id="coach_name_${i}" placeholder="ชื่อโค้ช"><select id="coach_branch_${i}" class="branch-select" data-group="coach" onchange="updateBranchDropdowns('coach')">${branchOptions()}</select></div>`;
+      mentorHtml += `<div class="input-row"><label>คนที่ ${i}:</label><input type="text" id="mentor_name_${i}" placeholder="ชื่อพี่เลี้ยง"><select id="mentor_branch_${i}" class="branch-select" data-group="mentor" onchange="updateBranchDropdowns('mentor')">${branchOptions()}</select></div>`;
+    }
+    document.getElementById('coaches-inputs').innerHTML = coachHtml;
+    document.getElementById('mentors-inputs').innerHTML = mentorHtml;
+
+    renderCategoryInputs('boys-inputs', 'B', 'boy');
+    renderCategoryInputs('girls-inputs', 'G', 'girl');
+    renderCategoryInputs('queens-inputs', 'Q', 'queen');
+  }
+
+  function branchOptions() {
+    return `<option value="">-- สาขา --</option>` + BRANCHES.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+  }
+
+  function renderCategoryInputs(containerId, prefix, groupName) {
+    let html = '';
+    for(let i=1; i<=5; i++) {
+      html += `<div class="input-row"><label>${prefix}${i}:</label><input type="text" id="${prefix}_name_${i}" placeholder="ชื่อ-นามสกุล"><select id="${prefix}_branch_${i}" class="branch-select" data-group="${groupName}" onchange="updateBranchDropdowns('${groupName}')">${branchOptions()}</select></div>`;
+    }
+    document.getElementById(containerId).innerHTML = html;
+  }
+
+  function updateBranchDropdowns(groupName) {
+    const selects = document.querySelectorAll(`select[data-group="${groupName}"]`);
+    const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
+
+    selects.forEach(select => {
+      const currentValue = select.value;
+      Array.from(select.options).forEach(option => {
+        if (option.value === "") return;
+        if (selectedValues.includes(option.value) && option.value !== currentValue) {
+          option.style.display = 'none';
+          option.disabled = true;
+        } else {
+          option.style.display = 'block';
+          option.disabled = false;
+        }
+      });
+    });
+  }
+
+  function getBranchTagHtml(branchName) {
+    if (!branchName) return '<span class="tag tag-default">ไม่ระบุ</span>';
+    const found = BRANCHES.find(b => b.name === branchName);
+    const className = found ? found.class : 'tag-default';
+    return `<span class="tag ${className}">${branchName}</span>`;
+  }
+
+  function saveData() {
+    appData.historyPatterns = [];
+    appData.runCount = 1;
+    resetStateData();
+    switchTab('tab-wheel');
+  }
+
+  function resetStateData() {
+    for(let i=1; i<=5; i++) {
+      appData.teams[i-1].coach = { 
+        name: document.getElementById(`coach_name_${i}`).value || `โค้ชทีม ${i}`, 
+        branch: document.getElementById(`coach_branch_${i}`).value 
+      };
+      appData.teams[i-1].mentor = null; 
+      appData.teams[i-1].boy = null; 
+      appData.teams[i-1].girl = null; 
+      appData.teams[i-1].queen = null; 
+    }
+
+    appData.mentorsList = [];
+    for(let i=1; i<=5; i++) {
+      appData.mentorsList.push({
+        name: document.getElementById(`mentor_name_${i}`).value || `พี่เลี้ยง ${i}`,
+        branch: document.getElementById(`mentor_branch_${i}`).value
+      });
+    }
+
+    appData.queue = [];
+    const categories = [{prefix: 'B', type: 'boy'}, {prefix: 'G', type: 'girl'}, {prefix: 'Q', type: 'queen'}];
+    
+    categories.forEach(cat => {
+      for(let i=1; i<=5; i++) {
+        appData.queue.push({
+          code: `${cat.prefix}${i}`,
+          type: cat.type,
+          name: document.getElementById(`${cat.prefix}_name_${i}`).value || `${cat.prefix}${i}`,
+          branch: document.getElementById(`${cat.prefix}_branch_${i}`).value
+        });
+      }
+    });
+
+    appData.currentQueueIndex = 0;
+    document.getElementById('history-badge').innerText = `รอบสุ่มครั้งที่: ${appData.runCount}`;
+    renderTeamsTable();
+    updateTurnDisplay();
+    drawFullWheel();
+  }
+
+  function resetAndReSpin() {
+    if (isSpinning) return;
+    
+    // บันทึก Pattern ปัจจุบันลง History เพื่อป้องกันซ้ำ
+    const currentPattern = generateCurrentPatternHash();
+    if (currentPattern && !appData.historyPatterns.includes(currentPattern)) {
+      appData.historyPatterns.push(currentPattern);
+    }
+    
+    appData.runCount++;
+    resetStateData();
+  }
+
+  function generateCurrentPatternHash() {
+    // สร้างรหัสแสดงเอกลักษณ์การจับคู่ของทีมเพื่อตรวจจับความซ้ำซ้อน
+    return appData.teams.map(t => `${t.boy?.code || ''}-${t.girl?.code || ''}-${t.queen?.code || ''}`).join('|');
+  }
+
+  // --- LOOKAHEAD SOLVER & DIVERSITY MATRIX ---
+  function canCompleteAssignmentWithMentors(qIndex) {
+    if (qIndex >= appData.queue.length) {
+      // ตรวจสอบความซ้ำซ้อนกับ History
+      const futurePattern = generateCurrentPatternHash();
+      if (appData.historyPatterns.includes(futurePattern)) {
+        return false; // บล็อก Pattern นี้เพราะเคยเกิดขึ้นแล้วในรอบก่อนหน้า
+      }
+      return canAssignMentorsStrict();
+    }
+
+    const item = appData.queue[qIndex];
+    // สุ่มลำดับการลองทีมแบบ Random เพื่อเพิ่มความหลากหลาย
+    const teamIndices = shuffleArray([0, 1, 2, 3, 4]);
+
+    for (let t of teamIndices) {
+      const team = appData.teams[t];
+      if (team[item.type] !== null) continue;
+
+      const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
+      if (item.branch && teamBranches.includes(item.branch)) continue;
+
+      team[item.type] = item;
+      const possible = canCompleteAssignmentWithMentors(qIndex + 1);
+      team[item.type] = null;
+
+      if (possible) return true;
+    }
+    return false;
+  }
+
+  function canAssignMentorsStrict() {
+    let availableMentors = [...appData.mentorsList];
+
+    function solveMentor(tIdx) {
+      if (tIdx === 5) return true;
+      const team = appData.teams[tIdx];
+      const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
+
+      const mentorIndices = shuffleArray([0, 1, 2, 3, 4]);
+
+      for (let i of mentorIndices) {
+        const m = availableMentors[i];
+        if (!m) continue;
+        if (!m.branch || !teamBranches.includes(m.branch)) {
+          availableMentors[i] = null;
+          if (solveMentor(tIdx + 1)) {
+            availableMentors[i] = m;
+            return true;
+          }
+          availableMentors[i] = m;
+        }
+      }
+      return false;
+    }
+    return solveMentor(0);
+  }
+
+  function shuffleArray(arr) {
+    const array = [...arr];
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function getValidTeamsForCurrentContestant() {
+    if (appData.currentQueueIndex >= appData.queue.length) return [];
+    
+    const contestant = appData.queue[appData.currentQueueIndex];
+    const validTeams = [];
+
+    // สุ่มลำดับการตรวจสอบเพื่อเพิ่มกระจายตัวของผลลัพธ์
+    const shuffledTeams = shuffleArray(appData.teams);
+
+    for (let team of shuffledTeams) {
+      if (team[contestant.type] !== null) continue;
+
+      const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
+      if (contestant.branch && teamBranches.includes(contestant.branch)) continue;
+
+      team[contestant.type] = contestant;
+      const isSolvable = canCompleteAssignmentWithMentors(appData.currentQueueIndex + 1);
+      team[contestant.type] = null;
+
+      if (isSolvable) {
+        validTeams.push(team);
+      }
+    }
+
+    return validTeams;
+  }
+
+  let isSpinning = false;
+  let currentAngle = 0;
+
+  function drawFullWheel() {
+    const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
+    const total = 5;
+    const arc = (Math.PI * 2) / total;
+    const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
 
-    function updateTable() {
-        const tbody = document.getElementById('teamSummaryTable');
-        tbody.innerHTML = '';
-        coaches.forEach(c => {
-            tbody.innerHTML += `
-                <tr>
-                    <td><span style="color:${c.color}; font-weight:bold;">■</span> <strong>${c.name}</strong> (${c.dept})</td>
-                    <td>${c.male ? `${c.male.name} (${c.male.dept})` : '-'}</td>
-                    <td>${c.female ? `${c.female.name} (${c.female.dept})` : '-'}</td>
-                    <td>${c.queen ? `${c.queen.name} (${c.queen.dept})` : '-'}</td>
-                </tr>
-            `;
-        });
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < total; i++) {
+      const angle = currentAngle + i * arc;
+      ctx.fillStyle = colors[i];
+      
+      ctx.beginPath();
+      ctx.arc(150, 150, 140, angle, angle + arc);
+      ctx.lineTo(150, 150);
+      ctx.fill();
+
+      ctx.save();
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 16px Kanit, sans-serif';
+      ctx.translate(150 + Math.cos(angle + arc / 2) * 90, 150 + Math.sin(angle + arc / 2) * 90);
+      ctx.rotate(angle + arc / 2 + Math.PI / 2);
+      ctx.fillText(`ทีม ${appData.teams[i].teamId}`, -20, 0);
+      ctx.restore();
+    }
+  }
+
+  function updateTurnDisplay() {
+    if (appData.currentQueueIndex < appData.queue.length) {
+      const current = appData.queue[appData.currentQueueIndex];
+      document.getElementById('current-turn').innerHTML = `คิวถัดไป: <strong>[${current.code}] ${current.name}</strong><br>${getBranchTagHtml(current.branch)}`;
+      document.getElementById('spin-btn').disabled = false;
+      drawFullWheel();
+    } else {
+      document.getElementById('current-turn').innerHTML = "🎉 สุ่มผู้เข้าประกวดครบแล้ว!<br>กำลังประมวลผลจัดพี่เลี้ยงเข้าทีม...";
+      document.getElementById('spin-btn').disabled = true;
+      drawFullWheel();
+      assignMentorsToTeams();
+    }
+  }
+
+  function spinWheel() {
+    if (isSpinning) return;
+    
+    let validTeams = getValidTeamsForCurrentContestant();
+    const contestant = appData.queue[appData.currentQueueIndex];
+
+    if (validTeams.length === 0) {
+      validTeams = appData.teams.filter(t => t[contestant.type] === null);
     }
 
-    function initRound() {
-        let currentRound = rounds[currentRoundIndex];
-        if(!currentRound) {
-            document.getElementById('currentRoundText').innerText = "🎉 จบการจับฉลากเรียบร้อยสมบูรณ์!";
-            document.getElementById('btnOrder').disabled = true;
-            document.getElementById('btnDraw').disabled = true;
-            document.getElementById('currentPersonDisplay').innerText = "เสร็จสิ้นกิจกรรม ทุกทีมได้สมาชิกครบทราบสาขาไม่ซ้ำอย่างยุติธรรม!";
-            drawWheelStatic([]); // วาดวงล้อว่างเปล่าจบกิจกรรม
-            return;
+    if (validTeams.length === 0) return;
+
+    isSpinning = true;
+    document.getElementById('spin-btn').disabled = true;
+
+    const targetTeam = validTeams[Math.floor(Math.random() * validTeams.length)];
+    const targetIndex = targetTeam.teamId - 1;
+
+    const spinTime = 5000;
+    const start = performance.now();
+    const totalRounds = 5;
+    
+    const arc = (Math.PI * 2) / 5;
+    const targetAngleOffset = (Math.PI * 3 / 2) - (targetIndex * arc + arc / 2);
+    const finalAngle = (totalRounds * Math.PI * 2) + targetAngleOffset;
+
+    function animate(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / spinTime, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      
+      currentAngle = ease * finalAngle;
+      drawFullWheel();
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        isSpinning = false;
+        targetTeam[contestant.type] = contestant;
+
+        appData.currentQueueIndex++;
+        renderTeamsTable();
+        updateTurnDisplay();
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
+  function assignMentorsToTeams() {
+    let availableMentors = [...appData.mentorsList];
+
+    function solveMentor(tIdx) {
+      if (tIdx === 5) return true;
+      const team = appData.teams[tIdx];
+      const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
+
+      const mentorIndices = shuffleArray([0, 1, 2, 3, 4]);
+
+      for (let i of mentorIndices) {
+        const m = availableMentors[i];
+        if (!m) continue;
+        if (!m.branch || !teamBranches.includes(m.branch)) {
+          team.mentor = m;
+          availableMentors[i] = null;
+
+          if (solveMentor(tIdx + 1)) return true;
+
+          team.mentor = null;
+          availableMentors[i] = m;
         }
-        document.getElementById('currentRoundText').innerText = `รอบปัจจุบัน: ${currentRound === 'male' ? 'รอบผู้ชาย' : currentRound === 'female' ? 'รอบผู้หญิง' : 'รอบควีน'}`;
-        document.getElementById('btnOrder').disabled = false;
-        document.getElementById('btnDraw').disabled = true;
-        document.getElementById('orderList').innerText = "";
-        document.getElementById('currentPersonDisplay').innerText = "";
-        document.getElementById('resultDisplay').style.display = 'none';
-        
-        drawingQueue = [];
-        currentQueueIndex = 0;
-        drawWheelStatic([]);
-        document.getElementById('availableCoachesList').innerHTML = "<li>กรุณาสุ่มลำดับคนจับเพื่อดูสิทธิ์วงล้อ</li>";
-        document.getElementById('unavailableCoachesList').innerHTML = "<li>กรุณาสุ่มลำดับคนจับเพื่อดูสิทธิ์วงล้อ</li>";
+      }
+      return false;
     }
 
-    // ฟังก์ชันตรวจสอบความปลอดภัยเพื่อป้องกันสาขาซ้ำ
-    function checkRules(person, coach, round) {
-        if (coach[round] !== null) return false; 
-        if (coach.dept === person.dept) return false; 
+    const success = solveMentor(0);
 
-        let takenDeptsInTeam = [];
-        if (coach.male) takenDeptsInTeam.push(coach.male.dept);
-        if (coach.female) takenDeptsInTeam.push(coach.female.dept);
-        if (coach.queen) takenDeptsInTeam.push(coach.queen.dept);
-
-        if (takenDeptsInTeam.includes(person.dept)) return false;
-        return true;
-    }
-
-    // อัลกอริทึมจำลองคิวล่วงหน้า (Anti-Deadlock)
-    function findValidSequence(persons, round, currentQueue = []) {
-        if (currentQueue.length === persons.length) return currentQueue;
-        let shuffledPersons = [...persons].sort(() => Math.random() - 0.5);
-
-        for (let person of shuffledPersons) {
-            if (currentQueue.includes(person)) continue;
-            for (let coach of coaches) {
-                if (checkRules(person, coach, round)) {
-                    coach[round] = person; 
-                    currentQueue.push(person);
-                    let result = findValidSequence(persons, round, currentQueue);
-                    if (result) { coach[round] = null; return result; }
-                    currentQueue.pop();
-                    coach[round] = null;
-                }
-            }
+    if (success) {
+      document.getElementById('current-turn').innerHTML = "🎉 สรุปจัดพี่เลี้ยงเข้าทีมเสร็จสิ้น!<br><span style='color: green; font-size: 14px;'>✓ ทุกทีมสาขาไม่ซ้ำกัน 100% (โปร่งใส & ไม่ซ้ำผลเดิม)</span>";
+    } else {
+      let remainingMentors = [...appData.mentorsList];
+      appData.teams.forEach((team, idx) => {
+        if (!team.mentor) {
+          team.mentor = remainingMentors[idx] || { name: 'พี่เลี้ยง', branch: '' };
         }
-        return null; 
+      });
+      document.getElementById('current-turn').innerHTML = "⚠️ สรุปพี่เลี้ยงเข้าทีมเรียบร้อย";
     }
 
-    function generateSafeOrder() {
-        let currentRound = rounds[currentRoundIndex];
-        let pool = students[currentRound];
-        let safeQueue = findValidSequence(pool, currentRound);
-        
-        if (!safeQueue) { safeQueue = [...pool]; }
-        drawingQueue = safeQueue;
-        
-        document.getElementById('orderList').innerHTML = "ลำดับคิวจับ: " + drawingQueue.map((p, idx) => `${idx+1}. คุณ ${p.name}(${p.dept})`).join(' ➡️ ');
-        document.getElementById('btnOrder').disabled = true;
-        document.getElementById('btnDraw').disabled = false;
-        
-        nextTurn();
-    }
+    renderTeamsTable();
+  }
 
-    function evaluateCoachesForPerson(person, round) {
-        let available = []; let unavailable = [];
-        coaches.forEach(coach => {
-            let isSelectable = checkRules(person, coach, round);
-            let reasons = [];
-            if (!isSelectable) {
-                if (coach[round] !== null) reasons.push("โค้ชเต็มแล้ว");
-                else if (coach.dept === person.dept) reasons.push(`โค้ชอยู่สาขาเดียวกัน (${coach.dept})`);
-                else reasons.push(`มีเพื่อนร่วมสาขา ${person.dept} อยู่ในทีมนี้แล้ว`);
-            }
-            if (isSelectable) available.push(coach);
-            else unavailable.push({ coach, reason: reasons.join(' หรือ ') });
-        });
-        return { available, unavailable };
-    }
+  function renderTeamsTable() {
+    const tbody = document.getElementById('teams-table-body');
+    let html = '';
 
-    function nextTurn() {
-        let currentRound = rounds[currentRoundIndex];
-        let person = drawingQueue[currentQueueIndex];
-        
-        document.getElementById('currentPersonDisplay').innerText = `คนจับปัจจุบัน: คุณ ${person.name} (สาขา: ${person.dept})`;
-        document.getElementById('resultDisplay').style.display = 'none';
+    appData.teams.forEach(t => {
+      html += `
+        <tr>
+          <td><strong>ทีมที่ ${t.teamId}</strong></td>
+          <td>${t.coach.name || '-'}<br>${getBranchTagHtml(t.coach.branch)}</td>
+          <td>${t.boy ? `${t.boy.name}<br>${getBranchTagHtml(t.boy.branch)}` : '<i>รอสุ่ม...</i>'}</td>
+          <td>${t.girl ? `${t.girl.name}<br>${getBranchTagHtml(t.girl.branch)}` : '<i>รอสุ่ม...</i>'}</td>
+          <td>${t.queen ? `${t.queen.name}<br>${getBranchTagHtml(t.queen.branch)}` : '<i>รอสุ่ม...</i>'}</td>
+          <td>${t.mentor ? `${t.mentor.name}<br>${getBranchTagHtml(t.mentor.branch)}` : '<i style="color:#94a3b8;">รอสรุปท้ายสุด...</i>'}</td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  }
 
-        let evalResult = evaluateCoachesForPerson(person, currentRound);
-        
-        // อัปเดตรายการหน้าเว็บ
-        const availList = document.getElementById('availableCoachesList');
-        availList.innerHTML = evalResult.available.map(c => `<li>🟢 <strong>${c.name}</strong> (${c.dept})</li>`).join('') || '<li>❌ ไม่มีโค้ช</li>';
-        const unavailList = document.getElementById('unavailableCoachesList');
-        unavailList.innerHTML = evalResult.unavailable.map(item => `<li>❌ <strong>${item.coach.name}</strong> (${item.coach.dept}) <br><span class="reason">↳ ${item.reason}</span></li>`).join('') || '<li>ไม่มี</li>';
-
-        // วาดรูปวงล้อโดยแสดงเฉพาะโค้ชที่ "เลือกได้"
-        drawWheelStatic(evalResult.available);
-    }
-
-    // ฟังก์ชันวาดวงล้อแบบนิ่งๆ
-    function drawWheelStatic(allowedCoaches) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        let numSlices = allowedCoaches.length;
-        if (numSlices === 0) {
-            // วาดวงล้อเปล่าสีเทา
-            ctx.beginPath(); ctx.arc(180, 180, 170, 0, 2 * Math.PI); ctx.fillStyle = '#bdc3c7'; ctx.fill();
-            ctx.fillStyle = '#fff'; ctx.font = '20px Arial'; ctx.textAlign = 'center'; ctx.fillText('รอสุ่มลำดับคิว...', 180, 185);
-            return;
-        }
-
-        let sliceAngle = (2 * Math.PI) / numSlices;
-        allowedCoaches.forEach((coach, i) => {
-            let angle = currentAngle + (i * sliceAngle);
-            ctx.beginPath();
-            ctx.moveTo(180, 180);
-            ctx.arc(180, 180, 170, angle, angle + sliceAngle);
-            ctx.closePath();
-            ctx.fillStyle = coach.color;
-            ctx.fill();
-            ctx.stroke();
-
-            // วาดข้อความชื่อโค้ช
-            ctx.save();
-            ctx.translate(180, 180);
-            ctx.rotate(angle + sliceAngle / 2);
-            ctx.fillStyle = '#fff';
-            ctx.font = 'bold 16px Arial';
-            ctx.textAlign = 'right';
-            ctx.fillText(coach.name, 150, 5);
-            ctx.restore();
-        });
-
-        // วาดปุ่มตรงกลางวงล้อเพิ่มความสวยงาม
-        ctx.beginPath(); ctx.arc(180, 180, 25, 0, 2 * Math.PI); ctx.fillStyle = '#34495e'; ctx.fill();
-        ctx.beginPath(); ctx.arc(180, 180, 22, 0, 2 * Math.PI); ctx.fillStyle = '#fff'; ctx.fill();
-    }
-
-    // ฟังก์ชันเริ่มหมุนวงล้อกำหนดเวลา 5 วินาที (5000 มิลลิวินาที)
-    function startWheel() {
-        if (isSpinning) return;
-        
-        let currentRound = rounds[currentRoundIndex];
-        let person = drawingQueue[currentQueueIndex];
-        let evalResult = evaluateCoachesForPerson(person, currentRound);
-        let pools = evalResult.available;
-
-        if (pools.length === 0) return;
-
-        isSpinning = true;
-        document.getElementById('btnDraw').disabled = true;
-        document.getElementById('resultDisplay').style.display = 'none';
-
-        // 1. สุ่มหาโค้ชที่จะเป็นผู้ชนะล่วงหน้าตามตรรกะที่ถูกต้อง
-        let winnerIndex = Math.floor(Math.random() * pools.length);
-        let luckyCoach = pools[winnerIndex];
-
-        // 2. คำนวณมุมปลายทางเพื่อให้ลูกศรด้านบนสุด (ตำแหน่งกึ่งกลางที่มุม -90 องศา หรือ 3*PI/2) ชี้ไปที่ช่องผู้ชนะพอดี
-        let numSlices = pools.length;
-        let sliceAngle = (2 * Math.PI) / numSlices;
-        
-        // มุมของช่องผู้ชนะเมื่อเทียบกับจุดเริ่มต้นของวงล้อ
-        let targetSliceCenter = (winnerIndex * sliceAngle) + (sliceAngle / 2);
-        // สูตรหมุนให้หัวลูกศร (ซึ่งอยู่ด้านบนสุดที่ -PI/2) ตกตรงกลางช่องผู้ชนะพอดี
-        let targetAngle = (3 * Math.PI / 2) - targetSliceCenter;
-        
-        // เพิ่มรอบหมุนอย่างน้อย 8 รอบเพื่อให้ดูหมุนเร็วสมจริง และล็อกระยะเวลาหมุนไว้ที่ 5 วินาที
-        let totalRotation = targetAngle + (2 * Math.PI * 8); 
-        
-        let startTime = null;
-        let duration = 5000; // 5 วินาที พอดีเป๊ะตามสั่ง!
-
-        function animateWheel(timestamp) {
-            if (!startTime) startTime = timestamp;
-            let elapsed = timestamp - startTime;
-            let progress = Math.min(elapsed / duration, 1);
-
-            // ใช้ระบบลดความเร็วแบบนุ่มนวล (Ease-Out Cubic)
-            let easeProgress = 1 - Math.pow(1 - progress, 3);
-            currentAngle = easeProgress * totalRotation;
-
-            drawWheelStatic(pools);
-
-            if (progress < 1) {
-                requestAnimationFrame(animateWheel);
-            } else {
-                // เมื่อหมุนครบ 5 วินาทีและวงล้อหยุดลง
-                isSpinning = false;
-                luckyCoach[currentRound] = person; // บันทึกผลลงฐานข้อมูลกงล้อ
-                
-                let resBox = document.getElementById('resultDisplay');
-                resBox.innerHTML = `🎉 วงล้อหยุดแล้ว! คุณ <strong>${person.name}</strong> ได้เข้าทีม ➡️ <span style="color:${luckyCoach.color}"><strong>${luckyCoach.name}</strong></span>`;
-                resBox.style.display = 'block';
-
-                updateTable();
-                currentQueueIndex++;
-
-                // ตรวจสอบคิวคนถัดไป
-                if(currentQueueIndex < drawingQueue.length) {
-                    setTimeout(() => {
-                        nextTurn();
-                        document.getElementById('btnDraw').disabled = false;
-                    }, 3000);
-                } else {
-                    currentRoundIndex++;
-                    setTimeout(() => { initRound(); }, 3500);
-                }
-            }
-        }
-        requestAnimationFrame(animateWheel);
-    }
-
-    window.onload = function() {
-        initRound();
-        updateTable();
-    };
+  window.onload = initForm;
 </script>
 
 </body>
