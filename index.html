@@ -12,7 +12,7 @@
       --text: #1e293b;
     }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
-    h1, h2, h3 { color: #0f172a; margin-top: 0; }
+    h1, h2, h3, h4 { color: #0f172a; margin-top: 0; }
     
     /* Navigation Tabs */
     .tab-container { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
@@ -31,6 +31,7 @@
     input[type="text"], select { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
     
     .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .btn-primary { background-color: var(--primary); color: white; }
     .btn-success { background-color: #16a34a; color: white; width: 100%; }
     .btn-success:hover { background-color: #15803d; }
     .btn-spin { background-color: #eab308; color: #0f172a; font-size: 20px; padding: 15px 30px; width: 100%; }
@@ -61,8 +62,27 @@
     .history-badge { background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
     
     /* Activity Log Box */
-    .log-box { background: #1e293b; color: #38bdf8; font-family: monospace; padding: 12px; border-radius: 8px; font-size: 12px; height: 120px; overflow-y: auto; margin-top: 15px; border: 1px solid #334155; }
+    .log-box { background: #1e293b; color: #38bdf8; font-family: monospace; padding: 12px; border-radius: 8px; font-size: 12px; height: 100px; overflow-y: auto; margin-top: 15px; border: 1px solid #334155; }
     .log-item { margin-bottom: 4px; border-bottom: 1px dashed #334155; padding-bottom: 2px; }
+
+    /* Summary Card Custom Layout */
+    .summary-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .team-badge-buttons { display: flex; gap: 8px; }
+    .nav-team-btn { padding: 8px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .nav-team-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .team-display-card { background: #ffffff; border-radius: 16px; padding: 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); text-align: center; max-width: 900px; margin: 0 auto; }
+    
+    .person-box { border: 2px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #f8fafc; transition: 0.3s; }
+    .person-box:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .person-box.coach-box { background: #eff6ff; border-color: #93c5fd; }
+    .person-box.mentor-box { background: #f0fdf4; border-color: #86efac; }
+    
+    .person-role { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #64748b; margin-bottom: 5px; }
+    .person-name { font-size: 18px; font-weight: bold; color: #0f172a; margin-bottom: 5px; }
+
+    .center-row { display: flex; justify-content: center; margin-bottom: 20px; }
+    .center-row .person-box { width: 320px; }
   </style>
 </head>
 <body>
@@ -73,6 +93,7 @@
   <div class="tab-container">
     <button class="tab-btn active" onclick="switchTab('tab-input')">📋 1. ลงทะเบียนรายชื่อ</button>
     <button class="tab-btn" onclick="switchTab('tab-wheel')">🎡 2. เวทีหมุนวงล้อสุ่มทีม</button>
+    <button class="tab-btn" onclick="switchTab('tab-summary')">📊 3. สรุปผลรายทีม</button>
   </div>
 
   <!-- TAB 1: FORM INPUT -->
@@ -83,7 +104,7 @@
         <div id="coaches-inputs"></div>
       </div>
       <div class="section-card">
-        <h3>🤝 รายชื่อพี่เลี้ยง (รอสรุปจับคู่เข้าทีมท้ายสุด)</h3>
+        <h3>🤝 รายชื่อพี่เลี้ยง (ข้อมูลตั้งต้นเรียบร้อยแล้ว)</h3>
         <div id="mentors-inputs"></div>
       </div>
     </div>
@@ -143,10 +164,62 @@
           </tbody>
         </table>
 
-        <!-- Activity History Log (ไม่บันทึกการสุ่ม) -->
-        <h4 style="margin-top: 20px; margin-bottom: 5px;">📜 บันทึกประวัติการดำเนินงาน (Activity Log)</h4>
+        <!-- Activity History Log -->
+        <h4 style="margin-top: 15px; margin-bottom: 5px;">📜 บันทึกประวัติการดำเนินงาน (Activity Log)</h4>
         <div id="activity-log" class="log-box">
           <div class="log-item">SYSTEM: เริ่มต้นระบบการทำงานสำเร็จ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: INDIVIDUAL TEAM SUMMARY VIEW -->
+  <div id="tab-summary" class="tab-content">
+    <div class="summary-nav">
+      <button class="btn btn-primary" onclick="navigateTeam(-1)">⬅️ ทีมก่อนหน้า</button>
+      <div class="team-badge-buttons" id="team-selector-buttons">
+        <!-- Dynamic Buttons 1-5 -->
+      </div>
+      <button class="btn btn-primary" onclick="navigateTeam(1)">ทีมถัดไป ➡️</button>
+    </div>
+
+    <div class="team-display-card">
+      <h2 id="summary-team-title" style="font-size: 28px; margin-bottom: 25px; color: #2563eb;">ทีมที่ 1</h2>
+      
+      <!-- 1. Top: Coach -->
+      <div class="center-row">
+        <div class="person-box coach-box">
+          <div class="person-role">👑 อาจารย์โค้ชประจำทีม</div>
+          <div class="person-name" id="summary-coach-name">-</div>
+          <div id="summary-coach-branch"></div>
+        </div>
+      </div>
+
+      <!-- 2. Middle: Mentor -->
+      <div class="center-row">
+        <div class="person-box mentor-box">
+          <div class="person-role">🤝 พี่เลี้ยงประจำทีม</div>
+          <div class="person-name" id="summary-mentor-name">-</div>
+          <div id="summary-mentor-branch"></div>
+        </div>
+      </div>
+
+      <!-- 3. Bottom Grid: Boy (Left) | Girl (Center) | Queen (Right) -->
+      <div class="grid-3" style="margin-top: 25px;">
+        <div class="person-box">
+          <div class="person-role">♂️ ผู้เข้าประกวด Boy</div>
+          <div class="person-name" id="summary-boy-name">-</div>
+          <div id="summary-boy-branch"></div>
+        </div>
+        <div class="person-box">
+          <div class="person-role">♀️ ผู้เข้าประกวด Girl</div>
+          <div class="person-name" id="summary-girl-name">-</div>
+          <div id="summary-girl-branch"></div>
+        </div>
+        <div class="person-box">
+          <div class="person-role">👑 ผู้เข้าประกวด Queen</div>
+          <div class="person-name" id="summary-queen-name">-</div>
+          <div id="summary-queen-branch"></div>
         </div>
       </div>
     </div>
@@ -161,13 +234,20 @@
     { name: "ระบบสารสนเทศ", class: "tag-mis" }
   ];
 
-  // ฐานข้อมูลโค้ชเฉพาะกลุ่ม (ไม่ปะปนกับผู้เข้าประกวดและพี่เลี้ยง)
   const COACH_LIST = [
     { id: "c1", name: "อาจารย์ ดร.พิทูร อมรวิทวัส", branch: "การจัดการ" },
     { id: "c2", name: "อาจารย์ ดร.วรรณุดาว์ เพ็ชรไพโรจน์", branch: "การเงิน" },
     { id: "c3", name: "อาจารย์ภัคภณ รถเพ็ชร", branch: "การตลาด" },
     { id: "c4", name: "อาจารย์รสา เฉื่อยมณี", branch: "การบัญชี" },
     { id: "c5", name: "อาจารย์ศศิวิมล กอบัว", branch: "ระบบสารสนเทศ" }
+  ];
+
+  const DEFAULT_MENTORS = [
+    { name: "นางสาวมนตา มณีเนตร", branch: "การจัดการ" },
+    { name: "นายธนวัฒน์ เศรษฐนันท์", branch: "การเงิน" },
+    { name: "นางสาวสิรินภา ชุดช้อยสระน้อย", branch: "การบัญชี" },
+    { name: "นายอภินันท์ โนนโพธิ์", branch: "ระบบสารสนเทศ" },
+    { name: "นางสาวลักขณา เบี้ยกระโทก", branch: "การตลาด" }
   ];
   
   let appData = {
@@ -177,10 +257,10 @@
     currentQueueIndex: 0,
     historyPatterns: [],
     runCount: 1,
-    activityLogs: []
+    activityLogs: [],
+    selectedViewTeamIndex: 0 // Index 0-4 สำหรับหน้าสรุปรายทีม
   };
 
-  // --- ACTIVITY LOG SYSTEM (ไม่บันทึกผลการสุ่ม) ---
   function addActivityLog(actionMessage) {
     const timeStr = new Date().toLocaleTimeString('th-TH');
     const logText = `[${timeStr}] ${actionMessage}`;
@@ -204,13 +284,17 @@
       document.querySelectorAll('.tab-btn')[1].classList.add('active');
       addActivityLog("ผู้ใช้งานสลับไปที่หน้า 'เวทีหมุนวงล้อ'");
     }
+    if(tabId === 'tab-summary') {
+      document.querySelectorAll('.tab-btn')[2].classList.add('active');
+      addActivityLog("ผู้ใช้งานสลับไปที่หน้า 'สรุปผลรายทีม'");
+      renderSummaryTeamView();
+    }
     document.getElementById(tabId).classList.add('active');
   }
 
   function initForm() {
     let coachHtml = '', mentorHtml = '';
     for(let i=1; i<=5; i++) {
-      // โค้ชเปลี่ยนเป็น Dropdown เลือกตัวเลือกเฉพาะกลุ่ม
       coachHtml += `
         <div class="input-row">
           <label>ทีม ${i}:</label>
@@ -219,12 +303,13 @@
           </select>
         </div>`;
       
+      const defaultMentor = DEFAULT_MENTORS[i-1];
       mentorHtml += `
         <div class="input-row">
           <label>คนที่ ${i}:</label>
-          <input type="text" id="mentor_name_${i}" placeholder="ชื่อพี่เลี้ยง">
+          <input type="text" id="mentor_name_${i}" value="${defaultMentor.name}" placeholder="ชื่อพี่เลี้ยง">
           <select id="mentor_branch_${i}" class="branch-select" data-group="mentor" onchange="updateBranchDropdowns('mentor')">
-            ${branchOptions()}
+            ${branchOptions(defaultMentor.branch)}
           </select>
         </div>`;
     }
@@ -236,10 +321,10 @@
     renderCategoryInputs('queens-inputs', 'Q', 'queen');
 
     updateCoachDropdowns();
-    addActivityLog("โหลดตัวเลือกรายชื่ออาจารย์โค้ชเข้าสู่ Dropdown เรียบร้อย");
+    updateBranchDropdowns('mentor');
+    addActivityLog("โหลดข้อมูลอาจารย์โค้ชและพี่เลี้ยง 5 ท่านสำเร็จ");
   }
 
-  // สร้าง Dropdown ตัวเลือกอาจารย์โค้ช
   function coachOptions(selectedId = "") {
     return `<option value="">-- เลือกอาจารย์โค้ช --</option>` + COACH_LIST.map(c => {
       const selected = c.id === selectedId ? 'selected' : '';
@@ -247,7 +332,6 @@
     }).join('');
   }
 
-  // อัปเดตและซ่อนอาจารย์โค้ชที่ถูกเลือกไปแล้วในทีมอื่น
   function updateCoachDropdowns() {
     const selects = document.querySelectorAll('.coach-select');
     const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
@@ -504,7 +588,7 @@
       document.getElementById('spin-btn').disabled = false;
       drawFullWheel();
     } else {
-      document.getElementById('current-turn').innerHTML = "🎉 สุ่มผู้เข้าประกวดครบแล้ว!<br>กำลังประมวลผลจัดพี่เลี้ยงเข้าทีม...";
+      document.getElementById('current-turn').innerHTML = "🎉 สุ่มผู้เข้าประกวดครบแล้ว!<br><button class='btn btn-success' style='margin-top:10px;' onclick='switchTab(\"tab-summary\")'>➡️ ดูสรุปผลรายทีมเลย</button>";
       document.getElementById('spin-btn').disabled = true;
       drawFullWheel();
       assignMentorsToTeams();
@@ -585,20 +669,7 @@
       return false;
     }
 
-    const success = solveMentor(0);
-
-    if (success) {
-      document.getElementById('current-turn').innerHTML = "🎉 สรุปจัดพี่เลี้ยงเข้าทีมเสร็จสิ้น!<br><span style='color: green; font-size: 14px;'>✓ ทุกทีมสาขาไม่ซ้ำกัน 100%</span>";
-    } else {
-      let remainingMentors = [...appData.mentorsList];
-      appData.teams.forEach((team, idx) => {
-        if (!team.mentor) {
-          team.mentor = remainingMentors[idx] || { name: 'พี่เลี้ยง', branch: '' };
-        }
-      });
-      document.getElementById('current-turn').innerHTML = "⚠️ สรุปพี่เลี้ยงเข้าทีมเรียบร้อย";
-    }
-
+    solveMentor(0);
     renderTeamsTable();
   }
 
@@ -619,6 +690,55 @@
       `;
     });
     tbody.innerHTML = html;
+  }
+
+  // --- TAB 3: INDIVIDUAL SUMMARY NAVIGATION & RENDER ---
+  function navigateTeam(direction) {
+    let newIndex = appData.selectedViewTeamIndex + direction;
+    if (newIndex < 0) newIndex = 4; // วนกลับไปทีมที่ 5
+    if (newIndex > 4) newIndex = 0; // วนไปทีมที่ 1
+    
+    selectSummaryTeam(newIndex);
+  }
+
+  function selectSummaryTeam(index) {
+    appData.selectedViewTeamIndex = index;
+    renderSummaryTeamView();
+  }
+
+  function renderSummaryTeamView() {
+    const team = appData.teams[appData.selectedViewTeamIndex];
+
+    // Render Quick Buttons
+    let buttonsHtml = '';
+    for(let i=0; i<5; i++) {
+      const activeClass = i === appData.selectedViewTeamIndex ? 'active' : '';
+      buttonsHtml += `<button class="nav-team-btn ${activeClass}" onclick="selectSummaryTeam(${i})">ทีม ${i+1}</button>`;
+    }
+    document.getElementById('team-selector-buttons').innerHTML = buttonsHtml;
+
+    // Render Content
+    document.getElementById('summary-team-title').innerText = `🏆 สรุปสมาชิก : ทีมที่ ${team.teamId}`;
+
+    // Coach
+    document.getElementById('summary-coach-name').innerText = team.coach.name || 'ยังไม่ระบุ';
+    document.getElementById('summary-coach-branch').innerHTML = getBranchTagHtml(team.coach.branch);
+
+    // Mentor
+    document.getElementById('summary-mentor-name').innerText = team.mentor ? team.mentor.name : 'รอสรุปท้ายสุด';
+    document.getElementById('summary-mentor-branch').innerHTML = team.mentor ? getBranchTagHtml(team.mentor.branch) : '';
+
+    // Boy
+    document.getElementById('summary-boy-name').innerText = team.boy ? `${team.boy.name} (${team.boy.code})` : 'รอผลสุ่ม';
+    document.getElementById('summary-boy-branch').innerHTML = team.boy ? getBranchTagHtml(team.boy.branch) : '';
+
+    // Girl
+    document.getElementById('summary-girl-name').innerText = team.girl ? `${team.girl.name} (${team.girl.code})` : 'รอผลสุ่ม';
+    document.getElementById('summary-girl-branch').innerHTML = team.girl ? getBranchTagHtml(team.girl.branch) : '';
+
+    // Queen
+    document.getElementById('summary-queen-name').innerText = team.queen ? `${team.queen.name} (${team.queen.code})` : 'รอผลสุ่ม';
+    document.getElementById('summary-queen-branch').innerHTML = team.queen ? getBranchTagHtml(team.queen.branch) : '';
   }
 
   window.onload = initForm;
