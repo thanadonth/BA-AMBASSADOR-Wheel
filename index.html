@@ -87,7 +87,7 @@
       text-align: center; 
       max-width: 900px; 
       margin: 0 auto; 
-      border-top: 8px solid #cbd5e1; /* Default top border */
+      border-top: 8px solid #cbd5e1;
       transition: border-color 0.3s ease;
     }
     
@@ -286,7 +286,32 @@
     { id: "m4", name: "นายอภินันท์ โนนโพธิ์", branch: "ระบบสารสนเทศ" },
     { id: "m5", name: "นางสาวลักขณา เบี้ยกระโทก", branch: "การตลาด" }
   ];
-  
+
+  // --- ข้อมูลผู้เข้าประกวด BA AMBASSADOR 2026 (ปรับปรุงชื่อ และชื่อเล่นไว้ท้ายสุด) ---
+  const DEFAULT_CONTESTANTS = {
+    boy: [
+      { name: "นายธนวัฒน์ สงสุวรรณ (หมอก)", branch: "การจัดการ" },
+      { name: "นายภูวนัตถ์ ก้อนจันทึก (พีท)", branch: "การบัญชี" },
+      { name: "นายมนต์ธวัล อชิโนปุญวัตน์ (คิมไซ)", branch: "การเงิน" },
+      { name: "นายเขมฑัต ชานนท์ (เอม่อน)", branch: "การตลาด" },
+      { name: "นายอภิรักษ์ ปนตะคุ (ฟิล์ม)", branch: "ระบบสารสนเทศ" }
+    ],
+    girl: [
+      { name: "นางสาวรัตน์ชนก แสงสิงห์ (สายรุ้ง)", branch: "การจัดการ" },
+      { name: "นางสาวไพลิน โสมัสสา (เก๋)", branch: "การบัญชี" },
+      { name: "นางสาวศศิพัชร รติพันธ์สำโรง (เค้ก)", branch: "การเงิน" },
+      { name: "นางสาวเปมนีย์ บุญประเสริฐ (น้ำปั่น)", branch: "การตลาด" },
+      { name: "นางสาวจิรัชญา นมขุนทด (เพิร์ส)", branch: "ระบบสารสนเทศ" }
+    ],
+    queen: [
+      { name: "นายธนกฤต เรืองโสม (แนน)", branch: "การจัดการ" },
+      { name: "นายธนพงศกร เผ่าบ้านฟาง (น้ำหวาน)", branch: "การบัญชี" },
+      { name: "นายธนวัฒน์ สวงโท (เขม)", branch: "การเงิน" },
+      { name: "นายพาณิภัค พิมพ์ทอง (มิว)", branch: "การตลาด" },
+      { name: "นายอดิศร แหลมกระโทก (หนูบีม)", branch: "ระบบสารสนเทศ" }
+    ]
+  };
+
   let userImages = {}; 
   const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
@@ -529,13 +554,19 @@
 
   function renderCategoryInputs(containerId, prefix, groupName) {
     let html = '';
+    const defaultList = DEFAULT_CONTESTANTS[groupName] || [];
+
     for(let i=1; i<=5; i++) {
       const key = `${prefix}_${i}`;
+      const defaultData = defaultList[i-1] || { name: "", branch: "" };
+
       html += `
         <div class="input-row">
           <label>${prefix}${i}:</label>
-          <input type="text" id="${prefix}_name_${i}" placeholder="ชื่อ-นามสกุล" onchange="saveStorageData()">
-          <select id="${prefix}_branch_${i}" class="branch-select" data-group="${groupName}" onchange="updateBranchDropdowns('${groupName}'); saveStorageData();">${branchOptions()}</select>
+          <input type="text" id="${prefix}_name_${i}" value="${defaultData.name}" placeholder="ชื่อ-นามสกุล" onchange="saveStorageData()">
+          <select id="${prefix}_branch_${i}" class="branch-select" data-group="${groupName}" onchange="updateBranchDropdowns('${groupName}'); saveStorageData();">
+            ${branchOptions(defaultData.branch)}
+          </select>
           <img id="preview_${key}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
           <input type="file" accept="image/*" onchange="handleImageUpload(this, '${key}')">
         </div>`;
