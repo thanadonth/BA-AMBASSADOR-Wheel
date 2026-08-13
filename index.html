@@ -104,7 +104,7 @@
         <div id="coaches-inputs"></div>
       </div>
       <div class="section-card">
-        <h3>🤝 รายชื่อพี่เลี้ยง (ข้อมูลตั้งต้นเรียบร้อยแล้ว)</h3>
+        <h3>🤝 รายชื่อพี่เลี้ยง (เลือกจากตัวเลือก)</h3>
         <div id="mentors-inputs"></div>
       </div>
     </div>
@@ -234,6 +234,7 @@
     { name: "ระบบสารสนเทศ", class: "tag-mis" }
   ];
 
+  // ฐานข้อมูลโค้ชเฉพาะกลุ่ม
   const COACH_LIST = [
     { id: "c1", name: "อาจารย์ ดร.พิทูร อมรวิทวัส", branch: "การจัดการ" },
     { id: "c2", name: "อาจารย์ ดร.วรรณุดาว์ เพ็ชรไพโรจน์", branch: "การเงิน" },
@@ -242,12 +243,13 @@
     { id: "c5", name: "อาจารย์ศศิวิมล กอบัว", branch: "ระบบสารสนเทศ" }
   ];
 
-  const DEFAULT_MENTORS = [
-    { name: "นางสาวมนตา มณีเนตร", branch: "การจัดการ" },
-    { name: "นายธนวัฒน์ เศรษฐนันท์", branch: "การเงิน" },
-    { name: "นางสาวสิรินภา ชุดช้อยสระน้อย", branch: "การบัญชี" },
-    { name: "นายอภินันท์ โนนโพธิ์", branch: "ระบบสารสนเทศ" },
-    { name: "นางสาวลักขณา เบี้ยกระโทก", branch: "การตลาด" }
+  // ฐานข้อมูลพี่เลี้ยงเฉพาะกลุ่ม
+  const MENTOR_LIST = [
+    { id: "m1", name: "นางสาวมนตา มณีเนตร", branch: "การจัดการ" },
+    { id: "m2", name: "นายธนวัฒน์ เศรษฐนันท์", branch: "การเงิน" },
+    { id: "m3", name: "นางสาวสิรินภา ชุดช้อยสระน้อย", branch: "การบัญชี" },
+    { id: "m4", name: "นายอภินันท์ โนนโพธิ์", branch: "ระบบสารสนเทศ" },
+    { id: "m5", name: "นางสาวลักขณา เบี้ยกระโทก", branch: "การตลาด" }
   ];
   
   let appData = {
@@ -258,7 +260,7 @@
     historyPatterns: [],
     runCount: 1,
     activityLogs: [],
-    selectedViewTeamIndex: 0 // Index 0-4 สำหรับหน้าสรุปรายทีม
+    selectedViewTeamIndex: 0
   };
 
   function addActivityLog(actionMessage) {
@@ -295,6 +297,7 @@
   function initForm() {
     let coachHtml = '', mentorHtml = '';
     for(let i=1; i<=5; i++) {
+      // โค้ช Dropdown
       coachHtml += `
         <div class="input-row">
           <label>ทีม ${i}:</label>
@@ -303,13 +306,12 @@
           </select>
         </div>`;
       
-      const defaultMentor = DEFAULT_MENTORS[i-1];
+      // พี่เลี้ยง Dropdown
       mentorHtml += `
         <div class="input-row">
           <label>คนที่ ${i}:</label>
-          <input type="text" id="mentor_name_${i}" value="${defaultMentor.name}" placeholder="ชื่อพี่เลี้ยง">
-          <select id="mentor_branch_${i}" class="branch-select" data-group="mentor" onchange="updateBranchDropdowns('mentor')">
-            ${branchOptions(defaultMentor.branch)}
+          <select id="mentor_select_${i}" class="mentor-select" onchange="updateMentorDropdowns()">
+            ${mentorOptions(MENTOR_LIST[i-1].id)}
           </select>
         </div>`;
     }
@@ -321,10 +323,11 @@
     renderCategoryInputs('queens-inputs', 'Q', 'queen');
 
     updateCoachDropdowns();
-    updateBranchDropdowns('mentor');
-    addActivityLog("โหลดข้อมูลอาจารย์โค้ชและพี่เลี้ยง 5 ท่านสำเร็จ");
+    updateMentorDropdowns();
+    addActivityLog("โหลดข้อมูลตัวเลือกโค้ชและพี่เลี้ยงสำเร็จ");
   }
 
+  // Dropdown สำหรับโค้ช
   function coachOptions(selectedId = "") {
     return `<option value="">-- เลือกอาจารย์โค้ช --</option>` + COACH_LIST.map(c => {
       const selected = c.id === selectedId ? 'selected' : '';
@@ -334,6 +337,33 @@
 
   function updateCoachDropdowns() {
     const selects = document.querySelectorAll('.coach-select');
+    const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
+
+    selects.forEach(select => {
+      const currentValue = select.value;
+      Array.from(select.options).forEach(option => {
+        if (option.value === "") return;
+        if (selectedValues.includes(option.value) && option.value !== currentValue) {
+          option.style.display = 'none';
+          option.disabled = true;
+        } else {
+          option.style.display = 'block';
+          option.disabled = false;
+        }
+      });
+    });
+  }
+
+  // Dropdown สำหรับพี่เลี้ยง
+  function mentorOptions(selectedId = "") {
+    return `<option value="">-- เลือกพี่เลี้ยง --</option>` + MENTOR_LIST.map(m => {
+      const selected = m.id === selectedId ? 'selected' : '';
+      return `<option value="${m.id}" ${selected}>${m.name} (${m.branch})</option>`;
+    }).join('');
+  }
+
+  function updateMentorDropdowns() {
+    const selects = document.querySelectorAll('.mentor-select');
     const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
 
     selects.forEach(select => {
@@ -417,9 +447,12 @@
 
     appData.mentorsList = [];
     for(let i=1; i<=5; i++) {
+      const mentorSelectVal = document.getElementById(`mentor_select_${i}`).value;
+      const foundMentor = MENTOR_LIST.find(m => m.id === mentorSelectVal);
+
       appData.mentorsList.push({
-        name: document.getElementById(`mentor_name_${i}`).value || `พี่เลี้ยง ${i}`,
-        branch: document.getElementById(`mentor_branch_${i}`).value
+        name: foundMentor ? foundMentor.name : `พี่เลี้ยง ${i}`,
+        branch: foundMentor ? foundMentor.branch : ""
       });
     }
 
@@ -695,8 +728,8 @@
   // --- TAB 3: INDIVIDUAL SUMMARY NAVIGATION & RENDER ---
   function navigateTeam(direction) {
     let newIndex = appData.selectedViewTeamIndex + direction;
-    if (newIndex < 0) newIndex = 4; // วนกลับไปทีมที่ 5
-    if (newIndex > 4) newIndex = 0; // วนไปทีมที่ 1
+    if (newIndex < 0) newIndex = 4;
+    if (newIndex > 4) newIndex = 0;
     
     selectSummaryTeam(newIndex);
   }
@@ -709,7 +742,6 @@
   function renderSummaryTeamView() {
     const team = appData.teams[appData.selectedViewTeamIndex];
 
-    // Render Quick Buttons
     let buttonsHtml = '';
     for(let i=0; i<5; i++) {
       const activeClass = i === appData.selectedViewTeamIndex ? 'active' : '';
@@ -717,7 +749,6 @@
     }
     document.getElementById('team-selector-buttons').innerHTML = buttonsHtml;
 
-    // Render Content
     document.getElementById('summary-team-title').innerText = `🏆 สรุปสมาชิก : ทีมที่ ${team.teamId}`;
 
     // Coach
