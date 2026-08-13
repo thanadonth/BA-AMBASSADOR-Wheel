@@ -79,7 +79,7 @@
   <div id="tab-input" class="tab-content active">
     <div class="grid-2">
       <div class="section-card">
-        <h3>👑 รายชื่อโค้ชประจำทีม (ใส่ข้อมูลล่วงหน้าแล้ว)</h3>
+        <h3>👑 รายชื่อโค้ชประจำทีม (เลือกจากตัวเลือก)</h3>
         <div id="coaches-inputs"></div>
       </div>
       <div class="section-card">
@@ -161,13 +161,13 @@
     { name: "ระบบสารสนเทศ", class: "tag-mis" }
   ];
 
-  // ข้อมูลอาจารย์โค้ชล่วงหน้า
-  const DEFAULT_COACHES = [
-    { name: "อาจารย์ ดร.พิทูร อมรวิทวัส", branch: "การจัดการ" },
-    { name: "อาจารย์ ดร.วรรณุดาว์ เพ็ชรไพโรจน์", branch: "การเงิน" },
-    { name: "อาจารย์ภัคภณ รถเพ็ชร", branch: "การตลาด" },
-    { name: "อาจารย์รสา เฉื่อยมณี", branch: "การบัญชี" },
-    { name: "อาจารย์ศศิวิมล กอบัว", branch: "ระบบสารสนเทศ" }
+  // ฐานข้อมูลโค้ชเฉพาะกลุ่ม (ไม่ปะปนกับผู้เข้าประกวดและพี่เลี้ยง)
+  const COACH_LIST = [
+    { id: "c1", name: "อาจารย์ ดร.พิทูร อมรวิทวัส", branch: "การจัดการ" },
+    { id: "c2", name: "อาจารย์ ดร.วรรณุดาว์ เพ็ชรไพโรจน์", branch: "การเงิน" },
+    { id: "c3", name: "อาจารย์ภัคภณ รถเพ็ชร", branch: "การตลาด" },
+    { id: "c4", name: "อาจารย์รสา เฉื่อยมณี", branch: "การบัญชี" },
+    { id: "c5", name: "อาจารย์ศศิวิมล กอบัว", branch: "ระบบสารสนเทศ" }
   ];
   
   let appData = {
@@ -210,13 +210,12 @@
   function initForm() {
     let coachHtml = '', mentorHtml = '';
     for(let i=1; i<=5; i++) {
-      const defaultCoach = DEFAULT_COACHES[i-1];
+      // โค้ชเปลี่ยนเป็น Dropdown เลือกตัวเลือกเฉพาะกลุ่ม
       coachHtml += `
         <div class="input-row">
           <label>ทีม ${i}:</label>
-          <input type="text" id="coach_name_${i}" value="${defaultCoach.name}" placeholder="ชื่อโค้ช">
-          <select id="coach_branch_${i}" class="branch-select" data-group="coach" onchange="updateBranchDropdowns('coach')">
-            ${branchOptions(defaultCoach.branch)}
+          <select id="coach_select_${i}" class="coach-select" onchange="updateCoachDropdowns()">
+            ${coachOptions(COACH_LIST[i-1].id)}
           </select>
         </div>`;
       
@@ -236,8 +235,36 @@
     renderCategoryInputs('girls-inputs', 'G', 'girl');
     renderCategoryInputs('queens-inputs', 'Q', 'queen');
 
-    updateBranchDropdowns('coach');
-    addActivityLog("โหลดข้อมูลรายชื่ออาจารย์โค้ช 5 สาขาวิชาตั้งต้นสำเร็จ");
+    updateCoachDropdowns();
+    addActivityLog("โหลดตัวเลือกรายชื่ออาจารย์โค้ชเข้าสู่ Dropdown เรียบร้อย");
+  }
+
+  // สร้าง Dropdown ตัวเลือกอาจารย์โค้ช
+  function coachOptions(selectedId = "") {
+    return `<option value="">-- เลือกอาจารย์โค้ช --</option>` + COACH_LIST.map(c => {
+      const selected = c.id === selectedId ? 'selected' : '';
+      return `<option value="${c.id}" ${selected}>${c.name} (${c.branch})</option>`;
+    }).join('');
+  }
+
+  // อัปเดตและซ่อนอาจารย์โค้ชที่ถูกเลือกไปแล้วในทีมอื่น
+  function updateCoachDropdowns() {
+    const selects = document.querySelectorAll('.coach-select');
+    const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
+
+    selects.forEach(select => {
+      const currentValue = select.value;
+      Array.from(select.options).forEach(option => {
+        if (option.value === "") return;
+        if (selectedValues.includes(option.value) && option.value !== currentValue) {
+          option.style.display = 'none';
+          option.disabled = true;
+        } else {
+          option.style.display = 'block';
+          option.disabled = false;
+        }
+      });
+    });
   }
 
   function branchOptions(selectedVal = "") {
@@ -291,9 +318,12 @@
 
   function resetStateData() {
     for(let i=1; i<=5; i++) {
+      const coachSelectVal = document.getElementById(`coach_select_${i}`).value;
+      const foundCoach = COACH_LIST.find(c => c.id === coachSelectVal);
+
       appData.teams[i-1].coach = { 
-        name: document.getElementById(`coach_name_${i}`).value || `โค้ชทีม ${i}`, 
-        branch: document.getElementById(`coach_branch_${i}`).value 
+        name: foundCoach ? foundCoach.name : `โค้ชทีม ${i}`, 
+        branch: foundCoach ? foundCoach.branch : "" 
       };
       appData.teams[i-1].mentor = null; 
       appData.teams[i-1].boy = null; 
