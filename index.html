@@ -59,6 +59,10 @@
     .tag-default { background-color: #64748b; }
 
     .history-badge { background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+    
+    /* Activity Log Box */
+    .log-box { background: #1e293b; color: #38bdf8; font-family: monospace; padding: 12px; border-radius: 8px; font-size: 12px; height: 120px; overflow-y: auto; margin-top: 15px; border: 1px solid #334155; }
+    .log-item { margin-bottom: 4px; border-bottom: 1px dashed #334155; padding-bottom: 2px; }
   </style>
 </head>
 <body>
@@ -75,7 +79,7 @@
   <div id="tab-input" class="tab-content active">
     <div class="grid-2">
       <div class="section-card">
-        <h3>👑 รายชื่อโค้ชประจำทีม (ทีม 1 - 5)</h3>
+        <h3>👑 รายชื่อโค้ชประจำทีม (ใส่ข้อมูลล่วงหน้าแล้ว)</h3>
         <div id="coaches-inputs"></div>
       </div>
       <div class="section-card">
@@ -138,17 +142,32 @@
             <!-- Dynamic Content -->
           </tbody>
         </table>
+
+        <!-- Activity History Log (ไม่บันทึกการสุ่ม) -->
+        <h4 style="margin-top: 20px; margin-bottom: 5px;">📜 บันทึกประวัติการดำเนินงาน (Activity Log)</h4>
+        <div id="activity-log" class="log-box">
+          <div class="log-item">SYSTEM: เริ่มต้นระบบการทำงานสำเร็จ</div>
+        </div>
       </div>
     </div>
   </div>
 
 <script>
   const BRANCHES = [
-    { name: "การบัญชี", class: "tag-acc" },
-    { name: "การตลาด", class: "tag-mkt" },
-    { name: "การเงิน", class: "tag-fin" },
     { name: "การจัดการ", class: "tag-mgt" },
+    { name: "การเงิน", class: "tag-fin" },
+    { name: "การตลาด", class: "tag-mkt" },
+    { name: "การบัญชี", class: "tag-acc" },
     { name: "ระบบสารสนเทศ", class: "tag-mis" }
+  ];
+
+  // ข้อมูลอาจารย์โค้ชล่วงหน้า
+  const DEFAULT_COACHES = [
+    { name: "อาจารย์ ดร.พิทูร อมรวิทวัส", branch: "การจัดการ" },
+    { name: "อาจารย์ ดร.วรรณุดาว์ เพ็ชรไพโรจน์", branch: "การเงิน" },
+    { name: "อาจารย์ภัคภณ รถเพ็ชร", branch: "การตลาด" },
+    { name: "อาจารย์รสา เฉื่อยมณี", branch: "การบัญชี" },
+    { name: "อาจารย์ศศิวิมล กอบัว", branch: "ระบบสารสนเทศ" }
   ];
   
   let appData = {
@@ -156,24 +175,59 @@
     mentorsList: [],
     queue: [],
     currentQueueIndex: 0,
-    historyPatterns: [], // บันทึกประวัติรูปแบบผลลัพธ์ที่เคยเกิดขึ้นเพื่อไม่ให้ซ้ำเดิม
-    runCount: 1
+    historyPatterns: [],
+    runCount: 1,
+    activityLogs: []
   };
+
+  // --- ACTIVITY LOG SYSTEM (ไม่บันทึกผลการสุ่ม) ---
+  function addActivityLog(actionMessage) {
+    const timeStr = new Date().toLocaleTimeString('th-TH');
+    const logText = `[${timeStr}] ${actionMessage}`;
+    appData.activityLogs.unshift(logText);
+    
+    const logContainer = document.getElementById('activity-log');
+    if (logContainer) {
+      logContainer.innerHTML = appData.activityLogs.map(item => `<div class="log-item">${item}</div>`).join('');
+    }
+  }
 
   function switchTab(tabId) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     
-    if(tabId === 'tab-input') document.querySelectorAll('.tab-btn')[0].classList.add('active');
-    if(tabId === 'tab-wheel') document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    if(tabId === 'tab-input') {
+      document.querySelectorAll('.tab-btn')[0].classList.add('active');
+      addActivityLog("ผู้ใช้งานสลับไปที่หน้า 'ลงทะเบียนรายชื่อ'");
+    }
+    if(tabId === 'tab-wheel') {
+      document.querySelectorAll('.tab-btn')[1].classList.add('active');
+      addActivityLog("ผู้ใช้งานสลับไปที่หน้า 'เวทีหมุนวงล้อ'");
+    }
     document.getElementById(tabId).classList.add('active');
   }
 
   function initForm() {
     let coachHtml = '', mentorHtml = '';
     for(let i=1; i<=5; i++) {
-      coachHtml += `<div class="input-row"><label>ทีม ${i}:</label><input type="text" id="coach_name_${i}" placeholder="ชื่อโค้ช"><select id="coach_branch_${i}" class="branch-select" data-group="coach" onchange="updateBranchDropdowns('coach')">${branchOptions()}</select></div>`;
-      mentorHtml += `<div class="input-row"><label>คนที่ ${i}:</label><input type="text" id="mentor_name_${i}" placeholder="ชื่อพี่เลี้ยง"><select id="mentor_branch_${i}" class="branch-select" data-group="mentor" onchange="updateBranchDropdowns('mentor')">${branchOptions()}</select></div>`;
+      const defaultCoach = DEFAULT_COACHES[i-1];
+      coachHtml += `
+        <div class="input-row">
+          <label>ทีม ${i}:</label>
+          <input type="text" id="coach_name_${i}" value="${defaultCoach.name}" placeholder="ชื่อโค้ช">
+          <select id="coach_branch_${i}" class="branch-select" data-group="coach" onchange="updateBranchDropdowns('coach')">
+            ${branchOptions(defaultCoach.branch)}
+          </select>
+        </div>`;
+      
+      mentorHtml += `
+        <div class="input-row">
+          <label>คนที่ ${i}:</label>
+          <input type="text" id="mentor_name_${i}" placeholder="ชื่อพี่เลี้ยง">
+          <select id="mentor_branch_${i}" class="branch-select" data-group="mentor" onchange="updateBranchDropdowns('mentor')">
+            ${branchOptions()}
+          </select>
+        </div>`;
     }
     document.getElementById('coaches-inputs').innerHTML = coachHtml;
     document.getElementById('mentors-inputs').innerHTML = mentorHtml;
@@ -181,10 +235,16 @@
     renderCategoryInputs('boys-inputs', 'B', 'boy');
     renderCategoryInputs('girls-inputs', 'G', 'girl');
     renderCategoryInputs('queens-inputs', 'Q', 'queen');
+
+    updateBranchDropdowns('coach');
+    addActivityLog("โหลดข้อมูลรายชื่ออาจารย์โค้ช 5 สาขาวิชาตั้งต้นสำเร็จ");
   }
 
-  function branchOptions() {
-    return `<option value="">-- สาขา --</option>` + BRANCHES.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+  function branchOptions(selectedVal = "") {
+    return `<option value="">-- สาขา --</option>` + BRANCHES.map(b => {
+      const selected = b.name === selectedVal ? 'selected' : '';
+      return `<option value="${b.name}" ${selected}>${b.name}</option>`;
+    }).join('');
   }
 
   function renderCategoryInputs(containerId, prefix, groupName) {
@@ -225,6 +285,7 @@
     appData.historyPatterns = [];
     appData.runCount = 1;
     resetStateData();
+    addActivityLog("บันทึกข้อมูลรายชื่อผู้เข้าแข่งขัน และเตรียมพร้อมสุ่มวงล้อ");
     switchTab('tab-wheel');
   }
 
@@ -272,34 +333,30 @@
   function resetAndReSpin() {
     if (isSpinning) return;
     
-    // บันทึก Pattern ปัจจุบันลง History เพื่อป้องกันซ้ำ
     const currentPattern = generateCurrentPatternHash();
     if (currentPattern && !appData.historyPatterns.includes(currentPattern)) {
       appData.historyPatterns.push(currentPattern);
     }
     
     appData.runCount++;
+    addActivityLog(`กดปุ่มล้างตารางเพื่อทำการสุ่มใหม่รอบที่ ${appData.runCount}`);
     resetStateData();
   }
 
   function generateCurrentPatternHash() {
-    // สร้างรหัสแสดงเอกลักษณ์การจับคู่ของทีมเพื่อตรวจจับความซ้ำซ้อน
     return appData.teams.map(t => `${t.boy?.code || ''}-${t.girl?.code || ''}-${t.queen?.code || ''}`).join('|');
   }
 
-  // --- LOOKAHEAD SOLVER & DIVERSITY MATRIX ---
   function canCompleteAssignmentWithMentors(qIndex) {
     if (qIndex >= appData.queue.length) {
-      // ตรวจสอบความซ้ำซ้อนกับ History
       const futurePattern = generateCurrentPatternHash();
       if (appData.historyPatterns.includes(futurePattern)) {
-        return false; // บล็อก Pattern นี้เพราะเคยเกิดขึ้นแล้วในรอบก่อนหน้า
+        return false;
       }
       return canAssignMentorsStrict();
     }
 
     const item = appData.queue[qIndex];
-    // สุ่มลำดับการลองทีมแบบ Random เพื่อเพิ่มความหลากหลาย
     const teamIndices = shuffleArray([0, 1, 2, 3, 4]);
 
     for (let t of teamIndices) {
@@ -359,8 +416,6 @@
     
     const contestant = appData.queue[appData.currentQueueIndex];
     const validTeams = [];
-
-    // สุ่มลำดับการตรวจสอบเพื่อเพิ่มกระจายตัวของผลลัพธ์
     const shuffledTeams = shuffleArray(appData.teams);
 
     for (let team of shuffledTeams) {
@@ -503,7 +558,7 @@
     const success = solveMentor(0);
 
     if (success) {
-      document.getElementById('current-turn').innerHTML = "🎉 สรุปจัดพี่เลี้ยงเข้าทีมเสร็จสิ้น!<br><span style='color: green; font-size: 14px;'>✓ ทุกทีมสาขาไม่ซ้ำกัน 100% (โปร่งใส & ไม่ซ้ำผลเดิม)</span>";
+      document.getElementById('current-turn').innerHTML = "🎉 สรุปจัดพี่เลี้ยงเข้าทีมเสร็จสิ้น!<br><span style='color: green; font-size: 14px;'>✓ ทุกทีมสาขาไม่ซ้ำกัน 100%</span>";
     } else {
       let remainingMentors = [...appData.mentorsList];
       appData.teams.forEach((team, idx) => {
