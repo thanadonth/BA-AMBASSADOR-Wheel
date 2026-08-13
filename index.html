@@ -79,12 +79,29 @@
     .nav-team-btn { padding: 8px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-weight: bold; cursor: pointer; }
     .nav-team-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    .team-display-card { background: #ffffff; border-radius: 16px; padding: 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); text-align: center; max-width: 900px; margin: 0 auto; }
+    .team-display-card { 
+      background: #ffffff; 
+      border-radius: 16px; 
+      padding: 30px; 
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); 
+      text-align: center; 
+      max-width: 900px; 
+      margin: 0 auto; 
+      border-top: 8px solid #cbd5e1; /* Default top border */
+      transition: border-color 0.3s ease;
+    }
     
-    .person-box { border: 2px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #f8fafc; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
-    .person-box:hover { border-color: var(--primary); transform: translateY(-2px); }
-    .person-box.coach-box { background: #eff6ff; border-color: #93c5fd; }
-    .person-box.mentor-box { background: #f0fdf4; border-color: #86efac; }
+    .person-box { 
+      border: 3px solid #cbd5e1; 
+      border-radius: 12px; 
+      padding: 15px; 
+      background: #ffffff; 
+      transition: all 0.3s ease; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+    }
+    .person-box:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
     
     .person-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 3px solid #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: #e2e8f0; }
     .person-role { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #64748b; margin-bottom: 5px; }
@@ -198,12 +215,12 @@
       <button class="btn btn-primary" onclick="navigateTeam(1)">ทีมถัดไป ➡️</button>
     </div>
 
-    <div class="team-display-card">
+    <div class="team-display-card" id="team-main-card">
       <h2 id="summary-team-title" style="font-size: 28px; margin-bottom: 25px; color: #2563eb;">ทีมที่ 1</h2>
       
       <!-- 1. Top: Coach -->
       <div class="center-row">
-        <div class="person-box coach-box">
+        <div class="person-box" id="box-coach">
           <div class="person-role">👑 อาจารย์โค้ชประจำทีม</div>
           <img id="summary-coach-img" class="person-img" src="" alt="Coach">
           <div class="person-name" id="summary-coach-name">-</div>
@@ -213,7 +230,7 @@
 
       <!-- 2. Middle: Mentor -->
       <div class="center-row">
-        <div class="person-box mentor-box">
+        <div class="person-box" id="box-mentor">
           <div class="person-role">🤝 พี่เลี้ยงประจำทีม</div>
           <img id="summary-mentor-img" class="person-img" src="" alt="Mentor">
           <div class="person-name" id="summary-mentor-name">-</div>
@@ -223,19 +240,19 @@
 
       <!-- 3. Bottom Grid: Boy (Left) | Girl (Center) | Queen (Right) -->
       <div class="grid-3" style="margin-top: 25px;">
-        <div class="person-box">
+        <div class="person-box" id="box-boy">
           <div class="person-role">♂️ ผู้เข้าประกวด Boy</div>
           <img id="summary-boy-img" class="person-img" src="" alt="Boy">
           <div class="person-name" id="summary-boy-name">-</div>
           <div id="summary-boy-branch"></div>
         </div>
-        <div class="person-box">
+        <div class="person-box" id="box-girl">
           <div class="person-role">♀️ ผู้เข้าประกวด Girl</div>
           <img id="summary-girl-img" class="person-img" src="" alt="Girl">
           <div class="person-name" id="summary-girl-name">-</div>
           <div id="summary-girl-branch"></div>
         </div>
-        <div class="person-box">
+        <div class="person-box" id="box-queen">
           <div class="person-role">👑 ผู้เข้าประกวด Queen</div>
           <img id="summary-queen-img" class="person-img" src="" alt="Queen">
           <div class="person-name" id="summary-queen-name">-</div>
@@ -247,11 +264,11 @@
 
 <script>
   const BRANCHES = [
-    { name: "การจัดการ", class: "tag-mgt" },
-    { name: "การเงิน", class: "tag-fin" },
-    { name: "การตลาด", class: "tag-mkt" },
-    { name: "การบัญชี", class: "tag-acc" },
-    { name: "ระบบสารสนเทศ", class: "tag-mis" }
+    { name: "การจัดการ", class: "tag-mgt", color: "#ea580c" },
+    { name: "การเงิน", class: "tag-fin", color: "#16a34a" },
+    { name: "การตลาด", class: "tag-mkt", color: "#dc2626" },
+    { name: "การบัญชี", class: "tag-acc", color: "#0284c7" },
+    { name: "ระบบสารสนเทศ", class: "tag-mis", color: "#db2777" }
   ];
 
   const COACH_LIST = [
@@ -550,6 +567,12 @@
     const found = BRANCHES.find(b => b.name === branchName);
     const className = found ? found.class : 'tag-default';
     return `<span class="tag ${className}">${branchName}</span>`;
+  }
+
+  function getBranchColor(branchName) {
+    if (!branchName) return '#cbd5e1'; // Default Gray
+    const found = BRANCHES.find(b => b.name === branchName);
+    return found ? found.color : '#cbd5e1';
   }
 
   function saveData() {
@@ -889,30 +912,41 @@
 
     document.getElementById('summary-team-title').innerText = `🏆 สรุปสมาชิก : ทีมที่ ${team.teamId}`;
 
-    // Coach
+    // 1. Update Main Card Top Accent Border Color (Based on Coach Branch)
+    const mainCard = document.getElementById('team-main-card');
+    if (mainCard) {
+      mainCard.style.borderTopColor = getBranchColor(team.coach?.branch);
+    }
+
+    // 2. Coach
     document.getElementById('summary-coach-img').src = team.coach.img || DEFAULT_AVATAR;
     document.getElementById('summary-coach-name').innerText = team.coach.name || 'ยังไม่ระบุ';
     document.getElementById('summary-coach-branch').innerHTML = getBranchTagHtml(team.coach.branch);
+    document.getElementById('box-coach').style.borderColor = getBranchColor(team.coach?.branch);
 
-    // Mentor
+    // 3. Mentor
     document.getElementById('summary-mentor-img').src = team.mentor ? team.mentor.img : DEFAULT_AVATAR;
     document.getElementById('summary-mentor-name').innerText = team.mentor ? team.mentor.name : 'รอสรุปท้ายสุด';
     document.getElementById('summary-mentor-branch').innerHTML = team.mentor ? getBranchTagHtml(team.mentor.branch) : '';
+    document.getElementById('box-mentor').style.borderColor = team.mentor ? getBranchColor(team.mentor.branch) : '#cbd5e1';
 
-    // Boy
+    // 4. Boy
     document.getElementById('summary-boy-img').src = team.boy ? team.boy.img : DEFAULT_AVATAR;
     document.getElementById('summary-boy-name').innerText = team.boy ? `${team.boy.name} (${team.boy.code})` : 'รอผลสุ่ม';
     document.getElementById('summary-boy-branch').innerHTML = team.boy ? getBranchTagHtml(team.boy.branch) : '';
+    document.getElementById('box-boy').style.borderColor = team.boy ? getBranchColor(team.boy.branch) : '#cbd5e1';
 
-    // Girl
+    // 5. Girl
     document.getElementById('summary-girl-img').src = team.girl ? team.girl.img : DEFAULT_AVATAR;
     document.getElementById('summary-girl-name').innerText = team.girl ? `${team.girl.name} (${team.girl.code})` : 'รอผลสุ่ม';
     document.getElementById('summary-girl-branch').innerHTML = team.girl ? getBranchTagHtml(team.girl.branch) : '';
+    document.getElementById('box-girl').style.borderColor = team.girl ? getBranchColor(team.girl.branch) : '#cbd5e1';
 
-    // Queen
+    // 6. Queen
     document.getElementById('summary-queen-img').src = team.queen ? team.queen.img : DEFAULT_AVATAR;
     document.getElementById('summary-queen-name').innerText = team.queen ? `${team.queen.name} (${team.queen.code})` : 'รอผลสุ่ม';
     document.getElementById('summary-queen-branch').innerHTML = team.queen ? getBranchTagHtml(team.queen.branch) : '';
+    document.getElementById('box-queen').style.borderColor = team.queen ? getBranchColor(team.queen.branch) : '#cbd5e1';
   }
 
   window.onload = initForm;
