@@ -26,10 +26,13 @@
     .section-card { background: var(--card-bg); padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-    .input-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-    .input-row label { width: 90px; font-weight: bold; }
-    input[type="text"], select { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+    .input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .input-row label { width: 70px; font-weight: bold; }
+    input[type="text"], select { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; min-width: 120px; }
+    input[type="file"] { font-size: 12px; width: 180px; }
     
+    .img-preview-sm { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #cbd5e1; background: #e2e8f0; }
+
     .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
     .btn-primary { background-color: var(--primary); color: white; }
     .btn-success { background-color: #16a34a; color: white; width: 100%; }
@@ -73,13 +76,14 @@
 
     .team-display-card { background: #ffffff; border-radius: 16px; padding: 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); text-align: center; max-width: 900px; margin: 0 auto; }
     
-    .person-box { border: 2px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #f8fafc; transition: 0.3s; }
+    .person-box { border: 2px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #f8fafc; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
     .person-box:hover { border-color: var(--primary); transform: translateY(-2px); }
     .person-box.coach-box { background: #eff6ff; border-color: #93c5fd; }
     .person-box.mentor-box { background: #f0fdf4; border-color: #86efac; }
     
+    .person-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 3px solid #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: #e2e8f0; }
     .person-role { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #64748b; margin-bottom: 5px; }
-    .person-name { font-size: 18px; font-weight: bold; color: #0f172a; margin-bottom: 5px; }
+    .person-name { font-size: 16px; font-weight: bold; color: #0f172a; margin-bottom: 5px; }
 
     .center-row { display: flex; justify-content: center; margin-bottom: 20px; }
     .center-row .person-box { width: 320px; }
@@ -91,7 +95,7 @@
 
   <!-- Navigation Tabs -->
   <div class="tab-container">
-    <button class="tab-btn active" onclick="switchTab('tab-input')">📋 1. ลงทะเบียนรายชื่อ</button>
+    <button class="tab-btn active" onclick="switchTab('tab-input')">📋 1. ลงทะเบียนรายชื่อ & อัปโหลดรูปภาพ</button>
     <button class="tab-btn" onclick="switchTab('tab-wheel')">🎡 2. เวทีหมุนวงล้อสุ่มทีม</button>
     <button class="tab-btn" onclick="switchTab('tab-summary')">📊 3. สรุปผลรายทีม</button>
   </div>
@@ -100,17 +104,17 @@
   <div id="tab-input" class="tab-content active">
     <div class="grid-2">
       <div class="section-card">
-        <h3>👑 รายชื่อโค้ชประจำทีม (เลือกจากตัวเลือก)</h3>
+        <h3>👑 รายชื่อโค้ชประจำทีม</h3>
         <div id="coaches-inputs"></div>
       </div>
       <div class="section-card">
-        <h3>🤝 รายชื่อพี่เลี้ยง (เลือกจากตัวเลือก)</h3>
+        <h3>🤝 รายชื่อพี่เลี้ยง</h3>
         <div id="mentors-inputs"></div>
       </div>
     </div>
 
     <div class="section-card">
-      <h3>🌟 รายชื่อผู้เข้าประกวด (แยกประเภท & สาขาวิชา)</h3>
+      <h3>🌟 รายชื่อผู้เข้าประกวด (แยกประเภท, สาขาวิชา & รูปถ่าย)</h3>
       <div class="grid-3">
         <div>
           <h4>♂️ Boy (B1 - B5)</h4>
@@ -190,6 +194,7 @@
       <div class="center-row">
         <div class="person-box coach-box">
           <div class="person-role">👑 อาจารย์โค้ชประจำทีม</div>
+          <img id="summary-coach-img" class="person-img" src="" alt="Coach">
           <div class="person-name" id="summary-coach-name">-</div>
           <div id="summary-coach-branch"></div>
         </div>
@@ -199,6 +204,7 @@
       <div class="center-row">
         <div class="person-box mentor-box">
           <div class="person-role">🤝 พี่เลี้ยงประจำทีม</div>
+          <img id="summary-mentor-img" class="person-img" src="" alt="Mentor">
           <div class="person-name" id="summary-mentor-name">-</div>
           <div id="summary-mentor-branch"></div>
         </div>
@@ -208,16 +214,19 @@
       <div class="grid-3" style="margin-top: 25px;">
         <div class="person-box">
           <div class="person-role">♂️ ผู้เข้าประกวด Boy</div>
+          <img id="summary-boy-img" class="person-img" src="" alt="Boy">
           <div class="person-name" id="summary-boy-name">-</div>
           <div id="summary-boy-branch"></div>
         </div>
         <div class="person-box">
           <div class="person-role">♀️ ผู้เข้าประกวด Girl</div>
+          <img id="summary-girl-img" class="person-img" src="" alt="Girl">
           <div class="person-name" id="summary-girl-name">-</div>
           <div id="summary-girl-branch"></div>
         </div>
         <div class="person-box">
           <div class="person-role">👑 ผู้เข้าประกวด Queen</div>
+          <img id="summary-queen-img" class="person-img" src="" alt="Queen">
           <div class="person-name" id="summary-queen-name">-</div>
           <div id="summary-queen-branch"></div>
         </div>
@@ -234,7 +243,6 @@
     { name: "ระบบสารสนเทศ", class: "tag-mis" }
   ];
 
-  // ฐานข้อมูลโค้ชเฉพาะกลุ่ม
   const COACH_LIST = [
     { id: "c1", name: "อาจารย์ ดร.พิทูร อมรวิทวัส", branch: "การจัดการ" },
     { id: "c2", name: "อาจารย์ ดร.วรรณุดาว์ เพ็ชรไพโรจน์", branch: "การเงิน" },
@@ -243,7 +251,6 @@
     { id: "c5", name: "อาจารย์ศศิวิมล กอบัว", branch: "ระบบสารสนเทศ" }
   ];
 
-  // ฐานข้อมูลพี่เลี้ยงเฉพาะกลุ่ม
   const MENTOR_LIST = [
     { id: "m1", name: "นางสาวมนตา มณีเนตร", branch: "การจัดการ" },
     { id: "m2", name: "นายธนวัฒน์ เศรษฐนันท์", branch: "การเงิน" },
@@ -252,6 +259,9 @@
     { id: "m5", name: "นางสาวลักขณา เบี้ยกระโทก", branch: "การตลาด" }
   ];
   
+  let userImages = {}; // เก็บสตรีม Base64 ของรูปภาพ
+  const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
+
   let appData = {
     teams: Array.from({length: 5}, (_, i) => ({ teamId: i + 1, coach: {}, mentor: null, boy: null, girl: null, queen: null })),
     mentorsList: [],
@@ -271,6 +281,18 @@
     const logContainer = document.getElementById('activity-log');
     if (logContainer) {
       logContainer.innerHTML = appData.activityLogs.map(item => `<div class="log-item">${item}</div>`).join('');
+    }
+  }
+
+  function handleImageUpload(input, key) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        userImages[key] = e.target.result;
+        const preview = document.getElementById(`preview_${key}`);
+        if(preview) preview.src = e.target.result;
+      };
+      reader.readAsDataURL(input.files[0]);
     }
   }
 
@@ -297,22 +319,24 @@
   function initForm() {
     let coachHtml = '', mentorHtml = '';
     for(let i=1; i<=5; i++) {
-      // โค้ช Dropdown
       coachHtml += `
         <div class="input-row">
           <label>ทีม ${i}:</label>
           <select id="coach_select_${i}" class="coach-select" onchange="updateCoachDropdowns()">
             ${coachOptions(COACH_LIST[i-1].id)}
           </select>
+          <img id="preview_coach_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <input type="file" accept="image/*" onchange="handleImageUpload(this, 'coach_${i}')">
         </div>`;
       
-      // พี่เลี้ยง Dropdown
       mentorHtml += `
         <div class="input-row">
           <label>คนที่ ${i}:</label>
           <select id="mentor_select_${i}" class="mentor-select" onchange="updateMentorDropdowns()">
             ${mentorOptions(MENTOR_LIST[i-1].id)}
           </select>
+          <img id="preview_mentor_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <input type="file" accept="image/*" onchange="handleImageUpload(this, 'mentor_${i}')">
         </div>`;
     }
     document.getElementById('coaches-inputs').innerHTML = coachHtml;
@@ -324,10 +348,9 @@
 
     updateCoachDropdowns();
     updateMentorDropdowns();
-    addActivityLog("โหลดข้อมูลตัวเลือกโค้ชและพี่เลี้ยงสำเร็จ");
+    addActivityLog("ระบบลงทะเบียนและพรีวิวรูปภาพพร้อมใช้งาน");
   }
 
-  // Dropdown สำหรับโค้ช
   function coachOptions(selectedId = "") {
     return `<option value="">-- เลือกอาจารย์โค้ช --</option>` + COACH_LIST.map(c => {
       const selected = c.id === selectedId ? 'selected' : '';
@@ -354,7 +377,6 @@
     });
   }
 
-  // Dropdown สำหรับพี่เลี้ยง
   function mentorOptions(selectedId = "") {
     return `<option value="">-- เลือกพี่เลี้ยง --</option>` + MENTOR_LIST.map(m => {
       const selected = m.id === selectedId ? 'selected' : '';
@@ -391,7 +413,15 @@
   function renderCategoryInputs(containerId, prefix, groupName) {
     let html = '';
     for(let i=1; i<=5; i++) {
-      html += `<div class="input-row"><label>${prefix}${i}:</label><input type="text" id="${prefix}_name_${i}" placeholder="ชื่อ-นามสกุล"><select id="${prefix}_branch_${i}" class="branch-select" data-group="${groupName}" onchange="updateBranchDropdowns('${groupName}')">${branchOptions()}</select></div>`;
+      const key = `${prefix}_${i}`;
+      html += `
+        <div class="input-row">
+          <label>${prefix}${i}:</label>
+          <input type="text" id="${prefix}_name_${i}" placeholder="ชื่อ-นามสกุล">
+          <select id="${prefix}_branch_${i}" class="branch-select" data-group="${groupName}" onchange="updateBranchDropdowns('${groupName}')">${branchOptions()}</select>
+          <img id="preview_${key}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <input type="file" accept="image/*" onchange="handleImageUpload(this, '${key}')">
+        </div>`;
     }
     document.getElementById(containerId).innerHTML = html;
   }
@@ -426,7 +456,7 @@
     appData.historyPatterns = [];
     appData.runCount = 1;
     resetStateData();
-    addActivityLog("บันทึกข้อมูลรายชื่อผู้เข้าแข่งขัน และเตรียมพร้อมสุ่มวงล้อ");
+    addActivityLog("บันทึกข้อมูลและรูปภาพเรียบร้อยแล้ว เตรียมพร้อมหมุนวงล้อ");
     switchTab('tab-wheel');
   }
 
@@ -437,7 +467,8 @@
 
       appData.teams[i-1].coach = { 
         name: foundCoach ? foundCoach.name : `โค้ชทีม ${i}`, 
-        branch: foundCoach ? foundCoach.branch : "" 
+        branch: foundCoach ? foundCoach.branch : "",
+        img: userImages[`coach_${i}`] || DEFAULT_AVATAR
       };
       appData.teams[i-1].mentor = null; 
       appData.teams[i-1].boy = null; 
@@ -452,7 +483,8 @@
 
       appData.mentorsList.push({
         name: foundMentor ? foundMentor.name : `พี่เลี้ยง ${i}`,
-        branch: foundMentor ? foundMentor.branch : ""
+        branch: foundMentor ? foundMentor.branch : "",
+        img: userImages[`mentor_${i}`] || DEFAULT_AVATAR
       });
     }
 
@@ -461,11 +493,13 @@
     
     categories.forEach(cat => {
       for(let i=1; i<=5; i++) {
+        const key = `${cat.prefix}_${i}`;
         appData.queue.push({
           code: `${cat.prefix}${i}`,
           type: cat.type,
           name: document.getElementById(`${cat.prefix}_name_${i}`).value || `${cat.prefix}${i}`,
-          branch: document.getElementById(`${cat.prefix}_branch_${i}`).value
+          branch: document.getElementById(`${cat.prefix}_branch_${i}`).value,
+          img: userImages[key] || DEFAULT_AVATAR
         });
       }
     });
@@ -752,22 +786,27 @@
     document.getElementById('summary-team-title').innerText = `🏆 สรุปสมาชิก : ทีมที่ ${team.teamId}`;
 
     // Coach
+    document.getElementById('summary-coach-img').src = team.coach.img || DEFAULT_AVATAR;
     document.getElementById('summary-coach-name').innerText = team.coach.name || 'ยังไม่ระบุ';
     document.getElementById('summary-coach-branch').innerHTML = getBranchTagHtml(team.coach.branch);
 
     // Mentor
+    document.getElementById('summary-mentor-img').src = team.mentor ? team.mentor.img : DEFAULT_AVATAR;
     document.getElementById('summary-mentor-name').innerText = team.mentor ? team.mentor.name : 'รอสรุปท้ายสุด';
     document.getElementById('summary-mentor-branch').innerHTML = team.mentor ? getBranchTagHtml(team.mentor.branch) : '';
 
     // Boy
+    document.getElementById('summary-boy-img').src = team.boy ? team.boy.img : DEFAULT_AVATAR;
     document.getElementById('summary-boy-name').innerText = team.boy ? `${team.boy.name} (${team.boy.code})` : 'รอผลสุ่ม';
     document.getElementById('summary-boy-branch').innerHTML = team.boy ? getBranchTagHtml(team.boy.branch) : '';
 
     // Girl
+    document.getElementById('summary-girl-img').src = team.girl ? team.girl.img : DEFAULT_AVATAR;
     document.getElementById('summary-girl-name').innerText = team.girl ? `${team.girl.name} (${team.girl.code})` : 'รอผลสุ่ม';
     document.getElementById('summary-girl-branch').innerHTML = team.girl ? getBranchTagHtml(team.girl.branch) : '';
 
     // Queen
+    document.getElementById('summary-queen-img').src = team.queen ? team.queen.img : DEFAULT_AVATAR;
     document.getElementById('summary-queen-name').innerText = team.queen ? `${team.queen.name} (${team.queen.code})` : 'รอผลสุ่ม';
     document.getElementById('summary-queen-branch').innerHTML = team.queen ? getBranchTagHtml(team.queen.branch) : '';
   }
