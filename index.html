@@ -30,9 +30,9 @@
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
     .input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-    .input-row label { width: 70px; font-weight: bold; }
+    .input-row label { width: 40px; font-weight: bold; }
     input[type="text"], select { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; min-width: 120px; }
-    input[type="file"] { font-size: 12px; width: 180px; }
+    input[type="file"] { font-size: 12px; width: 170px; }
     
     .img-preview-sm { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #cbd5e1; background: #e2e8f0; }
 
@@ -142,7 +142,7 @@
     </div>
 
     <div class="section-card">
-      <h3>🌟 รายชื่อผู้เข้าประกวด (แยกประเภท, สาขาวิชา & รูปถ่าย)</h3>
+      <h3>🌟 รายชื่อผู้เข้าประกวด (เลือกรายชื่อจาก Dropdown)</h3>
       <div class="grid-3">
         <div>
           <h4>♂️ Boy (B1 - B5)</h4>
@@ -287,28 +287,28 @@
     { id: "m5", name: "นางสาวลักขณา เบี้ยกระโทก", branch: "การตลาด" }
   ];
 
-  // --- ข้อมูลผู้เข้าประกวด BA AMBASSADOR 2026 (ปรับปรุงชื่อ และชื่อเล่นไว้ท้ายสุด) ---
+  // --- ข้อมูลผู้เข้าประกวด BA AMBASSADOR 2026 ---
   const DEFAULT_CONTESTANTS = {
     boy: [
-      { name: "นายธนวัฒน์ สงสุวรรณ (หมอก)", branch: "การจัดการ" },
-      { name: "นายภูวนัตถ์ ก้อนจันทึก (พีท)", branch: "การบัญชี" },
-      { name: "นายมนต์ธวัล อชิโนปุญวัตน์ (คิมไซ)", branch: "การเงิน" },
-      { name: "นายเขมฑัต ชานนท์ (เอม่อน)", branch: "การตลาด" },
-      { name: "นายอภิรักษ์ ปนตะคุ (ฟิล์ม)", branch: "ระบบสารสนเทศ" }
+      { id: "b1", name: "นายธนวัฒน์ สงสุวรรณ (หมอก)", branch: "การจัดการ" },
+      { id: "b2", name: "นายภูวนัตถ์ ก้อนจันทึก (พีท)", branch: "การบัญชี" },
+      { id: "b3", name: "นายมนต์ธวัล อชิโนปุญวัตน์ (คิมไซ)", branch: "การเงิน" },
+      { id: "b4", name: "นายเขมฑัต ชานนท์ (เอม่อน)", branch: "การตลาด" },
+      { id: "b5", name: "นายอภิรักษ์ ปนตะคุ (ฟิล์ม)", branch: "ระบบสารสนเทศ" }
     ],
     girl: [
-      { name: "นางสาวรัตน์ชนก แสงสิงห์ (สายรุ้ง)", branch: "การจัดการ" },
-      { name: "นางสาวไพลิน โสมัสสา (เก๋)", branch: "การบัญชี" },
-      { name: "นางสาวศศิพัชร รติพันธ์สำโรง (เค้ก)", branch: "การเงิน" },
-      { name: "นางสาวเปมนีย์ บุญประเสริฐ (น้ำปั่น)", branch: "การตลาด" },
-      { name: "นางสาวจิรัชญา นมขุนทด (เพิร์ส)", branch: "ระบบสารสนเทศ" }
+      { id: "g1", name: "นางสาวรัตน์ชนก แสงสิงห์ (สายรุ้ง)", branch: "การจัดการ" },
+      { id: "g2", name: "นางสาวไพลิน โสมัสสา (เก๋)", branch: "การบัญชี" },
+      { id: "g3", name: "นางสาวศศิพัชร รติพันธ์สำโรง (เค้ก)", branch: "การเงิน" },
+      { id: "g4", name: "นางสาวเปมนีย์ บุญประเสริฐ (น้ำปั่น)", branch: "การตลาด" },
+      { id: "g5", name: "นางสาวจิรัชญา นมขุนทด (เพิร์ส)", branch: "ระบบสารสนเทศ" }
     ],
     queen: [
-      { name: "นายธนกฤต เรืองโสม (แนน)", branch: "การจัดการ" },
-      { name: "นายธนพงศกร เผ่าบ้านฟาง (น้ำหวาน)", branch: "การบัญชี" },
-      { name: "นายธนวัฒน์ สวงโท (เขม)", branch: "การเงิน" },
-      { name: "นายพาณิภัค พิมพ์ทอง (มิว)", branch: "การตลาด" },
-      { name: "นายอดิศร แหลมกระโทก (หนูบีม)", branch: "ระบบสารสนเทศ" }
+      { id: "q1", name: "นายธนกฤต เรืองโสม (แนน)", branch: "การจัดการ" },
+      { id: "q2", name: "นายธนพงศกร เผ่าบ้านฟาง (น้ำหวาน)", branch: "การบัญชี" },
+      { id: "q3", name: "นายธนวัฒน์ สวงโท (เขม)", branch: "การเงิน" },
+      { id: "q4", name: "นายพาณิภัค พิมพ์ทอง (มิว)", branch: "การตลาด" },
+      { id: "q5", name: "นายอดิศร แหลมกระโทก (หนูบีม)", branch: "ระบบสารสนเทศ" }
     ]
   };
 
@@ -393,7 +393,7 @@
       });
       updateCoachDropdowns();
       updateMentorDropdowns();
-      ['boy', 'girl', 'queen'].forEach(g => updateBranchDropdowns(g));
+      ['boy', 'girl', 'queen'].forEach(g => updateContestantDropdowns(g));
     }
 
     const savedApp = localStorage.getItem('ba2026_appData');
@@ -489,7 +489,8 @@
 
     updateCoachDropdowns();
     updateMentorDropdowns();
-    
+    ['boy', 'girl', 'queen'].forEach(g => updateContestantDropdowns(g));
+
     loadStorageData();
   }
 
@@ -545,10 +546,11 @@
     });
   }
 
-  function branchOptions(selectedVal = "") {
-    return `<option value="">-- สาขา --</option>` + BRANCHES.map(b => {
-      const selected = b.name === selectedVal ? 'selected' : '';
-      return `<option value="${b.name}" ${selected}>${b.name}</option>`;
+  function contestantOptions(groupName, selectedId = "") {
+    const list = DEFAULT_CONTESTANTS[groupName] || [];
+    return `<option value="">-- เลือกผู้เข้าประกวด --</option>` + list.map(item => {
+      const selected = item.id === selectedId ? 'selected' : '';
+      return `<option value="${item.id}">${item.name}</option>`;
     }).join('');
   }
 
@@ -558,15 +560,15 @@
 
     for(let i=1; i<=5; i++) {
       const key = `${prefix}_${i}`;
-      const defaultData = defaultList[i-1] || { name: "", branch: "" };
+      const defaultItem = defaultList[i-1] || { id: "", branch: "" };
 
       html += `
         <div class="input-row">
           <label>${prefix}${i}:</label>
-          <input type="text" id="${prefix}_name_${i}" value="${defaultData.name}" placeholder="ชื่อ-นามสกุล" onchange="saveStorageData()">
-          <select id="${prefix}_branch_${i}" class="branch-select" data-group="${groupName}" onchange="updateBranchDropdowns('${groupName}'); saveStorageData();">
-            ${branchOptions(defaultData.branch)}
+          <select id="${prefix}_select_${i}" class="contestant-select" data-group="${groupName}" onchange="onContestantSelect('${prefix}', ${i}, '${groupName}')">
+            ${contestantOptions(groupName, defaultItem.id)}
           </select>
+          <input type="text" id="${prefix}_branch_${i}" value="${defaultItem.branch}" readonly style="width: 100px; flex: none; background-color: #f1f5f9; color: #475569; font-weight: bold; text-align: center;" placeholder="สาขา">
           <img id="preview_${key}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
           <input type="file" accept="image/*" onchange="handleImageUpload(this, '${key}')">
         </div>`;
@@ -574,8 +576,26 @@
     document.getElementById(containerId).innerHTML = html;
   }
 
-  function updateBranchDropdowns(groupName) {
-    const selects = document.querySelectorAll(`select[data-group="${groupName}"]`);
+  function onContestantSelect(prefix, index, groupName) {
+    const selectEl = document.getElementById(`${prefix}_select_${index}`);
+    const branchInput = document.getElementById(`${prefix}_branch_${index}`);
+    const selectedId = selectEl.value;
+
+    const list = DEFAULT_CONTESTANTS[groupName] || [];
+    const found = list.find(item => item.id === selectedId);
+
+    if (found) {
+      branchInput.value = found.branch;
+    } else {
+      branchInput.value = "";
+    }
+
+    updateContestantDropdowns(groupName);
+    saveStorageData();
+  }
+
+  function updateContestantDropdowns(groupName) {
+    const selects = document.querySelectorAll(`select.contestant-select[data-group="${groupName}"]`);
     const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
 
     selects.forEach(select => {
@@ -648,11 +668,15 @@
     categories.forEach(cat => {
       for(let i=1; i<=5; i++) {
         const key = `${cat.prefix}_${i}`;
+        const selectedId = document.getElementById(`${cat.prefix}_select_${i}`).value;
+        const list = DEFAULT_CONTESTANTS[cat.type] || [];
+        const contestantObj = list.find(item => item.id === selectedId);
+
         appData.queue.push({
           code: `${cat.prefix}${i}`,
           type: cat.type,
-          name: document.getElementById(`${cat.prefix}_name_${i}`).value || `${cat.prefix}${i}`,
-          branch: document.getElementById(`${cat.prefix}_branch_${i}`).value,
+          name: contestantObj ? contestantObj.name : `${cat.prefix}${i}`,
+          branch: contestantObj ? contestantObj.branch : document.getElementById(`${cat.prefix}_branch_${i}`).value,
           img: userImages[key] || DEFAULT_AVATAR
         });
       }
