@@ -40,7 +40,7 @@
     .btn-primary { background-color: var(--primary); color: white; }
     .btn-success { background-color: #16a34a; color: white; width: 100%; }
     .btn-success:hover { background-color: #15803d; }
-    .btn-spin { background-color: #eab308; color: #0f172a; font-size: 20px; padding: 15px 30px; width: 100%; }
+    .btn-spin { background-color: #eab308; color: #0f172a; font-size: 18px; padding: 12px 20px; width: 100%; }
     .btn-spin:disabled { background-color: #cbd5e1; cursor: not-allowed; }
     .btn-reset { background-color: #dc2626; color: white; margin-top: 10px; width: 100%; font-size: 14px; padding: 8px; }
     .btn-clear-data { background-color: #64748b; color: white; font-size: 14px; padding: 10px 16px; }
@@ -49,8 +49,9 @@
     /* Wheel Arena Layout */
     .arena-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
     .wheel-box { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-    #wheel-canvas { border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
-    .pointer { position: absolute; top: 10px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ef4444; z-index: 10; }
+    #wheel-canvas { border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s ease; }
+    #wheel-canvas:hover { transform: scale(1.02); }
+    .pointer { position: absolute; top: 10px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ef4444; z-index: 10; pointer-events: none; }
     
     /* Result Table & Branch Tags */
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -68,10 +69,6 @@
     .tag-default { background-color: #64748b; }
 
     .history-badge { background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
-    
-    /* Activity Log Box */
-    .log-box { background: #1e293b; color: #38bdf8; font-family: monospace; padding: 12px; border-radius: 8px; font-size: 12px; height: 100px; overflow-y: auto; margin-top: 15px; border: 1px solid #334155; }
-    .log-item { margin-bottom: 4px; border-bottom: 1px dashed #334155; padding-bottom: 2px; }
 
     /* Summary Card Custom Layout */
     .summary-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
@@ -168,10 +165,11 @@
       <!-- Left: Wheel Control -->
       <div class="section-card wheel-box">
         <div class="pointer"></div>
-        <canvas id="wheel-canvas" width="300" height="300"></canvas>
-        <h3 id="current-turn" style="margin-top: 15px; color: #2563eb; text-align: center;">เตรียมพร้อมหมุนวงล้อ</h3>
-        <button id="spin-btn" class="btn btn-spin" onclick="spinWheel()">สุ่มเลือกทีม! (5s)</button>
-        <button class="btn btn-reset" onclick="resetAndReSpin()">🔄 สุ่มใหม่ทั้งหมด (เพื่อความโปร่งใส/การันตีไม่ซ้ำเดิม)</button>
+        <canvas id="wheel-canvas" width="300" height="300" onclick="spinWheel()" title="คลิกที่วงล้อเพื่อหมุน"></canvas>
+        <span style="font-size: 12px; color: #64748b; margin-top: 5px;">👇 คลิกที่วงล้อเพื่อหมุน</span>
+        <h3 id="current-turn" style="margin-top: 10px; color: #2563eb; text-align: center;">เตรียมพร้อมหมุนวงล้อ</h3>
+        <button id="spin-btn" class="btn btn-spin" onclick="spinWheel()">🎡 คลิกเพื่อหมุนวงล้อ</button>
+        <button class="btn btn-reset" onclick="resetAndReSpin()">🔄 สุ่มใหม่ทั้งหมด</button>
       </div>
 
       <!-- Right: Live Teams Summary -->
@@ -195,12 +193,6 @@
             <!-- Dynamic Content -->
           </tbody>
         </table>
-
-        <!-- Activity History Log -->
-        <h4 style="margin-top: 15px; margin-bottom: 5px;">📜 บันทึกประวัติการดำเนินงาน (Activity Log)</h4>
-        <div id="activity-log" class="log-box">
-          <div class="log-item">SYSTEM: เริ่มต้นระบบการทำงานสำเร็จ</div>
-        </div>
       </div>
     </div>
   </div>
@@ -279,11 +271,10 @@
     { id: "c5", name: "อาจารย์ศศิวิมล กอบัว", branch: "ระบบสารสนเทศ" }
   ];
 
-  // --- อัปเดตรายชื่อพี่เลี้ยง (สาขาการบัญชี) ---
   const MENTOR_LIST = [
     { id: "m1", name: "นางสาวมนตา มณีเนตร", branch: "การจัดการ" },
     { id: "m2", name: "นายธนวัฒน์ เศรษฐนันท์", branch: "การเงิน" },
-    { id: "m3", name: "นางสาวศิรดา ตู้พิมาย", branch: "การบัญชี" }, // แก้ไขตรงนี้เรียบร้อยครับ
+    { id: "m3", name: "นางสาวศิรดา ตู้พิมาย", branch: "การบัญชี" },
     { id: "m4", name: "นายอภินันท์ โนนโพธิ์", branch: "ระบบสารสนเทศ" },
     { id: "m5", name: "นางสาวลักขณา เบี้ยกระโทก", branch: "การตลาด" }
   ];
@@ -322,7 +313,6 @@
     currentQueueIndex: 0,
     historyPatterns: [],
     runCount: 1,
-    activityLogs: [],
     selectedViewTeamIndex: 0
   };
 
@@ -399,9 +389,6 @@
       appData = JSON.parse(savedApp);
       renderTeamsTable();
       updateTurnDisplay();
-      if(document.getElementById('activity-log')) {
-        document.getElementById('activity-log').innerHTML = appData.activityLogs.map(item => `<div class="log-item">${item}</div>`).join('');
-      }
     }
   }
 
@@ -410,18 +397,6 @@
       localStorage.clear();
       location.reload();
     }
-  }
-
-  function addActivityLog(actionMessage) {
-    const timeStr = new Date().toLocaleTimeString('th-TH');
-    const logText = `[${timeStr}] ${actionMessage}`;
-    appData.activityLogs.unshift(logText);
-    
-    const logContainer = document.getElementById('activity-log');
-    if (logContainer) {
-      logContainer.innerHTML = appData.activityLogs.map(item => `<div class="log-item">${item}</div>`).join('');
-    }
-    saveStorageData();
   }
 
   function handleImageUpload(input, key) {
@@ -628,7 +603,6 @@
     appData.historyPatterns = [];
     appData.runCount = 1;
     resetStateData();
-    addActivityLog("บันทึกข้อมูลและรูปภาพเรียบร้อยแล้ว");
     switchTab('tab-wheel');
   }
 
@@ -697,7 +671,6 @@
     }
     
     appData.runCount++;
-    addActivityLog(`กดปุ่มล้างตารางเพื่อทำการสุ่มใหม่รอบที่ ${appData.runCount}`);
     resetStateData();
   }
 
