@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BA AMBASSADOR 2026</title>
+  <title>BA AMBASSADOR 2026 (Live Cloud Sync)</title>
+  
+  <!-- Firebase SDKs (v9 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <style>
     :root {
       --primary: #2563eb;
@@ -14,6 +19,11 @@
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
     h1, h2, h3, h4 { color: #0f172a; margin-top: 0; }
     
+    /* Status Badge */
+    .sync-status { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; margin-left: 10px; }
+    .sync-status.online { background-color: #dcfce7; color: #15803d; }
+    .sync-status.offline { background-color: #fee2e2; color: #b91c1c; }
+
     /* Header Controls */
     .header-controls { float: right; display: flex; gap: 8px; }
     
@@ -47,7 +57,6 @@
     .btn-clear-data { background-color: #64748b; color: white; font-size: 14px; padding: 10px 16px; }
     .btn-fullscreen { background-color: #0d9488; color: white; font-size: 14px; padding: 10px 16px; }
 
-    /* File upload button custom styling */
     .file-select-group { display: flex; gap: 4px; align-items: center; }
     .btn-file-input { position: relative; overflow: hidden; display: inline-block; }
     .btn-file-input input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
@@ -57,7 +66,6 @@
     .modal-overlay.active { display: flex; }
     .modal-box { background: #ffffff; padding: 20px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
     
-    /* Gallery Filter Tabs & Items */
     .gallery-filter-container { display: flex; gap: 6px; margin-top: 10px; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; flex-wrap: wrap; }
     .gallery-filter-btn { padding: 5px 10px; font-size: 12px; font-weight: bold; border: 1px solid #cbd5e1; background: #f1f5f9; color: #475569; border-radius: 6px; cursor: pointer; }
     .gallery-filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
@@ -69,7 +77,6 @@
     .gallery-item span { font-size: 10px; color: #64748b; display: block; margin-top: 4px; word-break: break-all; }
     
     .gallery-delete-btn { position: absolute; top: 2px; right: 2px; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; line-height: 20px; text-align: center; cursor: pointer; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    .gallery-delete-btn:hover { background: #dc2626; transform: scale(1.1); }
 
     /* Wheel Arena Layout */
     .arena-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
@@ -84,47 +91,24 @@
     th { background-color: #f1f5f9; }
     
     .tag { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; margin-top: 4px; }
-    
-    /* Branch Colors */
-    .tag-acc { background-color: #0284c7; } /* การบัญชี */
-    .tag-mkt { background-color: #dc2626; } /* การตลาด */
-    .tag-fin { background-color: #16a34a; } /* การเงิน */
-    .tag-mgt { background-color: #ea580c; } /* การจัดการ */
-    .tag-mis { background-color: #db2777; } /* ระบบสารสนเทศ */
+    .tag-acc { background-color: #0284c7; }
+    .tag-mkt { background-color: #dc2626; }
+    .tag-fin { background-color: #16a34a; }
+    .tag-mgt { background-color: #ea580c; }
+    .tag-mis { background-color: #db2777; }
     .tag-default { background-color: #64748b; }
 
     .history-badge { background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
 
-    /* Summary Card Custom Layout */
+    /* Summary View */
     .summary-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     .team-badge-buttons { display: flex; gap: 8px; }
     .nav-team-btn { padding: 8px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-weight: bold; cursor: pointer; }
     .nav-team-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    .team-display-card { 
-      background: #ffffff; 
-      border-radius: 16px; 
-      padding: 30px; 
-      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); 
-      text-align: center; 
-      max-width: 900px; 
-      margin: 0 auto; 
-      border-top: 8px solid #cbd5e1;
-      transition: border-color 0.3s ease;
-    }
-    
-    .person-box { 
-      border: 3px solid #cbd5e1; 
-      border-radius: 12px; 
-      padding: 15px; 
-      background: #ffffff; 
-      transition: all 0.3s ease; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-    }
+    .team-display-card { background: #ffffff; border-radius: 16px; padding: 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); text-align: center; max-width: 900px; margin: 0 auto; border-top: 8px solid #cbd5e1; transition: border-color 0.3s ease; }
+    .person-box { border: 3px solid #cbd5e1; border-radius: 12px; padding: 15px; background: #ffffff; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
     .person-box:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    
     .person-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 3px solid #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: #e2e8f0; }
     .person-role { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #64748b; margin-bottom: 5px; }
     .person-name { font-size: 16px; font-weight: bold; color: #0f172a; margin-bottom: 5px; }
@@ -140,7 +124,8 @@
       <button id="fullscreen-btn" class="btn btn-fullscreen" onclick="toggleFullscreen()">🖥️ เต็มหน้าจอ</button>
       <button class="btn btn-clear-data" onclick="clearAllData()">🗑️ ล้างข้อมูลระบบ</button>
     </div>
-    <h1 style="margin: 0;">BA AMBASSADOR 2026</h1>
+    <h1 style="margin: 0; display: inline-block;">BA AMBASSADOR 2026</h1>
+    <span id="sync-status-badge" class="sync-status offline">🔴 กำลังเชื่อมต่อ Cloud...</span>
   </div>
 
   <!-- Navigation Tabs -->
@@ -187,7 +172,6 @@
   <!-- TAB 2: WHEEL ARENA -->
   <div id="tab-wheel" class="tab-content">
     <div class="arena-grid">
-      <!-- Left: Wheel Control -->
       <div class="section-card wheel-box">
         <div class="pointer"></div>
         <canvas id="wheel-canvas" width="300" height="300" onclick="spinWheel()" title="คลิกที่วงล้อเพื่อหมุน"></canvas>
@@ -196,7 +180,6 @@
         <button class="btn btn-reset" onclick="resetAndReSpin()">🔄 สุ่มใหม่ทั้งหมด</button>
       </div>
 
-      <!-- Right: Live Teams Summary -->
       <div class="section-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <h3>📊 ตารางสรุปผลการเข้าทีม (5 ทีม)</h3>
@@ -213,9 +196,7 @@
               <th>🤝 พี่เลี้ยง</th>
             </tr>
           </thead>
-          <tbody id="teams-table-body">
-            <!-- Dynamic Content -->
-          </tbody>
+          <tbody id="teams-table-body"></tbody>
         </table>
       </div>
     </div>
@@ -225,16 +206,13 @@
   <div id="tab-summary" class="tab-content">
     <div class="summary-nav">
       <button class="btn btn-primary" onclick="navigateTeam(-1)">⬅️ ทีมก่อนหน้า</button>
-      <div class="team-badge-buttons" id="team-selector-buttons">
-        <!-- Dynamic Buttons 1-5 -->
-      </div>
+      <div class="team-badge-buttons" id="team-selector-buttons"></div>
       <button class="btn btn-primary" onclick="navigateTeam(1)">ทีมถัดไป ➡️</button>
     </div>
 
     <div class="team-display-card" id="team-main-card">
       <h2 id="summary-team-title" style="font-size: 28px; margin-bottom: 25px; color: #2563eb;">ทีมที่ 1</h2>
       
-      <!-- 1. Top: Coach -->
       <div class="center-row">
         <div class="person-box" id="box-coach">
           <div class="person-role">👑 อาจารย์โค้ชประจำทีม</div>
@@ -244,7 +222,6 @@
         </div>
       </div>
 
-      <!-- 2. Middle: Mentor -->
       <div class="center-row">
         <div class="person-box" id="box-mentor">
           <div class="person-role">🤝 พี่เลี้ยงประจำทีม</div>
@@ -254,7 +231,6 @@
         </div>
       </div>
 
-      <!-- 3. Bottom Grid: Boy (Left) | Girl (Center) | Queen (Right) -->
       <div class="grid-3" style="margin-top: 25px;">
         <div class="person-box" id="box-boy">
           <div class="person-role">♂️ ผู้เข้าประกวด Boy</div>
@@ -278,7 +254,7 @@
     </div>
   </div>
 
-  <!-- MODAL: GALLERY PRESET SELECTOR (WITH CATEGORIES & DELETE FUNCTION) -->
+  <!-- MODAL: GALLERY PRESET SELECTOR -->
   <div id="gallery-modal" class="modal-overlay">
     <div class="modal-box">
       <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -287,7 +263,6 @@
       </div>
       <p style="font-size: 12px; color: #64748b; margin-top: 5px;">เลือกรูปภาพตามหมวดหมู่ หรือกดปุ่ม ✖ ที่มุมรูปเพื่อลบรูปที่ไม่ต้องการออกจากคลัง</p>
       
-      <!-- Category Filter Tabs -->
       <div class="gallery-filter-container">
         <button class="gallery-filter-btn active" onclick="filterGallery('all')">ทั้งหมด</button>
         <button class="gallery-filter-btn" onclick="filterGallery('coach')">👑 โค้ช</button>
@@ -297,13 +272,32 @@
         <button class="gallery-filter-btn" onclick="filterGallery('queen')">👑 Queen</button>
       </div>
 
-      <div id="gallery-grid-container" class="gallery-grid">
-        <!-- Dynamic Preset Items -->
-      </div>
+      <div id="gallery-grid-container" class="gallery-grid"></div>
     </div>
   </div>
 
 <script>
+  // ==========================================
+  // 🔴 1. ตั้งค่า FIREBASE CONFIG (นำข้อมูลของคุณมาใส่ตรงนี้)
+  // ==========================================
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const stateRef = db.ref('ba_ambassador_2026');
+
+  // ==========================================
+  // Global Data & Constants
+  // ==========================================
   const BRANCHES = [
     { name: "การจัดการ", class: "tag-mgt", color: "#ea580c" },
     { name: "การเงิน", class: "tag-fin", color: "#16a34a" },
@@ -352,8 +346,9 @@
     ]
   };
 
-  let userImages = {}; // เก็บภาพที่ผูกกับตำแหน่งปัจจุบัน { key: imgUrl }
-  let imageLibrary = []; // คลังภาพส่วนกลางแบบวัตถุ [{ id, url, category }]
+  let userImages = {};
+  let imageLibrary = [];
+  let formData = {};
   let currentActiveTargetKey = null; 
   let currentGalleryFilter = 'all';
   let isSpinning = false;
@@ -366,10 +361,109 @@
     mentorsList: [],
     queue: [],
     currentQueueIndex: 0,
-    historyPatterns: [],
     runCount: 1,
     selectedViewTeamIndex: 0
   };
+
+  // Resize Base64 Image to optimize Firebase payload
+  function compressImage(base64Str, maxWidth = 300, maxHeight = 300) {
+    return new Promise((resolve) => {
+      let img = new Image();
+      img.src = base64Str;
+      img.onload = () => {
+        let canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        let ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+    });
+  }
+
+  // ==========================================
+  // 🟢 REAL-TIME CLOUD SYNC FUNCTIONS
+  // ==========================================
+  function saveToCloud() {
+    // Read current form inputs
+    document.querySelectorAll('input[type="text"], select').forEach(el => {
+      if (el.id) formData[el.id] = el.value;
+    });
+
+    const payload = {
+      userImages,
+      imageLibrary,
+      formData,
+      appData,
+      lastUpdated: Date.now()
+    };
+
+    stateRef.set(payload).catch(err => console.error("Firebase Sync Error:", err));
+  }
+
+  function listenCloudChanges() {
+    stateRef.on('value', snapshot => {
+      const data = snapshot.val();
+      const statusBadge = document.getElementById('sync-status-badge');
+      statusBadge.className = "sync-status online";
+      statusBadge.innerHTML = "🟢 ซิงค์ข้อมูลกับ Cloud แล้ว";
+
+      if (!data) return;
+
+      if (data.userImages) {
+        userImages = data.userImages;
+        Object.keys(userImages).forEach(key => {
+          const preview = document.getElementById(`preview_${key}`);
+          if (preview) preview.src = userImages[key] || DEFAULT_AVATAR;
+        });
+      }
+
+      if (data.imageLibrary) {
+        imageLibrary = data.imageLibrary;
+      }
+
+      if (data.formData) {
+        formData = data.formData;
+        Object.keys(formData).forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = formData[id];
+        });
+        updateCoachDropdowns();
+        updateMentorDropdowns();
+        ['boy', 'girl', 'queen'].forEach(g => updateContestantDropdowns(g));
+      }
+
+      if (data.appData) {
+        appData = data.appData;
+        document.getElementById('history-badge').innerHTML = `รอบสุ่มครั้งที่: ${appData.runCount || 1}`;
+        renderTeamsTable();
+        updateTurnDisplay();
+        drawFullWheel();
+        renderSummaryTeamView();
+      }
+    });
+  }
+
+  function clearAllData() {
+    if (confirm("คุณแน่ใจหรือไม่ว่าต้องการล้างข้อมูลระบบใน Cloud ทั้งหมด? (ทุกเครื่องจะถูกล้างข้อมูลตรงกัน)")) {
+      stateRef.remove().then(() => {
+        location.reload();
+      });
+    }
+  }
 
   function toggleFullscreen() {
     const fsBtn = document.getElementById('fullscreen-btn');
@@ -390,81 +484,7 @@
     }
   }
 
-  document.addEventListener('fullscreenchange', handleFullscreenChange);
-  document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-
-  function handleFullscreenChange() {
-    const fsBtn = document.getElementById('fullscreen-btn');
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      fsBtn.innerHTML = "🖥️ เต็มหน้าจอ";
-    } else {
-      fsBtn.innerHTML = "❌ ออกจากเต็มจอ";
-    }
-  }
-
-  function saveStorageData() {
-    try {
-      localStorage.setItem('ba2026_userImages', JSON.stringify(userImages));
-      localStorage.setItem('ba2026_imageLibrary', JSON.stringify(imageLibrary));
-      localStorage.setItem('ba2026_appData', JSON.stringify(appData));
-      
-      const formData = {};
-      document.querySelectorAll('input[type="text"], select').forEach(el => {
-        if (el.id) formData[el.id] = el.value;
-      });
-      localStorage.setItem('ba2026_formData', JSON.stringify(formData));
-    } catch(e) {
-      console.warn('LocalStorage limit exceeded', e);
-    }
-  }
-
-  function loadStorageData() {
-    const savedLib = localStorage.getItem('ba2026_imageLibrary');
-    if (savedLib) {
-      imageLibrary = JSON.parse(savedLib);
-      // Migration Support: Convert old string library to object library
-      if (imageLibrary.length > 0 && typeof imageLibrary[0] === 'string') {
-        imageLibrary = imageLibrary.map(url => ({ id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4), url: url, category: 'all' }));
-      }
-    }
-
-    const savedImages = localStorage.getItem('ba2026_userImages');
-    if (savedImages) {
-      userImages = JSON.parse(savedImages);
-      Object.keys(userImages).forEach(key => {
-        const preview = document.getElementById(`preview_${key}`);
-        if(preview && userImages[key]) preview.src = userImages[key];
-      });
-    }
-
-    const savedForm = localStorage.getItem('ba2026_formData');
-    if (savedForm) {
-      const formData = JSON.parse(savedForm);
-      Object.keys(formData).forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = formData[id];
-      });
-      updateCoachDropdowns();
-      updateMentorDropdowns();
-      ['boy', 'girl', 'queen'].forEach(g => updateContestantDropdowns(g));
-    }
-
-    const savedApp = localStorage.getItem('ba2026_appData');
-    if (savedApp) {
-      appData = JSON.parse(savedApp);
-      renderTeamsTable();
-      updateTurnDisplay();
-    }
-  }
-
-  function clearAllData() {
-    if (confirm("คุณแน่ใจหรือไม่ว่าต้องการล้างข้อมูลรายชื่อและรูปภาพทั้งหมด?")) {
-      localStorage.clear();
-      location.reload();
-    }
-  }
-
-  /* --- ระบบจัดการรูปภาพ & คลังรูปภาพ (Smart Library with Categories & Deletion) --- */
+  /* --- Image Handling & Smart Gallery --- */
   function getCategoryFromKey(key) {
     if (!key) return 'all';
     if (key.startsWith('coach_')) return 'coach';
@@ -488,14 +508,14 @@
     }
   }
 
-  function handleImageUpload(input, key) {
+  async function handleImageUpload(input, key) {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
-      reader.onload = function(e) {
-        const imgUrl = e.target.result;
+      reader.onload = async function(e) {
+        const compressedBase64 = await compressImage(e.target.result);
         const category = getCategoryFromKey(key);
-        addImageToLibrary(imgUrl, category);
-        applyImageToKey(key, imgUrl);
+        addImageToLibrary(compressedBase64, category);
+        applyImageToKey(key, compressedBase64);
       };
       reader.readAsDataURL(input.files[0]);
     }
@@ -505,7 +525,7 @@
     delete userImages[key];
     const preview = document.getElementById(`preview_${key}`);
     if(preview) preview.src = DEFAULT_AVATAR;
-    saveStorageData();
+    saveToCloud();
   }
 
   function deleteImageFromLibrary(imgId, event) {
@@ -513,15 +533,13 @@
     if (confirm("คุณต้องการลบรูปภาพนี้ออกจากคลังระบบหรือไม่?")) {
       const itemToDelete = imageLibrary.find(img => img.id === imgId);
       if (itemToDelete) {
-        // Clear from active form inputs if matches
         Object.keys(userImages).forEach(key => {
           if (userImages[key] === itemToDelete.url) {
             removeImageFromKey(key);
           }
         });
-        // Remove from library array
         imageLibrary = imageLibrary.filter(img => img.id !== imgId);
-        saveStorageData();
+        saveToCloud();
         renderGalleryItems();
       }
     }
@@ -531,7 +549,6 @@
     currentActiveTargetKey = targetKey;
     currentGalleryFilter = getCategoryFromKey(targetKey);
     
-    // Update filter tab buttons active UI
     document.querySelectorAll('.gallery-filter-btn').forEach(btn => {
       btn.classList.remove('active');
       if (btn.getAttribute('onclick').includes(`'${currentGalleryFilter}'`)) {
@@ -592,16 +609,14 @@
     addImageToLibrary(imgUrl, category);
     const preview = document.getElementById(`preview_${key}`);
     if(preview) preview.src = imgUrl;
-    saveStorageData();
+    saveToCloud();
   }
 
   function switchTab(tabId) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     
-    if(tabId === 'tab-input') {
-      document.querySelectorAll('.tab-btn')[0].classList.add('active');
-    }
+    if(tabId === 'tab-input') document.querySelectorAll('.tab-btn')[0].classList.add('active');
     if(tabId === 'tab-wheel') {
       document.querySelectorAll('.tab-btn')[1].classList.add('active');
       drawFullWheel();
@@ -620,7 +635,7 @@
       coachHtml += `
         <div class="input-row">
           <label>ทีม ${i}:</label>
-          <select id="coach_select_${i}" class="coach-select" onchange="updateCoachDropdowns(); saveStorageData();">
+          <select id="coach_select_${i}" class="coach-select" onchange="updateCoachDropdowns(); saveToCloud();">
             ${coachOptions(COACH_LIST[i-1].id)}
           </select>
           <img id="preview_${coachKey}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
@@ -638,7 +653,7 @@
       mentorHtml += `
         <div class="input-row">
           <label>คนที่ ${i}:</label>
-          <select id="mentor_select_${i}" class="mentor-select" onchange="updateMentorDropdowns(); saveStorageData();">
+          <select id="mentor_select_${i}" class="mentor-select" onchange="updateMentorDropdowns(); saveToCloud();">
             ${mentorOptions(MENTOR_LIST[i-1].id)}
           </select>
           <img id="preview_${mentorKey}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
@@ -663,7 +678,7 @@
     updateMentorDropdowns();
     ['boy', 'girl', 'queen'].forEach(g => updateContestantDropdowns(g));
 
-    loadStorageData();
+    listenCloudChanges();
   }
 
   function coachOptions(selectedId = "") {
@@ -763,14 +778,9 @@
     const list = DEFAULT_CONTESTANTS[groupName] || [];
     const found = list.find(item => item.id === selectedId);
 
-    if (found) {
-      branchInput.value = found.branch;
-    } else {
-      branchInput.value = "";
-    }
-
+    branchInput.value = found ? found.branch : "";
     updateContestantDropdowns(groupName);
-    saveStorageData();
+    saveToCloud();
   }
 
   function updateContestantDropdowns(groupName) {
@@ -806,7 +816,6 @@
   }
 
   function saveData() {
-    appData.historyPatterns = [];
     appData.runCount = 1;
     resetStateData();
     switchTab('tab-wheel');
@@ -872,7 +881,7 @@
     renderTeamsTable();
     updateTurnDisplay();
     drawFullWheel();
-    saveStorageData();
+    saveToCloud();
   }
 
   function getAvailableTeamsForCurrentTurn() {
@@ -964,20 +973,17 @@
     const sliceAngle = (2 * Math.PI) / availableTeams.length;
     const targetSliceCenter = randomIndex * sliceAngle + sliceAngle / 2;
     
-    // Calculate final angle to land under top pointer (-PI/2)
     const targetAngle = (3 * Math.PI / 2) - targetSliceCenter;
     const extraRounds = (Math.floor(Math.random() * 3) + 5) * 2 * Math.PI;
     const finalAngle = currentWheelAngle + extraRounds + (targetAngle - (currentWheelAngle % (2 * Math.PI)));
 
     const startAngle = currentWheelAngle;
-    const duration = 3000; // ms
+    const duration = 3000;
     const startTime = performance.now();
 
     function animate(currentTime) {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
-      // Ease out cubic
       const easeOut = 1 - Math.pow(1 - progress, 3);
       currentWheelAngle = startAngle + (finalAngle - startAngle) * easeOut;
 
@@ -1008,7 +1014,7 @@
     renderTeamsTable();
     updateTurnDisplay();
     drawFullWheel();
-    saveStorageData();
+    saveToCloud();
   }
 
   function resetAndReSpin() {
@@ -1039,12 +1045,10 @@
     tbody.innerHTML = html;
   }
 
-  /* --- TAB 3: INDIVIDUAL TEAM SUMMARY VIEW --- */
   function renderSummaryTeamView() {
     const index = appData.selectedViewTeamIndex;
     const team = appData.teams[index];
 
-    // Render selector buttons
     let btnHtml = '';
     for (let i = 0; i < 5; i++) {
       const activeClass = i === index ? 'active' : '';
@@ -1059,20 +1063,17 @@
     document.getElementById('summary-team-title').innerText = `ทีมที่ ${team.teamId}`;
     document.getElementById('summary-team-title').style.color = mainColor;
 
-    // 1. Coach
     document.getElementById('summary-coach-name').innerText = team.coach.name || '-';
     document.getElementById('summary-coach-img').src = team.coach.img || DEFAULT_AVATAR;
     document.getElementById('summary-coach-branch').innerHTML = getBranchTagHtml(team.coach.branch);
     document.getElementById('box-coach').style.borderColor = mainColor;
 
-    // 2. Mentor
     const mentor = team.mentor;
     document.getElementById('summary-mentor-name').innerText = mentor ? mentor.name : '-';
     document.getElementById('summary-mentor-img').src = mentor ? mentor.img : DEFAULT_AVATAR;
     document.getElementById('summary-mentor-branch').innerHTML = mentor ? getBranchTagHtml(mentor.branch) : getBranchTagHtml('');
     document.getElementById('box-mentor').style.borderColor = mentor ? getBranchColor(mentor.branch) : '#cbd5e1';
 
-    // 3. Contestants (Boy, Girl, Queen)
     ['boy', 'girl', 'queen'].forEach(role => {
       const person = team[role];
       document.getElementById(`summary-${role}-name`).innerText = person ? person.name : '-';
@@ -1094,7 +1095,6 @@
     selectSummaryTeam(newIndex);
   }
 
-  // Initialize Application Form
   window.onload = function() {
     initForm();
   };
