@@ -816,10 +816,12 @@
   }
 
   function saveData() {
-    appData.runCount = 1;
-    resetStateData();
-    switchTab('tab-wheel');
-  }
+  appData.runCount = 1;
+  resetStateData();
+  saveToCloud(); // 👈 สั่งให้บันทึกลง Cloud ทันทีเมื่อกดปุ่มเขียว
+  switchTab('tab-wheel');
+  alert("บันทึกข้อมูลเข้า Cloud เรียบร้อยแล้ว!");
+}
 
   function resetStateData() {
     for(let i=1; i<=5; i++) {
