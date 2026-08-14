@@ -32,17 +32,33 @@
     .input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
     .input-row label { width: 40px; font-weight: bold; }
     input[type="text"], select { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; min-width: 120px; }
-    input[type="file"] { font-size: 12px; width: 170px; }
     
     .img-preview-sm { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #cbd5e1; background: #e2e8f0; }
 
     .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .btn-sm { padding: 6px 10px; font-size: 12px; font-weight: normal; border-radius: 6px; }
     .btn-primary { background-color: var(--primary); color: white; }
+    .btn-secondary { background-color: #64748b; color: white; }
     .btn-success { background-color: #16a34a; color: white; width: 100%; }
     .btn-success:hover { background-color: #15803d; }
     .btn-reset { background-color: #dc2626; color: white; margin-top: 10px; width: 100%; font-size: 14px; padding: 12px; }
     .btn-clear-data { background-color: #64748b; color: white; font-size: 14px; padding: 10px 16px; }
     .btn-fullscreen { background-color: #0d9488; color: white; font-size: 14px; padding: 10px 16px; }
+
+    /* File upload button custom styling */
+    .file-select-group { display: flex; gap: 4px; align-items: center; }
+    .btn-file-input { position: relative; overflow: hidden; display: inline-block; }
+    .btn-file-input input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+    /* Modal Gallery Styles */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: #ffffff; padding: 20px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; margin-top: 15px; }
+    .gallery-item { border: 2px solid #e2e8f0; border-radius: 8px; padding: 5px; cursor: pointer; text-align: center; transition: 0.2s; }
+    .gallery-item:hover { border-color: var(--primary); transform: scale(1.05); }
+    .gallery-item img { width: 100%; height: 70px; object-fit: cover; border-radius: 6px; }
+    .gallery-item span { font-size: 10px; color: #64748b; display: block; margin-top: 4px; word-break: break-all; }
 
     /* Wheel Arena Layout */
     .arena-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
@@ -119,7 +135,7 @@
   <!-- Navigation Tabs -->
   <div class="tab-container">
     <button class="tab-btn active" onclick="switchTab('tab-input')">📋 1. ลงทะเบียนรายชื่อ</button>
-    <button class="tab-btn" onclick="switchTab('tab-wheel')">🎡 2. หมุนวงล้อสุ่มทีม</button>
+    <button class="tab-btn" onclick="switchTab('tab-wheel')">🎡 2. เวทีหมุนวงล้อสุ่มทีม</button>
     <button class="tab-btn" onclick="switchTab('tab-summary')">📊 3. สรุปผลรายทีม</button>
   </div>
 
@@ -137,7 +153,7 @@
     </div>
 
     <div class="section-card">
-      <h3>🌟 รายชื่อผู้เข้าประกวด</h3>
+      <h3>🌟 รายชื่อผู้เข้าประกวด (เลือกรายชื่อจาก Dropdown)</h3>
       <div class="grid-3">
         <div>
           <h4>♂️ Boy (B1 - B5)</h4>
@@ -251,6 +267,20 @@
     </div>
   </div>
 
+  <!-- MODAL: GALLERY PRESET SELECTOR -->
+  <div id="gallery-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0;">🖼️ คลังรูปภาพที่เคยบันทึกไว้</h3>
+        <button class="btn btn-sm btn-secondary" onclick="closeGalleryModal()">✕ ปิด</button>
+      </div>
+      <p style="font-size: 12px; color: #64748b; margin-top: 5px;">คลิกเลือกรูปภาพที่ต้องการใช้ได้เลยครับ</p>
+      <div id="gallery-grid-container" class="gallery-grid">
+        <!-- Dynamic Preset Items -->
+      </div>
+    </div>
+  </div>
+
 <script>
   const BRANCHES = [
     { name: "การจัดการ", class: "tag-mgt", color: "#ea580c" },
@@ -301,6 +331,7 @@
   };
 
   let userImages = {}; 
+  let currentActiveTargetKey = null; // สำหรับจำว่าจะใส่รูปที่ช่องไหนตอนเลือกจาก Preset
   const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
   let appData = {
@@ -396,17 +427,54 @@
     }
   }
 
+  /* ---ระบบจัดการรูปภาพ 2 ช่องทาง (File Input + Gallery Preset)--- */
   function handleImageUpload(input, key) {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        userImages[key] = e.target.result;
-        const preview = document.getElementById(`preview_${key}`);
-        if(preview) preview.src = e.target.result;
-        saveStorageData();
+        applyImageToKey(key, e.target.result);
       };
       reader.readAsDataURL(input.files[0]);
     }
+  }
+
+  function openGalleryModal(targetKey) {
+    currentActiveTargetKey = targetKey;
+    const grid = document.getElementById('gallery-grid-container');
+    grid.innerHTML = '';
+
+    const imageKeys = Object.keys(userImages);
+    if (imageKeys.length === 0) {
+      grid.innerHTML = '<p style="grid-column: 1/-1; color:#94a3b8; text-align:center;">ยังไม่มีรูปภาพที่เคยอัปโหลดไว้ในระบบ</p>';
+    } else {
+      imageKeys.forEach(k => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = `
+          <img src="${userImages[k]}" alt="${k}">
+          <span>${k}</span>
+        `;
+        item.onclick = function() {
+          applyImageToKey(currentActiveTargetKey, userImages[k]);
+          closeGalleryModal();
+        };
+        grid.appendChild(item);
+      });
+    }
+
+    document.getElementById('gallery-modal').classList.add('active');
+  }
+
+  function closeGalleryModal() {
+    document.getElementById('gallery-modal').classList.remove('active');
+    currentActiveTargetKey = null;
+  }
+
+  function applyImageToKey(key, imgUrl) {
+    userImages[key] = imgUrl;
+    const preview = document.getElementById(`preview_${key}`);
+    if(preview) preview.src = imgUrl;
+    saveStorageData();
   }
 
   function switchTab(tabId) {
@@ -430,24 +498,38 @@
   function initForm() {
     let coachHtml = '', mentorHtml = '';
     for(let i=1; i<=5; i++) {
+      const coachKey = `coach_${i}`;
       coachHtml += `
         <div class="input-row">
           <label>ทีม ${i}:</label>
           <select id="coach_select_${i}" class="coach-select" onchange="updateCoachDropdowns(); saveStorageData();">
             ${coachOptions(COACH_LIST[i-1].id)}
           </select>
-          <img id="preview_coach_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <input type="file" accept="image/*" onchange="handleImageUpload(this, 'coach_${i}')">
+          <img id="preview_${coachKey}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <div class="file-select-group">
+            <button class="btn btn-sm btn-primary btn-file-input">
+              📁 ไฟล์
+              <input type="file" accept="image/*" onchange="handleImageUpload(this, '${coachKey}')">
+            </button>
+            <button class="btn btn-sm btn-secondary" type="button" onclick="openGalleryModal('${coachKey}')">🖼️ คลัง</button>
+          </div>
         </div>`;
       
+      const mentorKey = `mentor_${i}`;
       mentorHtml += `
         <div class="input-row">
           <label>คนที่ ${i}:</label>
           <select id="mentor_select_${i}" class="mentor-select" onchange="updateMentorDropdowns(); saveStorageData();">
             ${mentorOptions(MENTOR_LIST[i-1].id)}
           </select>
-          <img id="preview_mentor_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <input type="file" accept="image/*" onchange="handleImageUpload(this, 'mentor_${i}')">
+          <img id="preview_${mentorKey}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <div class="file-select-group">
+            <button class="btn btn-sm btn-primary btn-file-input">
+              📁 ไฟล์
+              <input type="file" accept="image/*" onchange="handleImageUpload(this, '${mentorKey}')">
+            </button>
+            <button class="btn btn-sm btn-secondary" type="button" onclick="openGalleryModal('${mentorKey}')">🖼️ คลัง</button>
+          </div>
         </div>`;
     }
     document.getElementById('coaches-inputs').innerHTML = coachHtml;
@@ -540,7 +622,13 @@
           </select>
           <input type="text" id="${prefix}_branch_${i}" value="${defaultItem.branch}" readonly style="width: 100px; flex: none; background-color: #f1f5f9; color: #475569; font-weight: bold; text-align: center;" placeholder="สาขา">
           <img id="preview_${key}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <input type="file" accept="image/*" onchange="handleImageUpload(this, '${key}')">
+          <div class="file-select-group">
+            <button class="btn btn-sm btn-primary btn-file-input">
+              📁 ไฟล์
+              <input type="file" accept="image/*" onchange="handleImageUpload(this, '${key}')">
+            </button>
+            <button class="btn btn-sm btn-secondary" type="button" onclick="openGalleryModal('${key}')">🖼️ คลัง</button>
+          </div>
         </div>`;
     }
     document.getElementById(containerId).innerHTML = html;
