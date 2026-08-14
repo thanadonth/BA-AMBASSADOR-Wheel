@@ -40,18 +40,16 @@
     .btn-primary { background-color: var(--primary); color: white; }
     .btn-success { background-color: #16a34a; color: white; width: 100%; }
     .btn-success:hover { background-color: #15803d; }
-    .btn-spin { background-color: #eab308; color: #0f172a; font-size: 18px; padding: 12px 20px; width: 100%; }
-    .btn-spin:disabled { background-color: #cbd5e1; cursor: not-allowed; }
-    .btn-reset { background-color: #dc2626; color: white; margin-top: 10px; width: 100%; font-size: 14px; padding: 8px; }
+    .btn-reset { background-color: #dc2626; color: white; margin-top: 10px; width: 100%; font-size: 14px; padding: 12px; }
     .btn-clear-data { background-color: #64748b; color: white; font-size: 14px; padding: 10px 16px; }
     .btn-fullscreen { background-color: #0d9488; color: white; font-size: 14px; padding: 10px 16px; }
 
     /* Wheel Arena Layout */
     .arena-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
     .wheel-box { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-    #wheel-canvas { border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s ease; }
+    #wheel-canvas { border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s ease; margin-top: 20px; }
     #wheel-canvas:hover { transform: scale(1.02); }
-    .pointer { position: absolute; top: 10px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ef4444; z-index: 10; pointer-events: none; }
+    .pointer { position: absolute; top: 30px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ef4444; z-index: 10; pointer-events: none; }
     
     /* Result Table & Branch Tags */
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -167,8 +165,7 @@
         <div class="pointer"></div>
         <canvas id="wheel-canvas" width="300" height="300" onclick="spinWheel()" title="คลิกที่วงล้อเพื่อหมุน"></canvas>
         <span style="font-size: 12px; color: #64748b; margin-top: 5px;">👇 คลิกที่วงล้อเพื่อหมุน</span>
-        <h3 id="current-turn" style="margin-top: 10px; color: #2563eb; text-align: center;">เตรียมพร้อมหมุนวงล้อ</h3>
-        <button id="spin-btn" class="btn btn-spin" onclick="spinWheel()">🎡 คลิกเพื่อหมุนวงล้อ</button>
+        <h3 id="current-turn" style="margin-top: 15px; margin-bottom: 20px; color: #2563eb; text-align: center;">เตรียมพร้อมหมุนวงล้อ</h3>
         <button class="btn btn-reset" onclick="resetAndReSpin()">🔄 สุ่มใหม่ทั้งหมด</button>
       </div>
 
@@ -281,25 +278,25 @@
 
   const DEFAULT_CONTESTANTS = {
     boy: [
-      { id: "b1", name: "นายธนวัฒน์ สงสุวรรณ (หมอก)", branch: "การจัดการ" },
-      { id: "b2", name: "นายภูวนัตถ์ ก้อนจันทึก (พีท)", branch: "การบัญชี" },
-      { id: "b3", name: "นายมนต์ธวัล อชิโนปุญวัตน์ (คิมไซ)", branch: "การเงิน" },
-      { id: "b4", name: "นายเขมฑัต ชานนท์ (เอม่อน)", branch: "การตลาด" },
-      { id: "b5", name: "นายอภิรักษ์ ปนตะคุ (ฟิล์ม)", branch: "ระบบสารสนเทศ" }
+      { id: "b1", name: "นายธนวัฒน์ สงสุวรรณ", branch: "การจัดการ" },
+      { id: "b2", name: "นายภูวนัตถ์ ก้อนจันทึก", branch: "การบัญชี" },
+      { id: "b3", name: "นายมนต์ธวัล อชิโนปุญวัตน์", branch: "การเงิน" },
+      { id: "b4", name: "นายเขมฑัต ชานนท์", branch: "การตลาด" },
+      { id: "b5", name: "นายอภิรักษ์ ปนตะคุ", branch: "ระบบสารสนเทศ" }
     ],
     girl: [
-      { id: "g1", name: "นางสาวรัตน์ชนก แสงสิงห์ (สายรุ้ง)", branch: "การจัดการ" },
-      { id: "g2", name: "นางสาวไพลิน โสมัสสา (เก๋)", branch: "การบัญชี" },
-      { id: "g3", name: "นางสาวศศิพัชร รติพันธ์สำโรง (เค้ก)", branch: "การเงิน" },
-      { id: "g4", name: "นางสาวเปมนีย์ บุญประเสริฐ (น้ำปั่น)", branch: "การตลาด" },
-      { id: "g5", name: "นางสาวจิรัชญา นมขุนทด (เพิร์ส)", branch: "ระบบสารสนเทศ" }
+      { id: "g1", name: "นางสาวรัตน์ชนก แสงสิงห์", branch: "การจัดการ" },
+      { id: "g2", name: "นางสาวไพลิน โสมัสสา", branch: "การบัญชี" },
+      { id: "g3", name: "นางสาวศศิพัชร รติพันธ์สำโรง", branch: "การเงิน" },
+      { id: "g4", name: "นางสาวเปมนีย์ บุญประเสริฐ", branch: "การตลาด" },
+      { id: "g5", name: "นางสาวจิรัชญา นมขุนทด", branch: "ระบบสารสนเทศ" }
     ],
     queen: [
-      { id: "q1", name: "นายธนกฤต เรืองโสม (แนน)", branch: "การจัดการ" },
-      { id: "q2", name: "นายธนพงศกร เผ่าบ้านฟาง (น้ำหวาน)", branch: "การบัญชี" },
-      { id: "q3", name: "นายธนวัฒน์ สวงโท (เขม)", branch: "การเงิน" },
-      { id: "q4", name: "นายพาณิภัค พิมพ์ทอง (มิว)", branch: "การตลาด" },
-      { id: "q5", name: "นายอดิศร แหลมกระโทก (หนูบีม)", branch: "ระบบสารสนเทศ" }
+      { id: "q1", name: "นายธนกฤต เรืองโสม", branch: "การจัดการ" },
+      { id: "q2", name: "นายธนพงศกร เผ่าบ้านฟาง", branch: "การบัญชี" },
+      { id: "q3", name: "นายธนวัฒน์ สวงโท", branch: "การเงิน" },
+      { id: "q4", name: "นายพาณิภัค พิมพ์ทอง", branch: "การตลาด" },
+      { id: "q5", name: "นายอดิศร แหลมกระโทก", branch: "ระบบสารสนเทศ" }
     ]
   };
 
@@ -803,11 +800,9 @@
     if (appData.currentQueueIndex < appData.queue.length) {
       const current = appData.queue[appData.currentQueueIndex];
       document.getElementById('current-turn').innerHTML = `คิวถัดไป: <strong>[${current.code}] ${current.name}</strong><br>${getBranchTagHtml(current.branch)}`;
-      document.getElementById('spin-btn').disabled = false;
       drawFullWheel();
     } else {
       document.getElementById('current-turn').innerHTML = "🎉 สุ่มผู้เข้าประกวดครบแล้ว!<br><button class='btn btn-success' style='margin-top:10px;' onclick='switchTab(\"tab-summary\")'>➡️ ดูสรุปผลรายทีมเลย</button>";
-      document.getElementById('spin-btn').disabled = true;
       drawFullWheel();
       assignMentorsToTeams();
     }
@@ -826,7 +821,6 @@
     if (validTeams.length === 0) return;
 
     isSpinning = true;
-    document.getElementById('spin-btn').disabled = true;
 
     const targetTeam = validTeams[Math.floor(Math.random() * validTeams.length)];
     const targetIndex = targetTeam.teamId - 1;
