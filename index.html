@@ -279,15 +279,15 @@
     { id: "c5", name: "อาจารย์ศศิวิมล กอบัว", branch: "ระบบสารสนเทศ" }
   ];
 
+  // --- อัปเดตรายชื่อพี่เลี้ยง (สาขาการบัญชี) ---
   const MENTOR_LIST = [
     { id: "m1", name: "นางสาวมนตา มณีเนตร", branch: "การจัดการ" },
     { id: "m2", name: "นายธนวัฒน์ เศรษฐนันท์", branch: "การเงิน" },
-    { id: "m3", name: "นางสาวสิรินภา ชุดช้อยสระน้อย", branch: "การบัญชี" },
+    { id: "m3", name: "นางสาวศิรดา ตู้พิมาย", branch: "การบัญชี" }, // แก้ไขตรงนี้เรียบร้อยครับ
     { id: "m4", name: "นายอภินันท์ โนนโพธิ์", branch: "ระบบสารสนเทศ" },
     { id: "m5", name: "นางสาวลักขณา เบี้ยกระโทก", branch: "การตลาด" }
   ];
 
-  // --- ข้อมูลผู้เข้าประกวด BA AMBASSADOR 2026 ---
   const DEFAULT_CONTESTANTS = {
     boy: [
       { id: "b1", name: "นายธนวัฒน์ สงสุวรรณ (หมอก)", branch: "การจัดการ" },
@@ -326,7 +326,6 @@
     selectedViewTeamIndex: 0
   };
 
-  // --- FULLSCREEN CONTROLLER ---
   function toggleFullscreen() {
     const fsBtn = document.getElementById('fullscreen-btn');
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
@@ -358,7 +357,6 @@
     }
   }
 
-  // --- LOCAL STORAGE MANAGER ---
   function saveStorageData() {
     try {
       localStorage.setItem('ba2026_userImages', JSON.stringify(userImages));
@@ -621,7 +619,7 @@
   }
 
   function getBranchColor(branchName) {
-    if (!branchName) return '#cbd5e1'; // Default Gray
+    if (!branchName) return '#cbd5e1';
     const found = BRANCHES.find(b => b.name === branchName);
     return found ? found.color : '#cbd5e1';
   }
@@ -941,7 +939,6 @@
     tbody.innerHTML = html;
   }
 
-  // --- TAB 3: INDIVIDUAL SUMMARY NAVIGATION & RENDER ---
   function navigateTeam(direction) {
     let newIndex = appData.selectedViewTeamIndex + direction;
     if (newIndex < 0) newIndex = 4;
@@ -967,37 +964,36 @@
 
     document.getElementById('summary-team-title').innerText = `🏆 สรุปสมาชิก : ทีมที่ ${team.teamId}`;
 
-    // 1. Update Main Card Top Accent Border Color (Based on Coach Branch)
     const mainCard = document.getElementById('team-main-card');
     if (mainCard) {
       mainCard.style.borderTopColor = getBranchColor(team.coach?.branch);
     }
 
-    // 2. Coach
+    // Coach
     document.getElementById('summary-coach-img').src = team.coach.img || DEFAULT_AVATAR;
     document.getElementById('summary-coach-name').innerText = team.coach.name || 'ยังไม่ระบุ';
     document.getElementById('summary-coach-branch').innerHTML = getBranchTagHtml(team.coach.branch);
     document.getElementById('box-coach').style.borderColor = getBranchColor(team.coach?.branch);
 
-    // 3. Mentor
+    // Mentor
     document.getElementById('summary-mentor-img').src = team.mentor ? team.mentor.img : DEFAULT_AVATAR;
     document.getElementById('summary-mentor-name').innerText = team.mentor ? team.mentor.name : 'รอสรุปท้ายสุด';
     document.getElementById('summary-mentor-branch').innerHTML = team.mentor ? getBranchTagHtml(team.mentor.branch) : '';
     document.getElementById('box-mentor').style.borderColor = team.mentor ? getBranchColor(team.mentor.branch) : '#cbd5e1';
 
-    // 4. Boy
+    // Boy
     document.getElementById('summary-boy-img').src = team.boy ? team.boy.img : DEFAULT_AVATAR;
     document.getElementById('summary-boy-name').innerText = team.boy ? `${team.boy.name} (${team.boy.code})` : 'รอผลสุ่ม';
     document.getElementById('summary-boy-branch').innerHTML = team.boy ? getBranchTagHtml(team.boy.branch) : '';
     document.getElementById('box-boy').style.borderColor = team.boy ? getBranchColor(team.boy.branch) : '#cbd5e1';
 
-    // 5. Girl
+    // Girl
     document.getElementById('summary-girl-img').src = team.girl ? team.girl.img : DEFAULT_AVATAR;
     document.getElementById('summary-girl-name').innerText = team.girl ? `${team.girl.name} (${team.girl.code})` : 'รอผลสุ่ม';
     document.getElementById('summary-girl-branch').innerHTML = team.girl ? getBranchTagHtml(team.girl.branch) : '';
     document.getElementById('box-girl').style.borderColor = team.girl ? getBranchColor(team.girl.branch) : '#cbd5e1';
 
-    // 6. Queen
+    // Queen
     document.getElementById('summary-queen-img').src = team.queen ? team.queen.img : DEFAULT_AVATAR;
     document.getElementById('summary-queen-name').innerText = team.queen ? `${team.queen.name} (${team.queen.code})` : 'รอผลสุ่ม';
     document.getElementById('summary-queen-branch').innerHTML = team.queen ? getBranchTagHtml(team.queen.branch) : '';
