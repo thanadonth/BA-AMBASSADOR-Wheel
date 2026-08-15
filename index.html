@@ -74,7 +74,7 @@
     /* Wheel Arena Layout */
     .arena-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
     .wheel-box { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-    #wheel-canvas { border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s ease; margin-top: 20px; }
+    #wheel-canvas { border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); cursor: pointer; transition: transform 4s cubic-bezier(0.15, 0.99, 0.35, 1); margin-top: 20px; }
     #wheel-canvas:hover { transform: scale(1.02); }
     .pointer { position: absolute; top: 30px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ef4444; z-index: 10; pointer-events: none; }
     
@@ -352,8 +352,10 @@
     ]
   };
 
-  let userImages = {}; // เก็บภาพที่ผูกกับตำแหน่งปัจจุบัน { key: imgUrl }
-  let imageLibrary = []; // คลังภาพส่วนกลางแบบวัตถุ [{ id, url, category }]
+  const WHEEL_COLORS = ["#2563eb", "#059669", "#d97706", "#dc2626", "#7c3aed"];
+
+  let userImages = {}; 
+  let imageLibrary = []; 
   let currentActiveTargetKey = null; 
   let currentGalleryFilter = 'all';
   let isSpinning = false;
@@ -422,7 +424,6 @@
     const savedLib = localStorage.getItem('ba2026_imageLibrary');
     if (savedLib) {
       imageLibrary = JSON.parse(savedLib);
-      // Migration Support: Convert old string library to object library
       if (imageLibrary.length > 0 && typeof imageLibrary[0] === 'string') {
         imageLibrary = imageLibrary.map(url => ({ id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4), url: url, category: 'all' }));
       }
@@ -464,7 +465,6 @@
     }
   }
 
-  /* --- ระบบจัดการรูปภาพ & คลังรูปภาพ (Smart Library with Categories & Deletion) --- */
   function getCategoryFromKey(key) {
     if (!key) return 'all';
     if (key.startsWith('coach_')) return 'coach';
@@ -513,13 +513,11 @@
     if (confirm("คุณต้องการลบรูปภาพนี้ออกจากคลังระบบหรือไม่?")) {
       const itemToDelete = imageLibrary.find(img => img.id === imgId);
       if (itemToDelete) {
-        // Clear from active form inputs if matches
         Object.keys(userImages).forEach(key => {
           if (userImages[key] === itemToDelete.url) {
             removeImageFromKey(key);
           }
         });
-        // Remove from library array
         imageLibrary = imageLibrary.filter(img => img.id !== imgId);
         saveStorageData();
         renderGalleryItems();
@@ -531,7 +529,6 @@
     currentActiveTargetKey = targetKey;
     currentGalleryFilter = getCategoryFromKey(targetKey);
     
-    // Update filter tab buttons active UI
     document.querySelectorAll('.gallery-filter-btn').forEach(btn => {
       btn.classList.remove('active');
       if (btn.getAttribute('onclick').includes(`'${currentGalleryFilter}'`)) {
@@ -546,7 +543,7 @@
   function filterGallery(category) {
     currentGalleryFilter = category;
     document.querySelectorAll('.gallery-filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    if (event && event.target) event.target.classList.add('active');
     renderGalleryItems();
   }
 
@@ -729,52 +726,31 @@
   function renderCategoryInputs(containerId, prefix, groupName) {
     let html = '';
     const defaultList = DEFAULT_CONTESTANTS[groupName] || [];
-
     for(let i=1; i<=5; i++) {
-      const key = `${prefix}_${i}`;
-      const defaultItem = defaultList[i-1] || { id: "", branch: "" };
-
+      const itemKey = `${prefix}_${i}`;
+      const defaultId = defaultList[i-1] ? defaultList[i-1].id : "";
       html += `
         <div class="input-row">
           <label>${prefix}${i}:</label>
-          <select id="${prefix}_select_${i}" class="contestant-select" data-group="${groupName}" onchange="onContestantSelect('${prefix}', ${i}, '${groupName}')">
-            ${contestantOptions(groupName, defaultItem.id)}
+          <select id="${groupName}_select_${i}" class="${groupName}-select" onchange="updateContestantDropdowns('${groupName}'); saveStorageData();">
+            ${contestantOptions(groupName, defaultId)}
           </select>
-          <input type="text" id="${prefix}_branch_${i}" value="${defaultItem.branch}" readonly style="width: 100px; flex: none; background-color: #f1f5f9; color: #475569; font-weight: bold; text-align: center;" placeholder="สาขา">
-          <img id="preview_${key}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <img id="preview_${itemKey}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
           <div class="file-select-group">
             <button class="btn btn-sm btn-primary btn-file-input">
               📁 ไฟล์
-              <input type="file" accept="image/*" onchange="handleImageUpload(this, '${key}')">
+              <input type="file" accept="image/*" onchange="handleImageUpload(this, '${itemKey}')">
             </button>
-            <button class="btn btn-sm btn-secondary" type="button" onclick="openGalleryModal('${key}')">🖼️ คลัง</button>
-            <button class="btn btn-sm btn-danger-sm" type="button" title="ลบรูป" onclick="removeImageFromKey('${key}')">❌</button>
+            <button class="btn btn-sm btn-secondary" type="button" onclick="openGalleryModal('${itemKey}')">🖼️ คลัง</button>
+            <button class="btn btn-sm btn-danger-sm" type="button" title="ลบรูป" onclick="removeImageFromKey('${itemKey}')">❌</button>
           </div>
         </div>`;
     }
     document.getElementById(containerId).innerHTML = html;
   }
 
-  function onContestantSelect(prefix, index, groupName) {
-    const selectEl = document.getElementById(`${prefix}_select_${index}`);
-    const branchInput = document.getElementById(`${prefix}_branch_${index}`);
-    const selectedId = selectEl.value;
-
-    const list = DEFAULT_CONTESTANTS[groupName] || [];
-    const found = list.find(item => item.id === selectedId);
-
-    if (found) {
-      branchInput.value = found.branch;
-    } else {
-      branchInput.value = "";
-    }
-
-    updateContestantDropdowns(groupName);
-    saveStorageData();
-  }
-
   function updateContestantDropdowns(groupName) {
-    const selects = document.querySelectorAll(`select.contestant-select[data-group="${groupName}"]`);
+    const selects = document.querySelectorAll(`.${groupName}-select`);
     const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
 
     selects.forEach(select => {
@@ -792,309 +768,265 @@
     });
   }
 
-  function getBranchTagHtml(branchName) {
-    if (!branchName) return '<span class="tag tag-default">ไม่ระบุ</span>';
-    const found = BRANCHES.find(b => b.name === branchName);
-    const className = found ? found.class : 'tag-default';
-    return `<span class="tag ${className}">${branchName}</span>`;
-  }
-
-  function getBranchColor(branchName) {
-    if (!branchName) return '#cbd5e1';
-    const found = BRANCHES.find(b => b.name === branchName);
-    return found ? found.color : '#cbd5e1';
-  }
-
   function saveData() {
-    appData.historyPatterns = [];
-    appData.runCount = 1;
-    resetStateData();
-    switchTab('tab-wheel');
-  }
-
-  function resetStateData() {
+    appData.teams = [];
     for(let i=1; i<=5; i++) {
-      const coachSelectVal = document.getElementById(`coach_select_${i}`).value;
-      const foundCoach = COACH_LIST.find(c => c.id === coachSelectVal);
-
-      appData.teams[i-1].coach = { 
-        name: foundCoach ? foundCoach.name : `โค้ชทีม ${i}`, 
-        branch: foundCoach ? foundCoach.branch : "",
-        img: userImages[`coach_${i}`] || DEFAULT_AVATAR
-      };
-      appData.teams[i-1].mentor = null; 
-      appData.teams[i-1].boy = null; 
-      appData.teams[i-1].girl = null; 
-      appData.teams[i-1].queen = null; 
+      const coachId = document.getElementById(`coach_select_${i}`).value;
+      const coachObj = COACH_LIST.find(c => c.id === coachId) || {};
+      const coachImg = userImages[`coach_${i}`] || DEFAULT_AVATAR;
+      appData.teams.push({
+        teamId: i,
+        coach: { ...coachObj, img: coachImg },
+        mentor: null,
+        boy: null,
+        girl: null,
+        queen: null
+      });
     }
 
     appData.mentorsList = [];
     for(let i=1; i<=5; i++) {
-      const mentorSelectVal = document.getElementById(`mentor_select_${i}`).value;
-      const foundMentor = MENTOR_LIST.find(m => m.id === mentorSelectVal);
-
-      appData.mentorsList.push({
-        name: foundMentor ? foundMentor.name : `พี่เลี้ยง ${i}`,
-        branch: foundMentor ? foundMentor.branch : "",
-        img: userImages[`mentor_${i}`] || DEFAULT_AVATAR
-      });
+      const mentorId = document.getElementById(`mentor_select_${i}`).value;
+      const mentorObj = MENTOR_LIST.find(m => m.id === mentorId) || {};
+      const mentorImg = userImages[`mentor_${i}`] || DEFAULT_AVATAR;
+      appData.mentorsList.push({ ...mentorObj, img: mentorImg, key: `mentor_${i}` });
     }
 
-    appData.queue = [];
-    const categories = [{prefix: 'B', type: 'boy'}, {prefix: 'G', type: 'girl'}, {prefix: 'Q', type: 'queen'}];
-    
-    categories.forEach(cat => {
-      for(let i=1; i<=5; i++) {
-        const selectVal = document.getElementById(`${cat.prefix}_select_${i}`).value;
-        const branchVal = document.getElementById(`${cat.prefix}_branch_${i}`).value;
-        const list = DEFAULT_CONTESTANTS[cat.type] || [];
-        const found = list.find(item => item.id === selectVal);
-
-        appData.queue.push({
-          label: `${cat.prefix}${i}`,
-          type: cat.type,
-          name: found ? found.name : `${cat.prefix}${i}`,
-          branch: branchVal,
-          img: userImages[`${cat.prefix}_${i}`] || DEFAULT_AVATAR
-        });
-      }
-    });
-
+    const boysList = [];
     for(let i=1; i<=5; i++) {
-      appData.queue.push({
-        label: `M${i}`,
-        type: 'mentor',
-        data: appData.mentorsList[i-1]
-      });
+      const bId = document.getElementById(`boy_select_${i}`).value;
+      const bObj = DEFAULT_CONTESTANTS.boy.find(b => b.id === bId) || {};
+      const bImg = userImages[`B_${i}`] || DEFAULT_AVATAR;
+      boysList.push({ ...bObj, group: 'boy', img: bImg, key: `B_${i}` });
     }
 
+    const girlsList = [];
+    for(let i=1; i<=5; i++) {
+      const gId = document.getElementById(`girl_select_${i}`).value;
+      const gObj = DEFAULT_CONTESTANTS.girl.find(g => g.id === gId) || {};
+      const gImg = userImages[`G_${i}`] || DEFAULT_AVATAR;
+      girlsList.push({ ...gObj, group: 'girl', img: gImg, key: `G_${i}` });
+    }
+
+    const queensList = [];
+    for(let i=1; i<=5; i++) {
+      const qId = document.getElementById(`queen_select_${i}`).value;
+      const qObj = DEFAULT_CONTESTANTS.queen.find(q => q.id === qId) || {};
+      const qImg = userImages[`Q_${i}`] || DEFAULT_AVATAR;
+      queensList.push({ ...qObj, group: 'queen', img: qImg, key: `Q_${i}` });
+    }
+
+    appData.queue = [...boysList, ...girlsList, ...queensList, ...appData.mentorsList];
     appData.currentQueueIndex = 0;
+
+    saveStorageData();
     renderTeamsTable();
     updateTurnDisplay();
-    drawFullWheel();
-    saveStorageData();
+    switchTab('tab-wheel');
   }
 
-  function getAvailableTeamsForCurrentTurn() {
-    if (appData.currentQueueIndex >= appData.queue.length) return [];
-    const item = appData.queue[appData.currentQueueIndex];
+  function getBranchTag(branchName) {
+    if (!branchName) return '';
+    const b = BRANCHES.find(x => x.name === branchName);
+    const cssClass = b ? b.class : 'tag-default';
+    return `<span class="tag ${cssClass}">${branchName}</span>`;
+  }
 
-    if (item.type === 'mentor') {
-      return appData.teams.filter(t => t.mentor === null && t.coach.branch !== item.data.branch);
-    } else {
-      return appData.teams.filter(t => t[item.type] === null && t.coach.branch !== item.branch);
-    }
+  function renderTeamsTable() {
+    const tbody = document.getElementById('teams-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = appData.teams.map(team => {
+      const coachTag = team.coach.branch ? getBranchTag(team.coach.branch) : '';
+      const boyTag = team.boy ? getBranchTag(team.boy.branch) : '';
+      const girlTag = team.girl ? getBranchTag(team.girl.branch) : '';
+      const queenTag = team.queen ? getBranchTag(team.queen.branch) : '';
+      const mentorTag = team.mentor ? getBranchTag(team.mentor.branch) : '';
+
+      return `
+        <tr>
+          <td><strong>ทีมที่ ${team.teamId}</strong></td>
+          <td>${team.coach.name || '-'}<br>${coachTag}</td>
+          <td>${team.boy ? team.boy.name : '-'}<br>${boyTag}</td>
+          <td>${team.girl ? team.girl.name : '-'}<br>${girlTag}</td>
+          <td>${team.queen ? team.queen.name : '-'}<br>${queenTag}</td>
+          <td>${team.mentor ? team.mentor.name : '-'}<br>${mentorTag}</td>
+        </tr>
+      `;
+    }).join('');
+
+    const badge = document.getElementById('history-badge');
+    if (badge) badge.innerText = `รอบสุ่มครั้งที่: ${appData.runCount || 1}`;
   }
 
   function updateTurnDisplay() {
     const turnEl = document.getElementById('current-turn');
-    if (appData.currentQueueIndex >= appData.queue.length) {
-      turnEl.innerHTML = "🎉 สุ่มเข้าครบทุกทีมเรียบร้อยแล้ว!";
-      turnEl.style.color = "#16a34a";
-      return;
+    if (!turnEl) return;
+    if (appData.currentQueueIndex < appData.queue.length) {
+      const currentPerson = appData.queue[appData.currentQueueIndex];
+      turnEl.innerText = `🎯 ตาของ: ${currentPerson.name} (${currentPerson.branch || ''})`;
+    } else {
+      turnEl.innerText = `🎉 สุ่มจัดทีมครบทุกคนเรียบร้อยแล้ว!`;
     }
-    const item = appData.queue[appData.currentQueueIndex];
-    let displayName = item.type === 'mentor' ? item.data.name : `${item.label} - ${item.name}`;
-    turnEl.innerHTML = `รอบสุ่มถัดไป: <br><span style="color:#0f172a;">${displayName}</span>`;
-    turnEl.style.color = "#2563eb";
   }
 
+  // Draw Fixed 5-Team Wheel permanently onto Canvas
   function drawFullWheel() {
     const canvas = document.getElementById('wheel-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const availableTeams = getAvailableTeamsForCurrentTurn();
+    const radius = canvas.width / 2;
+    const numSlices = 5;
+    const sliceAngle = (2 * Math.PI) / numSlices;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = canvas.width / 2 - 5;
-
-    if (availableTeams.length === 0) {
+    for (let i = 0; i < numSlices; i++) {
+      const startAngle = i * sliceAngle;
+      const endAngle = startAngle + sliceAngle;
+      
       ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-      ctx.fillStyle = '#cbd5e1';
-      ctx.fill();
-      ctx.fillStyle = '#64748b';
-      ctx.font = 'bold 16px Segoe UI';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(appData.currentQueueIndex >= appData.queue.length ? "เสร็จสิ้น" : "ไม่มีทีมที่สุ่มได้", centerX, centerY);
-      return;
-    }
-
-    const anglePerSlice = (2 * Math.PI) / availableTeams.length;
-    const colors = ['#2563eb', '#0d9488', '#ea580c', '#e11d48', '#7c3aed'];
-
-    availableTeams.forEach((team, index) => {
-      const startAngle = index * anglePerSlice + currentWheelAngle;
-      const endAngle = startAngle + anglePerSlice;
-
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY);
-      ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+      ctx.moveTo(radius, radius);
+      ctx.arc(radius, radius, radius, startAngle, endAngle);
       ctx.closePath();
 
-      ctx.fillStyle = colors[(team.teamId - 1) % colors.length];
+      ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length];
       ctx.fill();
       ctx.lineWidth = 2;
       ctx.strokeStyle = '#ffffff';
       ctx.stroke();
 
       ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(startAngle + anglePerSlice / 2);
-      ctx.textAlign = 'right';
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 18px Segoe UI';
-      ctx.fillText(`ทีม ${team.teamId}`, radius - 20, 6);
+      ctx.translate(radius, radius);
+      ctx.rotate(startAngle + sliceAngle / 2);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 16px Segoe UI, sans-serif";
+      ctx.fillText(`ทีม ${i + 1}`, radius - 20, 5);
       ctx.restore();
-    });
+    }
   }
 
   function spinWheel() {
     if (isSpinning) return;
-    const availableTeams = getAvailableTeamsForCurrentTurn();
-    if (availableTeams.length === 0) return;
+    if (appData.currentQueueIndex >= appData.queue.length) {
+      alert("จัดทีมครบเรียบร้อยแล้วครับ!");
+      return;
+    }
+
+    const availableTeamIndices = appData.teams
+      .map((t, idx) => ({ t, idx }))
+      .filter(item => {
+        const p = appData.queue[appData.currentQueueIndex];
+        if (p.group === 'boy') return !item.t.boy;
+        if (p.group === 'girl') return !item.t.girl;
+        if (p.group === 'queen') return !item.t.queen;
+        return !item.t.mentor;
+      })
+      .map(item => item.idx);
+
+    if (availableTeamIndices.length === 0) {
+      alert("ไม่มีทีมว่างสำหรับหมวดหมู่นี้");
+      return;
+    }
 
     isSpinning = true;
-    const randomIndex = Math.floor(Math.random() * availableTeams.length);
-    const selectedTeam = availableTeams[randomIndex];
+    const chosenTeamIndex = availableTeamIndices[Math.floor(Math.random() * availableTeamIndices.length)];
+    const numSlices = 5;
+    const sliceAngle = 360 / numSlices;
 
-    const sliceAngle = (2 * Math.PI) / availableTeams.length;
-    const targetSliceCenter = randomIndex * sliceAngle + sliceAngle / 2;
-    
-    // Calculate final angle to land under top pointer (-PI/2)
-    const targetAngle = (3 * Math.PI / 2) - targetSliceCenter;
-    const extraRounds = (Math.floor(Math.random() * 3) + 5) * 2 * Math.PI;
-    const finalAngle = currentWheelAngle + extraRounds + (targetAngle - (currentWheelAngle % (2 * Math.PI)));
+    const targetDegree = 360 - (chosenTeamIndex * sliceAngle + sliceAngle / 2) - 90;
+    const extraTurns = 360 * 5;
+    const totalRotation = currentWheelAngle + extraTurns + (targetDegree - (currentWheelAngle % 360));
 
-    const startAngle = currentWheelAngle;
-    const duration = 3000; // ms
-    const startTime = performance.now();
+    currentWheelAngle = totalRotation;
+    const canvas = document.getElementById('wheel-canvas');
+    canvas.style.transform = `rotate(${totalRotation}deg)`;
 
-    function animate(currentTime) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Ease out cubic
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      currentWheelAngle = startAngle + (finalAngle - startAngle) * easeOut;
+    setTimeout(() => {
+      isSpinning = false;
+      const person = appData.queue[appData.currentQueueIndex];
+      const targetTeam = appData.teams[chosenTeamIndex];
 
-      drawFullWheel();
+      if (person.group === 'boy') targetTeam.boy = person;
+      else if (person.group === 'girl') targetTeam.girl = person;
+      else if (person.group === 'queen') targetTeam.queen = person;
+      else targetTeam.mentor = person;
 
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        isSpinning = false;
-        assignToTeam(selectedTeam.teamId);
-      }
-    }
-
-    requestAnimationFrame(animate);
-  }
-
-  function assignToTeam(teamId) {
-    const team = appData.teams.find(t => t.teamId === teamId);
-    const item = appData.queue[appData.currentQueueIndex];
-
-    if (item.type === 'mentor') {
-      team.mentor = item.data;
-    } else {
-      team[item.type] = item;
-    }
-
-    appData.currentQueueIndex++;
-    renderTeamsTable();
-    updateTurnDisplay();
-    drawFullWheel();
-    saveStorageData();
+      appData.currentQueueIndex++;
+      saveStorageData();
+      renderTeamsTable();
+      updateTurnDisplay();
+    }, 4000);
   }
 
   function resetAndReSpin() {
-    if (confirm("ต้องการสุ่มใหม่ทั้งหมดใช่หรือไม่?")) {
-      appData.runCount++;
-      document.getElementById('history-badge').innerHTML = `รอบสุ่มครั้งที่: ${appData.runCount}`;
-      resetStateData();
+    if (confirm("ต้องการเริ่มสุ่มจัดทีมใหม่ทั้งหมดใช่หรือไม่?")) {
+      appData.teams.forEach(t => {
+        t.boy = null;
+        t.girl = null;
+        t.queen = null;
+        t.mentor = null;
+      });
+      appData.currentQueueIndex = 0;
+      appData.runCount = (appData.runCount || 1) + 1;
+      saveStorageData();
+      renderTeamsTable();
+      updateTurnDisplay();
     }
   }
 
-  function renderTeamsTable() {
-    const tbody = document.getElementById('teams-table-body');
-    let html = '';
-
-    appData.teams.forEach(team => {
-      html += `
-        <tr>
-          <td><b>ทีม ${team.teamId}</b></td>
-          <td>${team.coach.name || '-'} ${getBranchTagHtml(team.coach.branch)}</td>
-          <td>${team.boy ? `${team.boy.name} ${getBranchTagHtml(team.boy.branch)}` : '-'}</td>
-          <td>${team.girl ? `${team.girl.name} ${getBranchTagHtml(team.girl.branch)}` : '-'}</td>
-          <td>${team.queen ? `${team.queen.name} ${getBranchTagHtml(team.queen.branch)}` : '-'}</td>
-          <td>${team.mentor ? `${team.mentor.name} ${getBranchTagHtml(team.mentor.branch)}` : '-'}</td>
-        </tr>
-      `;
-    });
-
-    tbody.innerHTML = html;
-  }
-
-  /* --- TAB 3: INDIVIDUAL TEAM SUMMARY VIEW --- */
   function renderSummaryTeamView() {
-    const index = appData.selectedViewTeamIndex;
-    const team = appData.teams[index];
+    const idx = appData.selectedViewTeamIndex || 0;
+    const team = appData.teams[idx];
+    if (!team) return;
 
-    // Render selector buttons
-    let btnHtml = '';
-    for (let i = 0; i < 5; i++) {
-      const activeClass = i === index ? 'active' : '';
-      btnHtml += `<button class="nav-team-btn ${activeClass}" onclick="selectSummaryTeam(${i})">ทีม ${i+1}</button>`;
+    // Render Selector Buttons
+    const btnContainer = document.getElementById('team-selector-buttons');
+    if (btnContainer) {
+      btnContainer.innerHTML = appData.teams.map((t, i) => `
+        <button class="nav-team-btn ${i === idx ? 'active' : ''}" onclick="selectSummaryTeam(${i})">ทีม ${i+1}</button>
+      `).join('');
     }
-    document.getElementById('team-selector-buttons').innerHTML = btnHtml;
-
-    const mainCard = document.getElementById('team-main-card');
-    const mainColor = getBranchColor(team.coach.branch);
-    mainCard.style.borderTopColor = mainColor;
 
     document.getElementById('summary-team-title').innerText = `ทีมที่ ${team.teamId}`;
-    document.getElementById('summary-team-title').style.color = mainColor;
 
-    // 1. Coach
-    document.getElementById('summary-coach-name').innerText = team.coach.name || '-';
-    document.getElementById('summary-coach-img').src = team.coach.img || DEFAULT_AVATAR;
-    document.getElementById('summary-coach-branch').innerHTML = getBranchTagHtml(team.coach.branch);
-    document.getElementById('box-coach').style.borderColor = mainColor;
+    // Helper for rendering person card
+    const setPerson = (role, personObj) => {
+      const imgEl = document.getElementById(`summary-${role}-img`);
+      const nameEl = document.getElementById(`summary-${role}-name`);
+      const branchEl = document.getElementById(`summary-${role}-branch`);
 
-    // 2. Mentor
-    const mentor = team.mentor;
-    document.getElementById('summary-mentor-name').innerText = mentor ? mentor.name : '-';
-    document.getElementById('summary-mentor-img').src = mentor ? mentor.img : DEFAULT_AVATAR;
-    document.getElementById('summary-mentor-branch').innerHTML = mentor ? getBranchTagHtml(mentor.branch) : getBranchTagHtml('');
-    document.getElementById('box-mentor').style.borderColor = mentor ? getBranchColor(mentor.branch) : '#cbd5e1';
+      if (personObj && (personObj.name || personObj.id)) {
+        imgEl.src = personObj.img || DEFAULT_AVATAR;
+        nameEl.innerText = personObj.name || '-';
+        branchEl.innerHTML = getBranchTag(personObj.branch);
+      } else {
+        imgEl.src = DEFAULT_AVATAR;
+        nameEl.innerText = '-';
+        branchEl.innerHTML = '';
+      }
+    };
 
-    // 3. Contestants (Boy, Girl, Queen)
-    ['boy', 'girl', 'queen'].forEach(role => {
-      const person = team[role];
-      document.getElementById(`summary-${role}-name`).innerText = person ? person.name : '-';
-      document.getElementById(`summary-${role}-img`).src = person ? person.img : DEFAULT_AVATAR;
-      document.getElementById(`summary-${role}-branch`).innerHTML = person ? getBranchTagHtml(person.branch) : getBranchTagHtml('');
-      document.getElementById(`box-${role}`).style.borderColor = person ? getBranchColor(person.branch) : '#cbd5e1';
-    });
+    setPerson('coach', team.coach);
+    setPerson('mentor', team.mentor);
+    setPerson('boy', team.boy);
+    setPerson('girl', team.girl);
+    setPerson('queen', team.queen);
   }
 
   function selectSummaryTeam(index) {
     appData.selectedViewTeamIndex = index;
+    saveStorageData();
     renderSummaryTeamView();
   }
 
   function navigateTeam(direction) {
-    let newIndex = appData.selectedViewTeamIndex + direction;
+    let newIndex = (appData.selectedViewTeamIndex || 0) + direction;
     if (newIndex < 0) newIndex = 4;
     if (newIndex > 4) newIndex = 0;
     selectSummaryTeam(newIndex);
   }
 
-  // Initialize Application Form
   window.onload = function() {
     initForm();
   };
