@@ -796,6 +796,804 @@
     }
   }
 
+  <!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BA AMBASSADOR 2026</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+    }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
+    h1, h2, h3, h4 { color: #0f172a; margin-top: 0; }
+    
+    /* Header Controls */
+    .header-controls { float: right; display: flex; gap: 8px; }
+    
+    /* Navigation Tabs */
+    .tab-container { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+    .tab-btn { padding: 10px 20px; font-size: 16px; font-weight: bold; border: none; background: #e2e8f0; color: #475569; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .tab-btn.active { background: var(--primary); color: white; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Input Form Styles */
+    .section-card { background: var(--card-bg); padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .input-row label { width: 40px; font-weight: bold; }
+    input[type="text"], select { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; min-width: 120px; }
+    input[type="file"] { font-size: 12px; width: 170px; }
+    
+    .img-preview-sm { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #cbd5e1; background: #e2e8f0; }
+
+    .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .btn-primary { background-color: var(--primary); color: white; }
+    .btn-success { background-color: #16a34a; color: white; width: 100%; }
+    .btn-success:hover { background-color: #15803d; }
+    .btn-reset { background-color: #dc2626; color: white; margin-top: 10px; width: 100%; font-size: 14px; padding: 12px; }
+    .btn-clear-data { background-color: #64748b; color: white; font-size: 14px; padding: 10px 16px; }
+    .btn-fullscreen { background-color: #0d9488; color: white; font-size: 14px; padding: 10px 16px; }
+
+    /* Wheel Arena Layout */
+    .arena-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+    .wheel-box { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+    #wheel-canvas { border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s ease; margin-top: 20px; }
+    #wheel-canvas:hover { transform: scale(1.02); }
+    .pointer { position: absolute; top: 30px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ef4444; z-index: 10; pointer-events: none; }
+    
+    /* Result Table & Branch Tags */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 14px; }
+    th { background-color: #f1f5f9; }
+    
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; margin-top: 4px; }
+    
+    /* Branch Colors */
+    .tag-acc { background-color: #0284c7; } /* การบัญชี */
+    .tag-mkt { background-color: #dc2626; } /* การตลาด */
+    .tag-fin { background-color: #16a34a; } /* การเงิน */
+    .tag-mgt { background-color: #ea580c; } /* การจัดการ */
+    .tag-mis { background-color: #db2777; } /* ระบบสารสนเทศ */
+    .tag-default { background-color: #64748b; }
+
+    .history-badge { background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+
+    /* Summary Card Custom Layout */
+    .summary-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .team-badge-buttons { display: flex; gap: 8px; }
+    .nav-team-btn { padding: 8px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .nav-team-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .team-display-card { 
+      background: #ffffff; 
+      border-radius: 16px; 
+      padding: 30px; 
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); 
+      text-align: center; 
+      max-width: 900px; 
+      margin: 0 auto; 
+      border-top: 8px solid #cbd5e1;
+      transition: border-color 0.3s ease;
+    }
+    
+    .person-box { 
+      border: 3px solid #cbd5e1; 
+      border-radius: 12px; 
+      padding: 15px; 
+      background: #ffffff; 
+      transition: all 0.3s ease; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+    }
+    .person-box:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    
+    .person-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 3px solid #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: #e2e8f0; }
+    .person-role { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #64748b; margin-bottom: 5px; }
+    .person-name { font-size: 16px; font-weight: bold; color: #0f172a; margin-bottom: 5px; }
+
+    .center-row { display: flex; justify-content: center; margin-bottom: 20px; }
+    .center-row .person-box { width: 320px; }
+  </style>
+</head>
+<body>
+
+  <div style="overflow: hidden; margin-bottom: 10px;">
+    <div class="header-controls">
+      <button id="fullscreen-btn" class="btn btn-fullscreen" onclick="toggleFullscreen()">🖥️ เต็มหน้าจอ</button>
+      <button class="btn btn-clear-data" onclick="clearAllData()">🗑️ ล้างข้อมูลระบบ</button>
+    </div>
+    <h1 style="margin: 0;">BA AMBASSADOR 2026</h1>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tab-container">
+    <button class="tab-btn active" onclick="switchTab('tab-input')">📋 1. ลงทะเบียนรายชื่อ & อัปโหลดรูปภาพ</button>
+    <button class="tab-btn" onclick="switchTab('tab-wheel')">🎡 2. เวทีหมุนวงล้อสุ่มทีม</button>
+    <button class="tab-btn" onclick="switchTab('tab-summary')">📊 3. สรุปผลรายทีม</button>
+  </div>
+
+  <!-- TAB 1: FORM INPUT -->
+  <div id="tab-input" class="tab-content active">
+    <div class="grid-2">
+      <div class="section-card">
+        <h3>👑 รายชื่อโค้ชประจำทีม</h3>
+        <div id="coaches-inputs"></div>
+      </div>
+      <div class="section-card">
+        <h3>🤝 รายชื่อพี่เลี้ยง</h3>
+        <div id="mentors-inputs"></div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3>🌟 รายชื่อผู้เข้าประกวด (เลือกรายชื่อจาก Dropdown)</h3>
+      <div class="grid-3">
+        <div>
+          <h4>♂️ Boy (B1 - B5)</h4>
+          <div id="boys-inputs"></div>
+        </div>
+        <div>
+          <h4>♀️ Girl (G1 - G5)</h4>
+          <div id="girls-inputs"></div>
+        </div>
+        <div>
+          <h4>👑 Queen (Q1 - Q5)</h4>
+          <div id="queens-inputs"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-success" onclick="saveData()">💾 บันทึกข้อมูล และไปหน้าหมุนวงล้อ</button>
+  </div>
+
+  <!-- TAB 2: WHEEL ARENA -->
+  <div id="tab-wheel" class="tab-content">
+    <div class="arena-grid">
+      <!-- Left: Wheel Control -->
+      <div class="section-card wheel-box">
+        <div class="pointer"></div>
+        <canvas id="wheel-canvas" width="300" height="300" onclick="spinWheel()" title="คลิกที่วงล้อเพื่อหมุน"></canvas>
+        <span style="font-size: 12px; color: #64748b; margin-top: 5px;">👇 คลิกที่วงล้อเพื่อหมุน</span>
+        <h3 id="current-turn" style="margin-top: 15px; margin-bottom: 20px; color: #2563eb; text-align: center;">เตรียมพร้อมหมุนวงล้อ</h3>
+        <button class="btn btn-reset" onclick="resetAndReSpin()">🔄 สุ่มใหม่ทั้งหมด</button>
+      </div>
+
+      <!-- Right: Live Teams Summary -->
+      <div class="section-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3>📊 ตารางสรุปผลการเข้าทีม (5 ทีม)</h3>
+          <span id="history-badge" class="history-badge">รอบสุ่มครั้งที่: 1</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ทีม</th>
+              <th>โค้ช</th>
+              <th>♂️ Boy</th>
+              <th>♀️ Girl</th>
+              <th>👑 Queen</th>
+              <th>🤝 พี่เลี้ยง</th>
+            </tr>
+          </thead>
+          <tbody id="teams-table-body">
+            <!-- Dynamic Content -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: INDIVIDUAL TEAM SUMMARY VIEW -->
+  <div id="tab-summary" class="tab-content">
+    <div class="summary-nav">
+      <button class="btn btn-primary" onclick="navigateTeam(-1)">⬅️ ทีมก่อนหน้า</button>
+      <div class="team-badge-buttons" id="team-selector-buttons">
+        <!-- Dynamic Buttons 1-5 -->
+      </div>
+      <button class="btn btn-primary" onclick="navigateTeam(1)">ทีมถัดไป ➡️</button>
+    </div>
+
+    <div class="team-display-card" id="team-main-card">
+      <h2 id="summary-team-title" style="font-size: 28px; margin-bottom: 25px; color: #2563eb;">ทีมที่ 1</h2>
+      
+      <!-- 1. Top: Coach -->
+      <div class="center-row">
+        <div class="person-box" id="box-coach">
+          <div class="person-role">👑 อาจารย์โค้ชประจำทีม</div>
+          <img id="summary-coach-img" class="person-img" src="" alt="Coach">
+          <div class="person-name" id="summary-coach-name">-</div>
+          <div id="summary-coach-branch"></div>
+        </div>
+      </div>
+
+      <!-- 2. Middle: Mentor -->
+      <div class="center-row">
+        <div class="person-box" id="box-mentor">
+          <div class="person-role">🤝 พี่เลี้ยงประจำทีม</div>
+          <img id="summary-mentor-img" class="person-img" src="" alt="Mentor">
+          <div class="person-name" id="summary-mentor-name">-</div>
+          <div id="summary-mentor-branch"></div>
+        </div>
+      </div>
+
+      <!-- 3. Bottom Grid: Boy (Left) | Girl (Center) | Queen (Right) -->
+      <div class="grid-3" style="margin-top: 25px;">
+        <div class="person-box" id="box-boy">
+          <div class="person-role">♂️ ผู้เข้าประกวด Boy</div>
+          <img id="summary-boy-img" class="person-img" src="" alt="Boy">
+          <div class="person-name" id="summary-boy-name">-</div>
+          <div id="summary-boy-branch"></div>
+        </div>
+        <div class="person-box" id="box-girl">
+          <div class="person-role">♀️ ผู้เข้าประกวด Girl</div>
+          <img id="summary-girl-img" class="person-img" src="" alt="Girl">
+          <div class="person-name" id="summary-girl-name">-</div>
+          <div id="summary-girl-branch"></div>
+        </div>
+        <div class="person-box" id="box-queen">
+          <div class="person-role">👑 ผู้เข้าประกวด Queen</div>
+          <img id="summary-queen-img" class="person-img" src="" alt="Queen">
+          <div class="person-name" id="summary-queen-name">-</div>
+          <div id="summary-queen-branch"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const BRANCHES = [
+    { name: "การจัดการ", class: "tag-mgt", color: "#ea580c" },
+    { name: "การเงิน", class: "tag-fin", color: "#16a34a" },
+    { name: "การตลาด", class: "tag-mkt", color: "#dc2626" },
+    { name: "การบัญชี", class: "tag-acc", color: "#0284c7" },
+    { name: "ระบบสารสนเทศ", class: "tag-mis", color: "#db2777" }
+  ];
+
+  const COACH_LIST = [
+    { id: "c1", name: "อาจารย์ ดร.พิทูร อมรวิทวัส", branch: "การจัดการ" },
+    { id: "c2", name: "อาจารย์ ดร.วรรณุดาว์ เพ็ชรไพโรจน์", branch: "การเงิน" },
+    { id: "c3", name: "อาจารย์ภัคภณ รถเพ็ชร", branch: "การตลาด" },
+    { id: "c4", name: "อาจารย์รสา เฉื่อยมณี", branch: "การบัญชี" },
+    { id: "c5", name: "อาจารย์ศศิวิมล กอบัว", branch: "ระบบสารสนเทศ" }
+  ];
+
+  const MENTOR_LIST = [
+    { id: "m1", name: "นางสาวมนตา มณีเนตร", branch: "การจัดการ" },
+    { id: "m2", name: "นายธนวัฒน์ เศรษฐนันท์", branch: "การเงิน" },
+    { id: "m3", name: "นางสาวศิรดา ตู้พิมาย", branch: "การบัญชี" },
+    { id: "m4", name: "นายอภินันท์ โนนโพธิ์", branch: "ระบบสารสนเทศ" },
+    { id: "m5", name: "นางสาวลักขณา เบี้ยกระโทก", branch: "การตลาด" }
+  ];
+
+  const DEFAULT_CONTESTANTS = {
+    boy: [
+      { id: "b1", name: "นายธนวัฒน์ สงสุวรรณ", branch: "การจัดการ" },
+      { id: "b2", name: "นายภูวนัตถ์ ก้อนจันทึก", branch: "การบัญชี" },
+      { id: "b3", name: "นายมนต์ธวัล อชิโนปุญวัตน์", branch: "การเงิน" },
+      { id: "b4", name: "นายเขมฑัต ชานนท์", branch: "การตลาด" },
+      { id: "b5", name: "นายอภิรักษ์ ปนตะคุ", branch: "ระบบสารสนเทศ" }
+    ],
+    girl: [
+      { id: "g1", name: "นางสาวรัตน์ชนก แสงสิงห์", branch: "การจัดการ" },
+      { id: "g2", name: "นางสาวไพลิน โสมัสสา", branch: "การบัญชี" },
+      { id: "g3", name: "นางสาวศศิพัชร รติพันธ์สำโรง", branch: "การเงิน" },
+      { id: "g4", name: "นางสาวเปมนีย์ บุญประเสริฐ", branch: "การตลาด" },
+      { id: "g5", name: "นางสาวจิรัชญา นมขุนทด", branch: "ระบบสารสนเทศ" }
+    ],
+    queen: [
+      { id: "q1", name: "นายธนกฤต เรืองโสม", branch: "การจัดการ" },
+      { id: "q2", name: "นายธนพงศกร เผ่าบ้านฟาง", branch: "การบัญชี" },
+      { id: "q3", name: "นายธนวัฒน์ สวงโท", branch: "การเงิน" },
+      { id: "q4", name: "นายพาณิภัค พิมพ์ทอง", branch: "การตลาด" },
+      { id: "q5", name: "นายอดิศร แหลมกระโทก", branch: "ระบบสารสนเทศ" }
+    ]
+  };
+
+  let userImages = {}; 
+  const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
+
+  let appData = {
+    teams: Array.from({length: 5}, (_, i) => ({ teamId: i + 1, coach: {}, mentor: null, boy: null, girl: null, queen: null })),
+    mentorsList: [],
+    queue: [],
+    currentQueueIndex: 0,
+    historyPatterns: [],
+    runCount: 1,
+    selectedViewTeamIndex: 0
+  };
+
+  function toggleFullscreen() {
+    const fsBtn = document.getElementById('fullscreen-btn');
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        document.documentElement.webkitRequestFullscreen();
+      }
+      fsBtn.innerHTML = "❌ ออกจากเต็มจอ";
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+      fsBtn.innerHTML = "🖥️ เต็มหน้าจอ";
+    }
+  }
+
+  document.addEventListener('fullscreenchange', handleFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+  function handleFullscreenChange() {
+    const fsBtn = document.getElementById('fullscreen-btn');
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      fsBtn.innerHTML = "🖥️ เต็มหน้าจอ";
+    } else {
+      fsBtn.innerHTML = "❌ ออกจากเต็มจอ";
+    }
+  }
+
+  function saveStorageData() {
+    try {
+      localStorage.setItem('ba2026_userImages', JSON.stringify(userImages));
+      localStorage.setItem('ba2026_appData', JSON.stringify(appData));
+      
+      const formData = {};
+      document.querySelectorAll('input[type="text"], select').forEach(el => {
+        if (el.id) formData[el.id] = el.value;
+      });
+      localStorage.setItem('ba2026_formData', JSON.stringify(formData));
+    } catch(e) {
+      console.warn('LocalStorage limit exceeded', e);
+    }
+  }
+
+  function loadStorageData() {
+    const savedImages = localStorage.getItem('ba2026_userImages');
+    if (savedImages) {
+      userImages = JSON.parse(savedImages);
+      Object.keys(userImages).forEach(key => {
+        const preview = document.getElementById(`preview_${key}`);
+        if(preview) preview.src = userImages[key];
+      });
+    }
+
+    const savedForm = localStorage.getItem('ba2026_formData');
+    if (savedForm) {
+      const formData = JSON.parse(savedForm);
+      Object.keys(formData).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = formData[id];
+      });
+      updateCoachDropdowns();
+      updateMentorDropdowns();
+      ['boy', 'girl', 'queen'].forEach(g => updateContestantDropdowns(g));
+    }
+
+    const savedApp = localStorage.getItem('ba2026_appData');
+    if (savedApp) {
+      appData = JSON.parse(savedApp);
+      renderTeamsTable();
+      updateTurnDisplay();
+    }
+  }
+
+  function clearAllData() {
+    if (confirm("คุณแน่ใจหรือไม่ว่าต้องการล้างข้อมูลรายชื่อและรูปภาพทั้งหมด?")) {
+      localStorage.clear();
+      location.reload();
+    }
+  }
+
+  function handleImageUpload(input, key) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        userImages[key] = e.target.result;
+        const preview = document.getElementById(`preview_${key}`);
+        if(preview) preview.src = e.target.result;
+        saveStorageData();
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    
+    if(tabId === 'tab-input') {
+      document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    }
+    if(tabId === 'tab-wheel') {
+      document.querySelectorAll('.tab-btn')[1].classList.add('active');
+      drawFullWheel();
+    }
+    if(tabId === 'tab-summary') {
+      document.querySelectorAll('.tab-btn')[2].classList.add('active');
+      renderSummaryTeamView();
+    }
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  function initForm() {
+    let coachHtml = '', mentorHtml = '';
+    for(let i=1; i<=5; i++) {
+      coachHtml += `
+        <div class="input-row">
+          <label>ทีม ${i}:</label>
+          <select id="coach_select_${i}" class="coach-select" onchange="updateCoachDropdowns(); saveStorageData();">
+            ${coachOptions(COACH_LIST[i-1].id)}
+          </select>
+          <img id="preview_coach_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <input type="file" accept="image/*" onchange="handleImageUpload(this, 'coach_${i}')">
+        </div>`;
+      
+      mentorHtml += `
+        <div class="input-row">
+          <label>คนที่ ${i}:</label>
+          <select id="mentor_select_${i}" class="mentor-select" onchange="updateMentorDropdowns(); saveStorageData();">
+            ${mentorOptions(MENTOR_LIST[i-1].id)}
+          </select>
+          <img id="preview_mentor_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <input type="file" accept="image/*" onchange="handleImageUpload(this, 'mentor_${i}')">
+        </div>`;
+    }
+    document.getElementById('coaches-inputs').innerHTML = coachHtml;
+    document.getElementById('mentors-inputs').innerHTML = mentorHtml;
+
+    renderCategoryInputs('boys-inputs', 'B', 'boy');
+    renderCategoryInputs('girls-inputs', 'G', 'girl');
+    renderCategoryInputs('queens-inputs', 'Q', 'queen');
+
+    updateCoachDropdowns();
+    updateMentorDropdowns();
+    ['boy', 'girl', 'queen'].forEach(g => updateContestantDropdowns(g));
+
+    loadStorageData();
+  }
+
+  function coachOptions(selectedId = "") {
+    return `<option value="">-- เลือกอาจารย์โค้ช --</option>` + COACH_LIST.map(c => {
+      const selected = c.id === selectedId ? 'selected' : '';
+      return `<option value="${c.id}" ${selected}>${c.name} (${c.branch})</option>`;
+    }).join('');
+  }
+
+  function updateCoachDropdowns() {
+    const selects = document.querySelectorAll('.coach-select');
+    const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
+
+    selects.forEach(select => {
+      const currentValue = select.value;
+      Array.from(select.options).forEach(option => {
+        if (option.value === "") return;
+        if (selectedValues.includes(option.value) && option.value !== currentValue) {
+          option.style.display = 'none';
+          option.disabled = true;
+        } else {
+          option.style.display = 'block';
+          option.disabled = false;
+        }
+      });
+    });
+  }
+
+  function mentorOptions(selectedId = "") {
+    return `<option value="">-- เลือกพี่เลี้ยง --</option>` + MENTOR_LIST.map(m => {
+      const selected = m.id === selectedId ? 'selected' : '';
+      return `<option value="${m.id}" ${selected}>${m.name} (${m.branch})</option>`;
+    }).join('');
+  }
+
+  function updateMentorDropdowns() {
+    const selects = document.querySelectorAll('.mentor-select');
+    const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
+
+    selects.forEach(select => {
+      const currentValue = select.value;
+      Array.from(select.options).forEach(option => {
+        if (option.value === "") return;
+        if (selectedValues.includes(option.value) && option.value !== currentValue) {
+          option.style.display = 'none';
+          option.disabled = true;
+        } else {
+          option.style.display = 'block';
+          option.disabled = false;
+        }
+      });
+    });
+  }
+
+  function contestantOptions(groupName, selectedId = "") {
+    const list = DEFAULT_CONTESTANTS[groupName] || [];
+    return `<option value="">-- เลือกผู้เข้าประกวด --</option>` + list.map(item => {
+      const selected = item.id === selectedId ? 'selected' : '';
+      return `<option value="${item.id}">${item.name}</option>`;
+    }).join('');
+  }
+
+  function renderCategoryInputs(containerId, prefix, groupName) {
+    let html = '';
+    const defaultList = DEFAULT_CONTESTANTS[groupName] || [];
+
+    for(let i=1; i<=5; i++) {
+      const key = `${prefix}_${i}`;
+      const defaultItem = defaultList[i-1] || { id: "", branch: "" };
+
+      html += `
+        <div class="input-row">
+          <label>${prefix}${i}:</label>
+          <select id="${prefix}_select_${i}" class="contestant-select" data-group="${groupName}" onchange="onContestantSelect('${prefix}', ${i}, '${groupName}')">
+            ${contestantOptions(groupName, defaultItem.id)}
+          </select>
+          <input type="text" id="${prefix}_branch_${i}" value="${defaultItem.branch}" readonly style="width: 100px; flex: none; background-color: #f1f5f9; color: #475569; font-weight: bold; text-align: center;" placeholder="สาขา">
+          <img id="preview_${key}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <input type="file" accept="image/*" onchange="handleImageUpload(this, '${key}')">
+        </div>`;
+    }
+    document.getElementById(containerId).innerHTML = html;
+  }
+
+  function onContestantSelect(prefix, index, groupName) {
+    const selectEl = document.getElementById(`${prefix}_select_${index}`);
+    const branchInput = document.getElementById(`${prefix}_branch_${index}`);
+    const selectedId = selectEl.value;
+
+    const list = DEFAULT_CONTESTANTS[groupName] || [];
+    const found = list.find(item => item.id === selectedId);
+
+    if (found) {
+      branchInput.value = found.branch;
+    } else {
+      branchInput.value = "";
+    }
+
+    updateContestantDropdowns(groupName);
+    saveStorageData();
+  }
+
+  function updateContestantDropdowns(groupName) {
+    const selects = document.querySelectorAll(`select.contestant-select[data-group="${groupName}"]`);
+    const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
+
+    selects.forEach(select => {
+      const currentValue = select.value;
+      Array.from(select.options).forEach(option => {
+        if (option.value === "") return;
+        if (selectedValues.includes(option.value) && option.value !== currentValue) {
+          option.style.display = 'none';
+          option.disabled = true;
+        } else {
+          option.style.display = 'block';
+          option.disabled = false;
+        }
+      });
+    });
+  }
+
+  function getBranchTagHtml(branchName) {
+    if (!branchName) return '<span class="tag tag-default">ไม่ระบุ</span>';
+    const found = BRANCHES.find(b => b.name === branchName);
+    const className = found ? found.class : 'tag-default';
+    return `<span class="tag ${className}">${branchName}</span>`;
+  }
+
+  function getBranchColor(branchName) {
+    if (!branchName) return '#cbd5e1';
+    const found = BRANCHES.find(b => b.name === branchName);
+    return found ? found.color : '#cbd5e1';
+  }
+
+  function saveData() {
+    appData.historyPatterns = [];
+    appData.runCount = 1;
+    resetStateData();
+    switchTab('tab-wheel');
+  }
+
+  function resetStateData() {
+    for(let i=1; i<=5; i++) {
+      const coachSelectVal = document.getElementById(`coach_select_${i}`).value;
+      const foundCoach = COACH_LIST.find(c => c.id === coachSelectVal);
+
+      appData.teams[i-1].coach = { 
+        name: foundCoach ? foundCoach.name : `โค้ชทีม ${i}`, 
+        branch: foundCoach ? foundCoach.branch : "",
+        img: userImages[`coach_${i}`] || DEFAULT_AVATAR
+      };
+      appData.teams[i-1].mentor = null; 
+      appData.teams[i-1].boy = null; 
+      appData.teams[i-1].girl = null; 
+      appData.teams[i-1].queen = null; 
+    }
+
+    appData.mentorsList = [];
+    for(let i=1; i<=5; i++) {
+      const mentorSelectVal = document.getElementById(`mentor_select_${i}`).value;
+      const foundMentor = MENTOR_LIST.find(m => m.id === mentorSelectVal);
+
+      appData.mentorsList.push({
+        name: foundMentor ? foundMentor.name : `พี่เลี้ยง ${i}`,
+        branch: foundMentor ? foundMentor.branch : "",
+        img: userImages[`mentor_${i}`] || DEFAULT_AVATAR
+      });
+    }
+
+    appData.queue = [];
+    const categories = [{prefix: 'B', type: 'boy'}, {prefix: 'G', type: 'girl'}, {prefix: 'Q', type: 'queen'}];
+    
+    categories.forEach(cat => {
+      for(let i=1; i<=5; i++) {
+        const key = `${cat.prefix}_${i}`;
+        const selectedId = document.getElementById(`${cat.prefix}_select_${i}`).value;
+        const list = DEFAULT_CONTESTANTS[cat.type] || [];
+        const contestantObj = list.find(item => item.id === selectedId);
+
+        appData.queue.push({
+          code: `${cat.prefix}${i}`,
+          type: cat.type,
+          name: contestantObj ? contestantObj.name : `${cat.prefix}${i}`,
+          branch: contestantObj ? contestantObj.branch : document.getElementById(`${cat.prefix}_branch_${i}`).value,
+          img: userImages[key] || DEFAULT_AVATAR
+        });
+      }
+    });
+
+    appData.currentQueueIndex = 0;
+    document.getElementById('history-badge').innerText = `รอบสุ่มครั้งที่: ${appData.runCount}`;
+    renderTeamsTable();
+    updateTurnDisplay();
+    drawFullWheel();
+    saveStorageData();
+  }
+
+  function resetAndReSpin() {
+    if (isSpinning) return;
+    
+    const currentPattern = generateCurrentPatternHash();
+    if (currentPattern && !appData.historyPatterns.includes(currentPattern)) {
+      appData.historyPatterns.push(currentPattern);
+    }
+    
+    appData.runCount++;
+    resetStateData();
+  }
+
+  function generateCurrentPatternHash() {
+    return appData.teams.map(t => `${t.boy?.code || ''}-${t.girl?.code || ''}-${t.queen?.code || ''}`).join('|');
+  }
+
+  function canCompleteAssignmentWithMentors(qIndex) {
+    if (qIndex >= appData.queue.length) {
+      const futurePattern = generateCurrentPatternHash();
+      if (appData.historyPatterns.includes(futurePattern)) {
+        return false;
+      }
+      return canAssignMentorsStrict();
+    }
+
+    const item = appData.queue[qIndex];
+    const teamIndices = shuffleArray([0, 1, 2, 3, 4]);
+
+    for (let t of teamIndices) {
+      const team = appData.teams[t];
+      if (team[item.type] !== null) continue;
+
+      const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
+      if (item.branch && teamBranches.includes(item.branch)) continue;
+
+      team[item.type] = item;
+      const possible = canCompleteAssignmentWithMentors(qIndex + 1);
+      team[item.type] = null;
+
+      if (possible) return true;
+    }
+    return false;
+  }
+
+  function canAssignMentorsStrict() {
+    let availableMentors = [...appData.mentorsList];
+
+    function solveMentor(tIdx) {
+      if (tIdx === 5) return true;
+      const team = appData.teams[tIdx];
+      const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
+
+      const mentorIndices = shuffleArray([0, 1, 2, 3, 4]);
+
+      for (let i of mentorIndices) {
+        const m = availableMentors[i];
+        if (!m) continue;
+        if (!m.branch || !teamBranches.includes(m.branch)) {
+          availableMentors[i] = null;
+          if (solveMentor(tIdx + 1)) {
+            availableMentors[i] = m;
+            return true;
+          }
+          availableMentors[i] = m;
+        }
+      }
+      return false;
+    }
+    return solveMentor(0);
+  }
+
+  function shuffleArray(arr) {
+    const array = [...arr];
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function getValidTeamsForCurrentContestant() {
+    if (appData.currentQueueIndex >= appData.queue.length) return [];
+    
+    const contestant = appData.queue[appData.currentQueueIndex];
+    const validTeams = [];
+    const shuffledTeams = shuffleArray(appData.teams);
+
+    for (let team of shuffledTeams) {
+      if (team[contestant.type] !== null) continue;
+
+      const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
+      if (contestant.branch && teamBranches.includes(contestant.branch)) continue;
+
+      team[contestant.type] = contestant;
+      const isSolvable = canCompleteAssignmentWithMentors(appData.currentQueueIndex + 1);
+      team[contestant.type] = null;
+
+      if (isSolvable) {
+        validTeams.push(team);
+      }
+    }
+
+    return validTeams;
+  }
+
+  let isSpinning = false;
+  let currentAngle = 0;
+
+  function drawFullWheel() {
+    const canvas = document.getElementById('wheel-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const total = 5;
+    const arc = (Math.PI * 2) / total;
+    const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < total; i++) {
+      const angle = currentAngle + i * arc;
+      ctx.fillStyle = colors[i];
+      
+      ctx.beginPath();
+      ctx.arc(150, 150, 140, angle, angle + arc);
+      ctx.lineTo(150, 150);
+      ctx.fill();
+
+      ctx.save();
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 16px Kanit, sans-serif';
+      ctx.translate(150 + Math.cos(angle + arc / 2) * 90, 150 + Math.sin(angle + arc / 2) * 90);
+      ctx.rotate(angle + arc / 2 + Math.PI / 2);
+      ctx.fillText(`ทีม ${appData.teams[i].teamId}`, -20, 0);
+      ctx.restore();
+    }
+  }
+
   function updateTurnDisplay() {
     if (appData.currentQueueIndex < appData.queue.length) {
       const current = appData.queue[appData.currentQueueIndex];
