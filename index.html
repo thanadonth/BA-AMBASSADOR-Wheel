@@ -15,6 +15,7 @@
     h1, h2, h3, h4 { color: #0f172a; margin-top: 0; }
     
     /* Header Controls */
+    .header-container { overflow: hidden; margin-bottom: 10px; }
     .header-controls { float: right; display: flex; gap: 8px; }
     
     /* Navigation Tabs */
@@ -103,11 +104,30 @@
 
     .center-row { display: flex; justify-content: center; margin-bottom: 20px; }
     .center-row .person-box { width: 320px; }
+
+    /* ======================================================== */
+    /* FULLSCREEN CUSTOM STYLES (ซ่อนหัวข้อและแท็บตอนเต็มจอ) */
+    /* ======================================================== */
+    :fullscreen .header-container,
+    :fullscreen .tab-container,
+    :-webkit-full-screen .header-container,
+    :-webkit-full-screen .tab-container,
+    :-moz-full-screen .header-container,
+    :-moz-full-screen .tab-container {
+      display: none !important;
+    }
+
+    /* ปรับแต่งระยะขอบกรณีเปิดโหมดเต็มหน้าจอ */
+    :fullscreen body,
+    :-webkit-full-screen body,
+    :-moz-full-screen body {
+      padding: 10px;
+    }
   </style>
 </head>
 <body>
 
-  <div style="overflow: hidden; margin-bottom: 10px;">
+  <div class="header-container">
     <div class="header-controls">
       <button id="fullscreen-btn" class="btn btn-fullscreen" onclick="toggleFullscreen()">🖥️ เต็มหน้าจอ</button>
       <button class="btn btn-clear-data" onclick="clearAllData()">🗑️ ล้างข้อมูลระบบ</button>
