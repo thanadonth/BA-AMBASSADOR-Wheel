@@ -32,44 +32,17 @@
     .input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
     .input-row label { width: 40px; font-weight: bold; }
     input[type="text"], select { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; min-width: 120px; }
+    input[type="file"] { font-size: 12px; width: 170px; }
     
     .img-preview-sm { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #cbd5e1; background: #e2e8f0; }
 
     .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-    .btn-sm { padding: 6px 10px; font-size: 12px; font-weight: normal; border-radius: 6px; }
     .btn-primary { background-color: var(--primary); color: white; }
-    .btn-secondary { background-color: #64748b; color: white; }
-    .btn-danger-sm { background-color: #ef4444; color: white; }
-    .btn-danger-sm:hover { background-color: #dc2626; }
     .btn-success { background-color: #16a34a; color: white; width: 100%; }
     .btn-success:hover { background-color: #15803d; }
     .btn-reset { background-color: #dc2626; color: white; margin-top: 10px; width: 100%; font-size: 14px; padding: 12px; }
     .btn-clear-data { background-color: #64748b; color: white; font-size: 14px; padding: 10px 16px; }
     .btn-fullscreen { background-color: #0d9488; color: white; font-size: 14px; padding: 10px 16px; }
-
-    /* File upload button custom styling */
-    .file-select-group { display: flex; gap: 4px; align-items: center; }
-    .btn-file-input { position: relative; overflow: hidden; display: inline-block; }
-    .btn-file-input input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-
-    /* Modal Gallery Styles */
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
-    .modal-overlay.active { display: flex; }
-    .modal-box { background: #ffffff; padding: 20px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-    
-    /* Gallery Filter Tabs & Items */
-    .gallery-filter-container { display: flex; gap: 6px; margin-top: 10px; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; flex-wrap: wrap; }
-    .gallery-filter-btn { padding: 5px 10px; font-size: 12px; font-weight: bold; border: 1px solid #cbd5e1; background: #f1f5f9; color: #475569; border-radius: 6px; cursor: pointer; }
-    .gallery-filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; margin-top: 15px; }
-    .gallery-item { border: 2px solid #e2e8f0; border-radius: 8px; padding: 5px; cursor: pointer; text-align: center; transition: 0.2s; position: relative; background: #fff; }
-    .gallery-item:hover { border-color: var(--primary); transform: scale(1.03); }
-    .gallery-item img { width: 100%; height: 75px; object-fit: cover; border-radius: 6px; }
-    .gallery-item span { font-size: 10px; color: #64748b; display: block; margin-top: 4px; word-break: break-all; }
-    
-    .gallery-delete-btn { position: absolute; top: 2px; right: 2px; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; line-height: 20px; text-align: center; cursor: pointer; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    .gallery-delete-btn:hover { background: #dc2626; transform: scale(1.1); }
 
     /* Wheel Arena Layout */
     .arena-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
@@ -145,7 +118,7 @@
 
   <!-- Navigation Tabs -->
   <div class="tab-container">
-    <button class="tab-btn active" onclick="switchTab('tab-input')">📋 1. ลงทะเบียนรายชื่อ</button>
+    <button class="tab-btn active" onclick="switchTab('tab-input')">📋 1. ลงทะเบียนรายชื่อ & อัปโหลดรูปภาพ</button>
     <button class="tab-btn" onclick="switchTab('tab-wheel')">🎡 2. เวทีหมุนวงล้อสุ่มทีม</button>
     <button class="tab-btn" onclick="switchTab('tab-summary')">📊 3. สรุปผลรายทีม</button>
   </div>
@@ -164,7 +137,7 @@
     </div>
 
     <div class="section-card">
-      <h3>🌟 รายชื่อผู้เข้าประกวด</h3>
+      <h3>🌟 รายชื่อผู้เข้าประกวด (เลือกรายชื่อจาก Dropdown)</h3>
       <div class="grid-3">
         <div>
           <h4>♂️ Boy (B1 - B5)</h4>
@@ -278,31 +251,6 @@
     </div>
   </div>
 
-  <!-- MODAL: GALLERY PRESET SELECTOR (WITH CATEGORIES & DELETE FUNCTION) -->
-  <div id="gallery-modal" class="modal-overlay">
-    <div class="modal-box">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="margin: 0;">🖼️ คลังรูปภาพอัจฉริยะ (Smart Gallery)</h3>
-        <button class="btn btn-sm btn-secondary" onclick="closeGalleryModal()">✕ ปิด</button>
-      </div>
-      <p style="font-size: 12px; color: #64748b; margin-top: 5px;">เลือกรูปภาพตามหมวดหมู่ หรือกดปุ่ม ✖ ที่มุมรูปเพื่อลบรูปที่ไม่ต้องการออกจากคลัง</p>
-      
-      <!-- Category Filter Tabs -->
-      <div class="gallery-filter-container">
-        <button class="gallery-filter-btn active" onclick="filterGallery('all')">ทั้งหมด</button>
-        <button class="gallery-filter-btn" onclick="filterGallery('coach')">👑 โค้ช</button>
-        <button class="gallery-filter-btn" onclick="filterGallery('mentor')">🤝 พี่เลี้ยง</button>
-        <button class="gallery-filter-btn" onclick="filterGallery('boy')">♂️ Boy</button>
-        <button class="gallery-filter-btn" onclick="filterGallery('girl')">♀️ Girl</button>
-        <button class="gallery-filter-btn" onclick="filterGallery('queen')">👑 Queen</button>
-      </div>
-
-      <div id="gallery-grid-container" class="gallery-grid">
-        <!-- Dynamic Preset Items -->
-      </div>
-    </div>
-  </div>
-
 <script>
   const BRANCHES = [
     { name: "การจัดการ", class: "tag-mgt", color: "#ea580c" },
@@ -352,13 +300,7 @@
     ]
   };
 
-  let userImages = {}; // เก็บภาพที่ผูกกับตำแหน่งปัจจุบัน { key: imgUrl }
-  let imageLibrary = []; // คลังภาพส่วนกลางแบบวัตถุ [{ id, url, category }]
-  let currentActiveTargetKey = null; 
-  let currentGalleryFilter = 'all';
-  let isSpinning = false;
-  let currentWheelAngle = 0;
-
+  let userImages = {}; 
   const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
   let appData = {
@@ -405,7 +347,6 @@
   function saveStorageData() {
     try {
       localStorage.setItem('ba2026_userImages', JSON.stringify(userImages));
-      localStorage.setItem('ba2026_imageLibrary', JSON.stringify(imageLibrary));
       localStorage.setItem('ba2026_appData', JSON.stringify(appData));
       
       const formData = {};
@@ -419,21 +360,12 @@
   }
 
   function loadStorageData() {
-    const savedLib = localStorage.getItem('ba2026_imageLibrary');
-    if (savedLib) {
-      imageLibrary = JSON.parse(savedLib);
-      // Migration Support: Convert old string library to object library
-      if (imageLibrary.length > 0 && typeof imageLibrary[0] === 'string') {
-        imageLibrary = imageLibrary.map(url => ({ id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4), url: url, category: 'all' }));
-      }
-    }
-
     const savedImages = localStorage.getItem('ba2026_userImages');
     if (savedImages) {
       userImages = JSON.parse(savedImages);
       Object.keys(userImages).forEach(key => {
         const preview = document.getElementById(`preview_${key}`);
-        if(preview && userImages[key]) preview.src = userImages[key];
+        if(preview) preview.src = userImages[key];
       });
     }
 
@@ -464,135 +396,17 @@
     }
   }
 
-  /* --- ระบบจัดการรูปภาพ & คลังรูปภาพ (Smart Library with Categories & Deletion) --- */
-  function getCategoryFromKey(key) {
-    if (!key) return 'all';
-    if (key.startsWith('coach_')) return 'coach';
-    if (key.startsWith('mentor_')) return 'mentor';
-    if (key.startsWith('B_')) return 'boy';
-    if (key.startsWith('G_')) return 'girl';
-    if (key.startsWith('Q_')) return 'queen';
-    return 'all';
-  }
-
-  function addImageToLibrary(imgUrl, category = 'all') {
-    if (!imgUrl || imgUrl === DEFAULT_AVATAR) return;
-    const exists = imageLibrary.some(item => item.url === imgUrl);
-    if (!exists) {
-      const newImg = {
-        id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
-        url: imgUrl,
-        category: category
-      };
-      imageLibrary.push(newImg);
-    }
-  }
-
   function handleImageUpload(input, key) {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        const imgUrl = e.target.result;
-        const category = getCategoryFromKey(key);
-        addImageToLibrary(imgUrl, category);
-        applyImageToKey(key, imgUrl);
+        userImages[key] = e.target.result;
+        const preview = document.getElementById(`preview_${key}`);
+        if(preview) preview.src = e.target.result;
+        saveStorageData();
       };
       reader.readAsDataURL(input.files[0]);
     }
-  }
-
-  function removeImageFromKey(key) {
-    delete userImages[key];
-    const preview = document.getElementById(`preview_${key}`);
-    if(preview) preview.src = DEFAULT_AVATAR;
-    saveStorageData();
-  }
-
-  function deleteImageFromLibrary(imgId, event) {
-    if (event) event.stopPropagation();
-    if (confirm("คุณต้องการลบรูปภาพนี้ออกจากคลังระบบหรือไม่?")) {
-      const itemToDelete = imageLibrary.find(img => img.id === imgId);
-      if (itemToDelete) {
-        // Clear from active form inputs if matches
-        Object.keys(userImages).forEach(key => {
-          if (userImages[key] === itemToDelete.url) {
-            removeImageFromKey(key);
-          }
-        });
-        // Remove from library array
-        imageLibrary = imageLibrary.filter(img => img.id !== imgId);
-        saveStorageData();
-        renderGalleryItems();
-      }
-    }
-  }
-
-  function openGalleryModal(targetKey) {
-    currentActiveTargetKey = targetKey;
-    currentGalleryFilter = getCategoryFromKey(targetKey);
-    
-    // Update filter tab buttons active UI
-    document.querySelectorAll('.gallery-filter-btn').forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.getAttribute('onclick').includes(`'${currentGalleryFilter}'`)) {
-        btn.classList.add('active');
-      }
-    });
-
-    renderGalleryItems();
-    document.getElementById('gallery-modal').classList.add('active');
-  }
-
-  function filterGallery(category) {
-    currentGalleryFilter = category;
-    document.querySelectorAll('.gallery-filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    renderGalleryItems();
-  }
-
-  function renderGalleryItems() {
-    const grid = document.getElementById('gallery-grid-container');
-    grid.innerHTML = '';
-
-    const filtered = imageLibrary.filter(item => {
-      if (currentGalleryFilter === 'all') return true;
-      return item.category === currentGalleryFilter || item.category === 'all';
-    });
-
-    if (filtered.length === 0) {
-      grid.innerHTML = `<p style="grid-column: 1/-1; color:#94a3b8; text-align:center; padding: 20px;">ไม่มีรูปภาพในหมวดหมู่นี้</p>`;
-    } else {
-      filtered.forEach((item, index) => {
-        const itemEl = document.createElement('div');
-        itemEl.className = 'gallery-item';
-        itemEl.innerHTML = `
-          <button class="gallery-delete-btn" title="ลบออกจากคลัง" onclick="deleteImageFromLibrary('${item.id}', event)">✕</button>
-          <img src="${item.url}" alt="รูปที่ ${index+1}">
-          <span>รูปที่ ${index+1}</span>
-        `;
-        itemEl.onclick = function() {
-          if (currentActiveTargetKey) {
-            applyImageToKey(currentActiveTargetKey, item.url);
-            closeGalleryModal();
-          }
-        };
-        grid.appendChild(itemEl);
-      });
-    }
-  }
-
-  function closeGalleryModal() {
-    document.getElementById('gallery-modal').classList.remove('active');
-    currentActiveTargetKey = null;
-  }
-
-  function applyImageToKey(key, imgUrl) {
-    userImages[key] = imgUrl;
-    const category = getCategoryFromKey(key);
-    addImageToLibrary(imgUrl, category);
-    const preview = document.getElementById(`preview_${key}`);
-    if(preview) preview.src = imgUrl;
-    saveStorageData();
   }
 
   function switchTab(tabId) {
@@ -616,40 +430,24 @@
   function initForm() {
     let coachHtml = '', mentorHtml = '';
     for(let i=1; i<=5; i++) {
-      const coachKey = `coach_${i}`;
       coachHtml += `
         <div class="input-row">
           <label>ทีม ${i}:</label>
           <select id="coach_select_${i}" class="coach-select" onchange="updateCoachDropdowns(); saveStorageData();">
             ${coachOptions(COACH_LIST[i-1].id)}
           </select>
-          <img id="preview_${coachKey}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <div class="file-select-group">
-            <button class="btn btn-sm btn-primary btn-file-input">
-              📁 ไฟล์
-              <input type="file" accept="image/*" onchange="handleImageUpload(this, '${coachKey}')">
-            </button>
-            <button class="btn btn-sm btn-secondary" type="button" onclick="openGalleryModal('${coachKey}')">🖼️ คลัง</button>
-            <button class="btn btn-sm btn-danger-sm" type="button" title="ลบรูป" onclick="removeImageFromKey('${coachKey}')">❌</button>
-          </div>
+          <img id="preview_coach_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <input type="file" accept="image/*" onchange="handleImageUpload(this, 'coach_${i}')">
         </div>`;
       
-      const mentorKey = `mentor_${i}`;
       mentorHtml += `
         <div class="input-row">
           <label>คนที่ ${i}:</label>
           <select id="mentor_select_${i}" class="mentor-select" onchange="updateMentorDropdowns(); saveStorageData();">
             ${mentorOptions(MENTOR_LIST[i-1].id)}
           </select>
-          <img id="preview_${mentorKey}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <div class="file-select-group">
-            <button class="btn btn-sm btn-primary btn-file-input">
-              📁 ไฟล์
-              <input type="file" accept="image/*" onchange="handleImageUpload(this, '${mentorKey}')">
-            </button>
-            <button class="btn btn-sm btn-secondary" type="button" onclick="openGalleryModal('${mentorKey}')">🖼️ คลัง</button>
-            <button class="btn btn-sm btn-danger-sm" type="button" title="ลบรูป" onclick="removeImageFromKey('${mentorKey}')">❌</button>
-          </div>
+          <img id="preview_mentor_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <input type="file" accept="image/*" onchange="handleImageUpload(this, 'mentor_${i}')">
         </div>`;
     }
     document.getElementById('coaches-inputs').innerHTML = coachHtml;
@@ -742,14 +540,7 @@
           </select>
           <input type="text" id="${prefix}_branch_${i}" value="${defaultItem.branch}" readonly style="width: 100px; flex: none; background-color: #f1f5f9; color: #475569; font-weight: bold; text-align: center;" placeholder="สาขา">
           <img id="preview_${key}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <div class="file-select-group">
-            <button class="btn btn-sm btn-primary btn-file-input">
-              📁 ไฟล์
-              <input type="file" accept="image/*" onchange="handleImageUpload(this, '${key}')">
-            </button>
-            <button class="btn btn-sm btn-secondary" type="button" onclick="openGalleryModal('${key}')">🖼️ คลัง</button>
-            <button class="btn btn-sm btn-danger-sm" type="button" title="ลบรูป" onclick="removeImageFromKey('${key}')">❌</button>
-          </div>
+          <input type="file" accept="image/*" onchange="handleImageUpload(this, '${key}')">
         </div>`;
     }
     document.getElementById(containerId).innerHTML = html;
@@ -845,166 +636,23 @@
     
     categories.forEach(cat => {
       for(let i=1; i<=5; i++) {
-        const selectVal = document.getElementById(`${cat.prefix}_select_${i}`).value;
-        const branchVal = document.getElementById(`${cat.prefix}_branch_${i}`).value;
+        const key = `${cat.prefix}_${i}`;
+        const selectedId = document.getElementById(`${cat.prefix}_select_${i}`).value;
         const list = DEFAULT_CONTESTANTS[cat.type] || [];
-        const found = list.find(item => item.id === selectVal);
+        const contestantObj = list.find(item => item.id === selectedId);
 
         appData.queue.push({
-          label: `${cat.prefix}${i}`,
+          code: `${cat.prefix}${i}`,
           type: cat.type,
-          name: found ? found.name : `${cat.prefix}${i}`,
-          branch: branchVal,
-          img: userImages[`${cat.prefix}_${i}`] || DEFAULT_AVATAR
+          name: contestantObj ? contestantObj.name : `${cat.prefix}${i}`,
+          branch: contestantObj ? contestantObj.branch : document.getElementById(`${cat.prefix}_branch_${i}`).value,
+          img: userImages[key] || DEFAULT_AVATAR
         });
       }
     });
 
-    for(let i=1; i<=5; i++) {
-      appData.queue.push({
-        label: `M${i}`,
-        type: 'mentor',
-        data: appData.mentorsList[i-1]
-      });
-    }
-
     appData.currentQueueIndex = 0;
-    renderTeamsTable();
-    updateTurnDisplay();
-    drawFullWheel();
-    saveStorageData();
-  }
-
-  function getAvailableTeamsForCurrentTurn() {
-    if (appData.currentQueueIndex >= appData.queue.length) return [];
-    const item = appData.queue[appData.currentQueueIndex];
-
-    if (item.type === 'mentor') {
-      return appData.teams.filter(t => t.mentor === null && t.coach.branch !== item.data.branch);
-    } else {
-      return appData.teams.filter(t => t[item.type] === null && t.coach.branch !== item.branch);
-    }
-  }
-
-  function updateTurnDisplay() {
-    const turnEl = document.getElementById('current-turn');
-    if (appData.currentQueueIndex >= appData.queue.length) {
-      turnEl.innerHTML = "🎉 สุ่มเข้าครบทุกทีมเรียบร้อยแล้ว!";
-      turnEl.style.color = "#16a34a";
-      return;
-    }
-    const item = appData.queue[appData.currentQueueIndex];
-    let displayName = item.type === 'mentor' ? item.data.name : `${item.label} - ${item.name}`;
-    turnEl.innerHTML = `รอบสุ่มถัดไป: <br><span style="color:#0f172a;">${displayName}</span>`;
-    turnEl.style.color = "#2563eb";
-  }
-
-  function drawFullWheel() {
-    const canvas = document.getElementById('wheel-canvas');
-    const ctx = canvas.getContext('2d');
-    const availableTeams = getAvailableTeamsForCurrentTurn();
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = canvas.width / 2 - 5;
-
-    if (availableTeams.length === 0) {
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-      ctx.fillStyle = '#cbd5e1';
-      ctx.fill();
-      ctx.fillStyle = '#64748b';
-      ctx.font = 'bold 16px Segoe UI';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(appData.currentQueueIndex >= appData.queue.length ? "เสร็จสิ้น" : "ไม่มีทีมที่สุ่มได้", centerX, centerY);
-      return;
-    }
-
-    const anglePerSlice = (2 * Math.PI) / availableTeams.length;
-    const colors = ['#2563eb', '#0d9488', '#ea580c', '#e11d48', '#7c3aed'];
-
-    availableTeams.forEach((team, index) => {
-      const startAngle = index * anglePerSlice + currentWheelAngle;
-      const endAngle = startAngle + anglePerSlice;
-
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY);
-      ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-      ctx.closePath();
-
-      ctx.fillStyle = colors[(team.teamId - 1) % colors.length];
-      ctx.fill();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = '#ffffff';
-      ctx.stroke();
-
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(startAngle + anglePerSlice / 2);
-      ctx.textAlign = 'right';
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 18px Segoe UI';
-      ctx.fillText(`ทีม ${team.teamId}`, radius - 20, 6);
-      ctx.restore();
-    });
-  }
-
-  function spinWheel() {
-    if (isSpinning) return;
-    const availableTeams = getAvailableTeamsForCurrentTurn();
-    if (availableTeams.length === 0) return;
-
-    isSpinning = true;
-    const randomIndex = Math.floor(Math.random() * availableTeams.length);
-    const selectedTeam = availableTeams[randomIndex];
-
-    const sliceAngle = (2 * Math.PI) / availableTeams.length;
-    const targetSliceCenter = randomIndex * sliceAngle + sliceAngle / 2;
-    
-    // Calculate final angle to land under top pointer (-PI/2)
-    const targetAngle = (3 * Math.PI / 2) - targetSliceCenter;
-    const extraRounds = (Math.floor(Math.random() * 3) + 5) * 2 * Math.PI;
-    const finalAngle = currentWheelAngle + extraRounds + (targetAngle - (currentWheelAngle % (2 * Math.PI)));
-
-    const startAngle = currentWheelAngle;
-    const duration = 3000; // ms
-    const startTime = performance.now();
-
-    function animate(currentTime) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Ease out cubic
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      currentWheelAngle = startAngle + (finalAngle - startAngle) * easeOut;
-
-      drawFullWheel();
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        isSpinning = false;
-        assignToTeam(selectedTeam.teamId);
-      }
-    }
-
-    requestAnimationFrame(animate);
-  }
-
-  function assignToTeam(teamId) {
-    const team = appData.teams.find(t => t.teamId === teamId);
-    const item = appData.queue[appData.currentQueueIndex];
-
-    if (item.type === 'mentor') {
-      team.mentor = item.data;
-    } else {
-      team[item.type] = item;
-    }
-
-    appData.currentQueueIndex++;
+    document.getElementById('history-badge').innerText = `รอบสุ่มครั้งที่: ${appData.runCount}`;
     renderTeamsTable();
     updateTurnDisplay();
     drawFullWheel();
@@ -1012,74 +660,258 @@
   }
 
   function resetAndReSpin() {
-    if (confirm("ต้องการสุ่มใหม่ทั้งหมดใช่หรือไม่?")) {
-      appData.runCount++;
-      document.getElementById('history-badge').innerHTML = `รอบสุ่มครั้งที่: ${appData.runCount}`;
-      resetStateData();
+    if (isSpinning) return;
+    
+    const currentPattern = generateCurrentPatternHash();
+    if (currentPattern && !appData.historyPatterns.includes(currentPattern)) {
+      appData.historyPatterns.push(currentPattern);
     }
+    
+    appData.runCount++;
+    resetStateData();
+  }
+
+  function generateCurrentPatternHash() {
+    return appData.teams.map(t => `${t.boy?.code || ''}-${t.girl?.code || ''}-${t.queen?.code || ''}`).join('|');
+  }
+
+  function canCompleteAssignmentWithMentors(qIndex) {
+    if (qIndex >= appData.queue.length) {
+      const futurePattern = generateCurrentPatternHash();
+      if (appData.historyPatterns.includes(futurePattern)) {
+        return false;
+      }
+      return canAssignMentorsStrict();
+    }
+
+    const item = appData.queue[qIndex];
+    const teamIndices = shuffleArray([0, 1, 2, 3, 4]);
+
+    for (let t of teamIndices) {
+      const team = appData.teams[t];
+      if (team[item.type] !== null) continue;
+
+      const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
+      if (item.branch && teamBranches.includes(item.branch)) continue;
+
+      team[item.type] = item;
+      const possible = canCompleteAssignmentWithMentors(qIndex + 1);
+      team[item.type] = null;
+
+      if (possible) return true;
+    }
+    return false;
+  }
+
+  function canAssignMentorsStrict() {
+    let availableMentors = [...appData.mentorsList];
+
+    function solveMentor(tIdx) {
+      if (tIdx === 5) return true;
+      const team = appData.teams[tIdx];
+      const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
+
+      const mentorIndices = shuffleArray([0, 1, 2, 3, 4]);
+
+      for (let i of mentorIndices) {
+        const m = availableMentors[i];
+        if (!m) continue;
+        if (!m.branch || !teamBranches.includes(m.branch)) {
+          availableMentors[i] = null;
+          if (solveMentor(tIdx + 1)) {
+            availableMentors[i] = m;
+            return true;
+          }
+          availableMentors[i] = m;
+        }
+      }
+      return false;
+    }
+    return solveMentor(0);
+  }
+
+  function shuffleArray(arr) {
+    const array = [...arr];
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function getValidTeamsForCurrentContestant() {
+    if (appData.currentQueueIndex >= appData.queue.length) return [];
+    
+    const contestant = appData.queue[appData.currentQueueIndex];
+    const validTeams = [];
+    const shuffledTeams = shuffleArray(appData.teams);
+
+    for (let team of shuffledTeams) {
+      if (team[contestant.type] !== null) continue;
+
+      const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
+      if (contestant.branch && teamBranches.includes(contestant.branch)) continue;
+
+      team[contestant.type] = contestant;
+      const isSolvable = canCompleteAssignmentWithMentors(appData.currentQueueIndex + 1);
+      team[contestant.type] = null;
+
+      if (isSolvable) {
+        validTeams.push(team);
+      }
+    }
+
+    return validTeams;
+  }
+
+  let isSpinning = false;
+  let currentAngle = 0;
+
+  function drawFullWheel() {
+    const canvas = document.getElementById('wheel-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const total = 5;
+    const arc = (Math.PI * 2) / total;
+    const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < total; i++) {
+      const angle = currentAngle + i * arc;
+      ctx.fillStyle = colors[i];
+      
+      ctx.beginPath();
+      ctx.arc(150, 150, 140, angle, angle + arc);
+      ctx.lineTo(150, 150);
+      ctx.fill();
+
+      ctx.save();
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 16px Kanit, sans-serif';
+      ctx.translate(150 + Math.cos(angle + arc / 2) * 90, 150 + Math.sin(angle + arc / 2) * 90);
+      ctx.rotate(angle + arc / 2 + Math.PI / 2);
+      ctx.fillText(`ทีม ${appData.teams[i].teamId}`, -20, 0);
+      ctx.restore();
+    }
+  }
+
+  function updateTurnDisplay() {
+    if (appData.currentQueueIndex < appData.queue.length) {
+      const current = appData.queue[appData.currentQueueIndex];
+      document.getElementById('current-turn').innerHTML = `คิวถัดไป: <strong>[${current.code}] ${current.name}</strong><br>${getBranchTagHtml(current.branch)}`;
+      drawFullWheel();
+    } else {
+      document.getElementById('current-turn').innerHTML = "🎉 สุ่มผู้เข้าประกวดครบแล้ว!<br><button class='btn btn-success' style='margin-top:10px;' onclick='switchTab(\"tab-summary\")'>➡️ ดูสรุปผลรายทีมเลย</button>";
+      drawFullWheel();
+      assignMentorsToTeams();
+    }
+  }
+
+  function spinWheel() {
+    if (isSpinning) return;
+    
+    let validTeams = getValidTeamsForCurrentContestant();
+    const contestant = appData.queue[appData.currentQueueIndex];
+
+    if (validTeams.length === 0) {
+      validTeams = appData.teams.filter(t => t[contestant.type] === null);
+    }
+
+    if (validTeams.length === 0) return;
+
+    isSpinning = true;
+
+    const targetTeam = validTeams[Math.floor(Math.random() * validTeams.length)];
+    const targetIndex = targetTeam.teamId - 1;
+
+    const spinTime = 5000;
+    const start = performance.now();
+    const totalRounds = 5;
+    
+    const arc = (Math.PI * 2) / 5;
+    const targetAngleOffset = (Math.PI * 3 / 2) - (targetIndex * arc + arc / 2);
+    const finalAngle = (totalRounds * Math.PI * 2) + targetAngleOffset;
+
+    function animate(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / spinTime, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      
+      currentAngle = ease * finalAngle;
+      drawFullWheel();
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        isSpinning = false;
+        targetTeam[contestant.type] = contestant;
+
+        appData.currentQueueIndex++;
+        renderTeamsTable();
+        updateTurnDisplay();
+        saveStorageData();
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
+  function assignMentorsToTeams() {
+    let availableMentors = [...appData.mentorsList];
+
+    function solveMentor(tIdx) {
+      if (tIdx === 5) return true;
+      const team = appData.teams[tIdx];
+      const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
+
+      const mentorIndices = shuffleArray([0, 1, 2, 3, 4]);
+
+      for (let i of mentorIndices) {
+        const m = availableMentors[i];
+        if (!m) continue;
+        if (!m.branch || !teamBranches.includes(m.branch)) {
+          team.mentor = m;
+          availableMentors[i] = null;
+
+          if (solveMentor(tIdx + 1)) return true;
+
+          team.mentor = null;
+          availableMentors[i] = m;
+        }
+      }
+      return false;
+    }
+
+    solveMentor(0);
+    renderTeamsTable();
+    saveStorageData();
   }
 
   function renderTeamsTable() {
     const tbody = document.getElementById('teams-table-body');
     let html = '';
 
-    appData.teams.forEach(team => {
+    appData.teams.forEach(t => {
       html += `
         <tr>
-          <td><b>ทีม ${team.teamId}</b></td>
-          <td>${team.coach.name || '-'} ${getBranchTagHtml(team.coach.branch)}</td>
-          <td>${team.boy ? `${team.boy.name} ${getBranchTagHtml(team.boy.branch)}` : '-'}</td>
-          <td>${team.girl ? `${team.girl.name} ${getBranchTagHtml(team.girl.branch)}` : '-'}</td>
-          <td>${team.queen ? `${team.queen.name} ${getBranchTagHtml(team.queen.branch)}` : '-'}</td>
-          <td>${team.mentor ? `${team.mentor.name} ${getBranchTagHtml(team.mentor.branch)}` : '-'}</td>
+          <td><strong>ทีมที่ ${t.teamId}</strong></td>
+          <td>${t.coach.name || '-'}<br>${getBranchTagHtml(t.coach.branch)}</td>
+          <td>${t.boy ? `${t.boy.name}<br>${getBranchTagHtml(t.boy.branch)}` : '<i>รอสุ่ม...</i>'}</td>
+          <td>${t.girl ? `${t.girl.name}<br>${getBranchTagHtml(t.girl.branch)}` : '<i>รอสุ่ม...</i>'}</td>
+          <td>${t.queen ? `${t.queen.name}<br>${getBranchTagHtml(t.queen.branch)}` : '<i>รอสุ่ม...</i>'}</td>
+          <td>${t.mentor ? `${t.mentor.name}<br>${getBranchTagHtml(t.mentor.branch)}` : '<i style="color:#94a3b8;">รอสรุปท้ายสุด...</i>'}</td>
         </tr>
       `;
     });
-
     tbody.innerHTML = html;
   }
 
-  /* --- TAB 3: INDIVIDUAL TEAM SUMMARY VIEW --- */
-  function renderSummaryTeamView() {
-    const index = appData.selectedViewTeamIndex;
-    const team = appData.teams[index];
-
-    // Render selector buttons
-    let btnHtml = '';
-    for (let i = 0; i < 5; i++) {
-      const activeClass = i === index ? 'active' : '';
-      btnHtml += `<button class="nav-team-btn ${activeClass}" onclick="selectSummaryTeam(${i})">ทีม ${i+1}</button>`;
-    }
-    document.getElementById('team-selector-buttons').innerHTML = btnHtml;
-
-    const mainCard = document.getElementById('team-main-card');
-    const mainColor = getBranchColor(team.coach.branch);
-    mainCard.style.borderTopColor = mainColor;
-
-    document.getElementById('summary-team-title').innerText = `ทีมที่ ${team.teamId}`;
-    document.getElementById('summary-team-title').style.color = mainColor;
-
-    // 1. Coach
-    document.getElementById('summary-coach-name').innerText = team.coach.name || '-';
-    document.getElementById('summary-coach-img').src = team.coach.img || DEFAULT_AVATAR;
-    document.getElementById('summary-coach-branch').innerHTML = getBranchTagHtml(team.coach.branch);
-    document.getElementById('box-coach').style.borderColor = mainColor;
-
-    // 2. Mentor
-    const mentor = team.mentor;
-    document.getElementById('summary-mentor-name').innerText = mentor ? mentor.name : '-';
-    document.getElementById('summary-mentor-img').src = mentor ? mentor.img : DEFAULT_AVATAR;
-    document.getElementById('summary-mentor-branch').innerHTML = mentor ? getBranchTagHtml(mentor.branch) : getBranchTagHtml('');
-    document.getElementById('box-mentor').style.borderColor = mentor ? getBranchColor(mentor.branch) : '#cbd5e1';
-
-    // 3. Contestants (Boy, Girl, Queen)
-    ['boy', 'girl', 'queen'].forEach(role => {
-      const person = team[role];
-      document.getElementById(`summary-${role}-name`).innerText = person ? person.name : '-';
-      document.getElementById(`summary-${role}-img`).src = person ? person.img : DEFAULT_AVATAR;
-      document.getElementById(`summary-${role}-branch`).innerHTML = person ? getBranchTagHtml(person.branch) : getBranchTagHtml('');
-      document.getElementById(`box-${role}`).style.borderColor = person ? getBranchColor(person.branch) : '#cbd5e1';
-    });
+  function navigateTeam(direction) {
+    let newIndex = appData.selectedViewTeamIndex + direction;
+    if (newIndex < 0) newIndex = 4;
+    if (newIndex > 4) newIndex = 0;
+    
+    selectSummaryTeam(newIndex);
   }
 
   function selectSummaryTeam(index) {
@@ -1087,17 +919,56 @@
     renderSummaryTeamView();
   }
 
-  function navigateTeam(direction) {
-    let newIndex = appData.selectedViewTeamIndex + direction;
-    if (newIndex < 0) newIndex = 4;
-    if (newIndex > 4) newIndex = 0;
-    selectSummaryTeam(newIndex);
+  function renderSummaryTeamView() {
+    const team = appData.teams[appData.selectedViewTeamIndex];
+
+    let buttonsHtml = '';
+    for(let i=0; i<5; i++) {
+      const activeClass = i === appData.selectedViewTeamIndex ? 'active' : '';
+      buttonsHtml += `<button class="nav-team-btn ${activeClass}" onclick="selectSummaryTeam(${i})">ทีม ${i+1}</button>`;
+    }
+    document.getElementById('team-selector-buttons').innerHTML = buttonsHtml;
+
+    document.getElementById('summary-team-title').innerText = `🏆 สรุปสมาชิก : ทีมที่ ${team.teamId}`;
+
+    const mainCard = document.getElementById('team-main-card');
+    if (mainCard) {
+      mainCard.style.borderTopColor = getBranchColor(team.coach?.branch);
+    }
+
+    // Coach
+    document.getElementById('summary-coach-img').src = team.coach.img || DEFAULT_AVATAR;
+    document.getElementById('summary-coach-name').innerText = team.coach.name || 'ยังไม่ระบุ';
+    document.getElementById('summary-coach-branch').innerHTML = getBranchTagHtml(team.coach.branch);
+    document.getElementById('box-coach').style.borderColor = getBranchColor(team.coach?.branch);
+
+    // Mentor
+    document.getElementById('summary-mentor-img').src = team.mentor ? team.mentor.img : DEFAULT_AVATAR;
+    document.getElementById('summary-mentor-name').innerText = team.mentor ? team.mentor.name : 'รอสรุปท้ายสุด';
+    document.getElementById('summary-mentor-branch').innerHTML = team.mentor ? getBranchTagHtml(team.mentor.branch) : '';
+    document.getElementById('box-mentor').style.borderColor = team.mentor ? getBranchColor(team.mentor.branch) : '#cbd5e1';
+
+    // Boy
+    document.getElementById('summary-boy-img').src = team.boy ? team.boy.img : DEFAULT_AVATAR;
+    document.getElementById('summary-boy-name').innerText = team.boy ? `${team.boy.name} (${team.boy.code})` : 'รอผลสุ่ม';
+    document.getElementById('summary-boy-branch').innerHTML = team.boy ? getBranchTagHtml(team.boy.branch) : '';
+    document.getElementById('box-boy').style.borderColor = team.boy ? getBranchColor(team.boy.branch) : '#cbd5e1';
+
+    // Girl
+    document.getElementById('summary-girl-img').src = team.girl ? team.girl.img : DEFAULT_AVATAR;
+    document.getElementById('summary-girl-name').innerText = team.girl ? `${team.girl.name} (${team.girl.code})` : 'รอผลสุ่ม';
+    document.getElementById('summary-girl-branch').innerHTML = team.girl ? getBranchTagHtml(team.girl.branch) : '';
+    document.getElementById('box-girl').style.borderColor = team.girl ? getBranchColor(team.girl.branch) : '#cbd5e1';
+
+    // Queen
+    document.getElementById('summary-queen-img').src = team.queen ? team.queen.img : DEFAULT_AVATAR;
+    document.getElementById('summary-queen-name').innerText = team.queen ? `${team.queen.name} (${team.queen.code})` : 'รอผลสุ่ม';
+    document.getElementById('summary-queen-branch').innerHTML = team.queen ? getBranchTagHtml(team.queen.branch) : '';
+    document.getElementById('box-queen').style.borderColor = team.queen ? getBranchColor(team.queen.branch) : '#cbd5e1';
   }
 
-  // Initialize Application Form
-  window.onload = function() {
-    initForm();
-  };
+  window.onload = initForm;
 </script>
+
 </body>
 </html>
