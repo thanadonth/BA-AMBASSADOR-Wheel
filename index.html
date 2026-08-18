@@ -14,53 +14,61 @@
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
     h1, h2, h3, h4 { color: #0f172a; margin-top: 0; }
     
-    /* Header Controls */
     .header-container { overflow: hidden; margin-bottom: 10px; }
     .header-controls { float: right; display: flex; gap: 8px; }
     
-    /* Navigation Tabs */
-    .tab-container { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
-    .tab-btn { padding: 10px 20px; font-size: 16px; font-weight: bold; border: none; background: #e2e8f0; color: #475569; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .tab-container { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; }
+    .tab-btn { padding: 10px 20px; font-size: 15px; font-weight: bold; border: none; background: #e2e8f0; color: #475569; border-radius: 8px; cursor: pointer; transition: 0.2s; }
     .tab-btn.active { background: var(--primary); color: white; }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* Input Form Styles */
     .section-card { background: var(--card-bg); padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-    .input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .input-row { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
     .input-row label { width: 40px; font-weight: bold; }
     input[type="text"], select { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; min-width: 120px; }
-    input[type="file"] { font-size: 12px; width: 170px; }
     
     .img-preview-sm { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #cbd5e1; background: #e2e8f0; }
 
-    .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .btn { padding: 10px 18px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; }
     .btn-primary { background-color: var(--primary); color: white; }
-    .btn-success { background-color: #16a34a; color: white; width: 100%; }
+    .btn-success { background-color: #16a34a; color: white; width: 100%; padding: 14px; font-size: 16px; }
     .btn-success:hover { background-color: #15803d; }
     .btn-reset { background-color: #dc2626; color: white; margin-top: 10px; width: 100%; font-size: 14px; padding: 12px; }
     .btn-clear-data { background-color: #64748b; color: white; font-size: 14px; padding: 10px 16px; }
     .btn-fullscreen { background-color: #0d9488; color: white; font-size: 14px; padding: 10px 16px; }
-    .btn-del-img { background: #ef4444; color: white; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+    .btn-del-img { background: #ef4444; color: white; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 12px; }
     .btn-del-img:hover { background: #b91c1c; }
+    .btn-pick-library { background: #8b5cf6; color: white; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 12px; }
+    .btn-pick-library:hover { background: #7c3aed; }
 
-    /* Wheel Arena Layout */
+    /* Gallery Styles */
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; margin-top: 15px; }
+    .gallery-item { position: relative; border: 2px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; text-align: center; padding: 5px; }
+    .gallery-item img { width: 100%; height: 100px; object-fit: cover; border-radius: 4px; }
+    .gallery-item .btn-del-gallery { position: absolute; top: 8px; right: 8px; background: rgba(239, 68, 68, 0.85); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    /* Modal Styles */
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+    .modal-content { background: white; border-radius: 12px; padding: 20px; width: 90%; max-width: 650px; max-height: 80vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+    .modal-close { font-size: 20px; font-weight: bold; cursor: pointer; border: none; background: none; }
+
+    /* Arena & Summary */
     .arena-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
     .wheel-box { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
     #wheel-canvas { border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s ease; margin-top: 20px; }
     #wheel-canvas:hover { transform: scale(1.02); }
     .pointer { position: absolute; top: 30px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ef4444; z-index: 10; pointer-events: none; }
     
-    /* Result Table & Branch Tags */
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 14px; }
     th { background-color: #f1f5f9; }
     
     .tag { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; margin-top: 4px; }
-    
     .tag-acc { background-color: #0284c7; }
     .tag-mkt { background-color: #dc2626; }
     .tag-fin { background-color: #16a34a; }
@@ -70,36 +78,14 @@
 
     .history-badge { background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
 
-    /* Summary Card Custom Layout */
     .summary-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     .team-badge-buttons { display: flex; gap: 8px; }
     .nav-team-btn { padding: 8px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-weight: bold; cursor: pointer; }
     .nav-team-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    .team-display-card { 
-      background: #ffffff; 
-      border-radius: 16px; 
-      padding: 30px; 
-      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); 
-      text-align: center; 
-      max-width: 900px; 
-      margin: 0 auto; 
-      border-top: 8px solid #cbd5e1;
-      transition: border-color 0.3s ease;
-    }
-    
-    .person-box { 
-      border: 3px solid #cbd5e1; 
-      border-radius: 12px; 
-      padding: 15px; 
-      background: #ffffff; 
-      transition: all 0.3s ease; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-    }
+    .team-display-card { background: #ffffff; border-radius: 16px; padding: 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); text-align: center; max-width: 900px; margin: 0 auto; border-top: 8px solid #cbd5e1; transition: border-color 0.3s ease; }
+    .person-box { border: 3px solid #cbd5e1; border-radius: 12px; padding: 15px; background: #ffffff; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
     .person-box:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    
     .person-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 3px solid #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: #e2e8f0; }
     .person-role { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #64748b; margin-bottom: 5px; }
     .person-name { font-size: 16px; font-weight: bold; color: #0f172a; margin-bottom: 5px; }
@@ -107,21 +93,7 @@
     .center-row { display: flex; justify-content: center; margin-bottom: 20px; }
     .center-row .person-box { width: 320px; }
 
-    /* FULLSCREEN CUSTOM STYLES */
-    :fullscreen .header-container,
-    :fullscreen .tab-container,
-    :-webkit-full-screen .header-container,
-    :-webkit-full-screen .tab-container,
-    :-moz-full-screen .header-container,
-    :-moz-full-screen .tab-container {
-      display: none !important;
-    }
-
-    :fullscreen body,
-    :-webkit-full-screen body,
-    :-moz-full-screen body {
-      padding: 10px;
-    }
+    :fullscreen .header-container, :fullscreen .tab-container { display: none !important; }
   </style>
 </head>
 <body>
@@ -135,11 +107,13 @@
   </div>
 
   <div class="tab-container">
-    <button class="tab-btn active" onclick="switchTab('tab-input')">📋 1. ลงทะเบียนรายชื่อ & อัปโหลดรูปภาพ</button>
-    <button class="tab-btn" onclick="switchTab('tab-wheel')">🎡 2. เวทีหมุนวงล้อสุ่มทีม</button>
-    <button class="tab-btn" onclick="switchTab('tab-summary')">📊 3. สรุปผลรายทีม</button>
+    <button class="tab-btn active" onclick="switchTab('tab-input')">📋 1. รายชื่อ & กำหนดรูปภาพ</button>
+    <button class="tab-btn" onclick="switchTab('tab-gallery')">🖼️ 2. คลังรูปภาพ (Gallery)</button>
+    <button class="tab-btn" onclick="switchTab('tab-wheel')">🎡 3. สุ่มวงล้อ</button>
+    <button class="tab-btn" onclick="switchTab('tab-summary')">📊 4. สรุปผลรายทีม</button>
   </div>
 
+  <!-- TAB 1: INPUT -->
   <div id="tab-input" class="tab-content active">
     <div class="grid-2">
       <div class="section-card">
@@ -153,7 +127,7 @@
     </div>
 
     <div class="section-card">
-      <h3>🌟 รายชื่อผู้เข้าประกวด (เลือกรายชื่อจาก Dropdown)</h3>
+      <h3>🌟 รายชื่อผู้เข้าประกวด</h3>
       <div class="grid-3">
         <div>
           <h4>♂️ Boy (B1 - B5)</h4>
@@ -173,6 +147,22 @@
     <button class="btn btn-success" onclick="saveData()">💾 บันทึกข้อมูล และไปหน้าหมุนวงล้อ</button>
   </div>
 
+  <!-- TAB 2: GALLERY -->
+  <div id="tab-gallery" class="tab-content">
+    <div class="section-card">
+      <h3>🖼️ คลังรูปภาพกลาง (Image Library)</h3>
+      <p style="font-size: 14px; color: #64748b;">อัปโหลดรูปภาพเก็บไว้ที่นี่เพื่อเรียกไปใช้กับรายชื่อโค้ช พี่เลี้ยง หรือผู้เข้าประกวดได้ทันทีตลอดเวลา</p>
+      
+      <input type="file" id="upload-to-gallery" accept="image/*" multiple style="display: none;" onchange="handleGalleryUpload(this)">
+      <button class="btn btn-primary" onclick="document.getElementById('upload-to-gallery').click()">➕ อัปโหลดรูปเข้าคลัง</button>
+
+      <div class="gallery-grid" id="gallery-container">
+        <!-- Gallery items populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: WHEEL -->
   <div id="tab-wheel" class="tab-content">
     <div class="arena-grid">
       <div class="section-card wheel-box">
@@ -199,18 +189,17 @@
               <th>🤝 พี่เลี้ยง</th>
             </tr>
           </thead>
-          <tbody id="teams-table-body">
-          </tbody>
+          <tbody id="teams-table-body"></tbody>
         </table>
       </div>
     </div>
   </div>
 
+  <!-- TAB 4: SUMMARY -->
   <div id="tab-summary" class="tab-content">
     <div class="summary-nav">
       <button class="btn btn-primary" onclick="navigateTeam(-1)">⬅️ ทีมก่อนหน้า</button>
-      <div class="team-badge-buttons" id="team-selector-buttons">
-      </div>
+      <div class="team-badge-buttons" id="team-selector-buttons"></div>
       <button class="btn btn-primary" onclick="navigateTeam(1)">ทีมถัดไป ➡️</button>
     </div>
 
@@ -254,6 +243,19 @@
           <div class="person-name" id="summary-queen-name">-</div>
           <div id="summary-queen-branch"></div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: IMAGE PICKER -->
+  <div id="picker-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="margin:0;">เลือกรูปภาพจากคลัง</h3>
+        <button class="modal-close" onclick="closePickerModal()">✖</button>
+      </div>
+      <div class="gallery-grid" id="modal-gallery-container">
+        <!-- Selectable Gallery Items -->
       </div>
     </div>
   </div>
@@ -309,97 +311,120 @@
 
   const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
-  // --- ระบบแยกประเภทรูปภาพ ป้องกันภาพซ้ำ และจัดการลบรูป ---
-  let imagePool = {
-    coaches: {},     // { imageKey: base64Data }
-    mentors: {},     // { imageKey: base64Data }
-    contestants: {}  // { imageKey: base64Data }
-  };
-  let imageMapping = {}; // { 'coach_1': imageKey, 'B_1': imageKey, ... }
+  // --- STORAGE & GALLERY SYSTEM ---
+  let galleryImages = []; // Array of base64 strings
+  let imageMapping = {};  // Maps key -> image base64
+  let activePickerTargetKey = null;
 
-  function getCategoryGroup(key) {
-    if (key.startsWith('coach_')) return 'coaches';
-    if (key.startsWith('mentor_')) return 'mentors';
-    return 'contestants';
+  function handleGalleryUpload(input) {
+    if (input.files && input.files.length > 0) {
+      Array.from(input.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          galleryImages.push(e.target.result);
+          renderGallery();
+          saveStorageData();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
   }
 
-  function handleImageUpload(input, key) {
+  function renderGallery() {
+    const container = document.getElementById('gallery-container');
+    if (galleryImages.length === 0) {
+      container.innerHTML = `<p style="grid-column: 1/-1; color: #94a3b8; font-style: italic;">ยังไม่มีรูปภาพในคลัง กดปุ่มด้านบนเพื่อเพิ่มรูปภาพ</p>`;
+      return;
+    }
+
+    let html = '';
+    galleryImages.forEach((imgSrc, idx) => {
+      html += `
+        <div class="gallery-item">
+          <img src="${imgSrc}">
+          <button class="btn-del-gallery" onclick="deleteFromGallery(${idx})">✖</button>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  function deleteFromGallery(index) {
+    galleryImages.splice(index, 1);
+    renderGallery();
+    saveStorageData();
+  }
+
+  function openPickerModal(key) {
+    activePickerTargetKey = key;
+    const container = document.getElementById('modal-gallery-container');
+    
+    if (galleryImages.length === 0) {
+      container.innerHTML = `<p style="grid-column: 1/-1; color: #94a3b8; font-style: italic;">ยังไม่มีรูปในคลังภาพ กรุณาไปที่แท็บ 'คลังรูปภาพ' เพื่ออัปโหลดรูปภาพก่อน</p>`;
+    } else {
+      let html = '';
+      galleryImages.forEach((imgSrc, idx) => {
+        html += `
+          <div class="gallery-item" style="cursor:pointer;" onclick="selectImageFromLibrary('${imgSrc}')">
+            <img src="${imgSrc}">
+            <span style="font-size:10px; color:#2563eb; font-weight:bold;">กดเพื่อเลือก</span>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+    document.getElementById('picker-modal').style.display = 'flex';
+  }
+
+  function closePickerModal() {
+    document.getElementById('picker-modal').style.display = 'none';
+    activePickerTargetKey = null;
+  }
+
+  function selectImageFromLibrary(imgBase64) {
+    if (activePickerTargetKey) {
+      imageMapping[activePickerTargetKey] = imgBase64;
+      const preview = document.getElementById(`preview_${activePickerTargetKey}`);
+      if (preview) preview.src = imgBase64;
+      saveStorageData();
+    }
+    closePickerModal();
+  }
+
+  function setImageDirectly(key, base64) {
+    imageMapping[key] = base64;
+    const preview = document.getElementById(`preview_${key}`);
+    if (preview) preview.src = base64;
+    saveStorageData();
+  }
+
+  function handleDirectFileUpload(input, key) {
     if (input.files && input.files[0]) {
-      const file = input.files[0];
       const reader = new FileReader();
-
       reader.onload = function(e) {
-        const base64Data = e.target.result;
-        const group = getCategoryGroup(key);
-
-        if (!imagePool[group]) imagePool[group] = {};
-
-        // ลบอ้างอิงรูปเก่าออกก่อน ถ้าเคยมี
-        const oldImgKey = imageMapping[key];
-
-        // ตรวจสอบภาพซ้ำในหมวดหมู่เดียวกัน (Deduplication)
-        let existingImgKey = Object.keys(imagePool[group]).find(
-          imgId => imagePool[group][imgId] === base64Data
-        );
-
-        if (existingImgKey) {
-          imageMapping[key] = existingImgKey;
-        } else {
-          const newImgKey = `${group}_img_${Date.now()}_${Math.floor(Math.random()*1000)}`;
-          imagePool[group][newImgKey] = base64Data;
-          imageMapping[key] = newImgKey;
+        const base64 = e.target.result;
+        if (!galleryImages.includes(base64)) {
+          galleryImages.push(base64); // Auto push to central gallery
+          renderGallery();
         }
-
-        // ทำความสะอาดรูปที่ไม่ถูกใช้งานแล้วออกจากคลัง
-        if (oldImgKey) cleanupUnusedImages();
-
-        const preview = document.getElementById(`preview_${key}`);
-        if (preview) preview.src = base64Data;
-
-        saveStorageData();
+        setImageDirectly(key, base64);
       };
-
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(input.files[0]);
     }
   }
 
   function removeImage(key) {
-    if (imageMapping[key]) {
-      delete imageMapping[key];
-      cleanupUnusedImages();
-    }
-
+    delete imageMapping[key];
     const preview = document.getElementById(`preview_${key}`);
     if (preview) preview.src = DEFAULT_AVATAR;
-
-    const fileInput = document.getElementById(`file_${key}`);
-    if (fileInput) fileInput.value = '';
-
     saveStorageData();
   }
 
-  function cleanupUnusedImages() {
-    const usedKeys = Object.values(imageMapping);
-    ['coaches', 'mentors', 'contestants'].forEach(group => {
-      if (imagePool[group]) {
-        Object.keys(imagePool[group]).forEach(imgKey => {
-          if (!usedKeys.includes(imgKey)) {
-            delete imagePool[group][imgKey];
-          }
-        });
-      }
-    });
-  }
-
   function getImageData(key) {
-    const imgKey = imageMapping[key];
-    if (!imgKey) return DEFAULT_AVATAR;
-
-    const group = getCategoryGroup(key);
-    return (imagePool[group] && imagePool[group][imgKey]) ? imagePool[group][imgKey] : DEFAULT_AVATAR;
+    return imageMapping[key] || DEFAULT_AVATAR;
   }
-  // ------------------------------------------------
 
+  // --- APP STATE & ENGINE ---
   let appData = {
     teams: Array.from({length: 5}, (_, i) => ({ teamId: i + 1, coach: {}, mentor: null, boy: null, girl: null, queen: null })),
     mentorsList: [],
@@ -416,37 +441,19 @@
   function toggleFullscreen() {
     const fsBtn = document.getElementById('fullscreen-btn');
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen();
-      }
+      if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+      else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
       fsBtn.innerHTML = "❌ ออกจากเต็มจอ";
     } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      }
+      if (document.exitFullscreen) document.exitFullscreen();
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
       fsBtn.innerHTML = "🖥️ เต็มหน้าจอ";
-    }
-  }
-
-  document.addEventListener('fullscreenchange', handleFullscreenChange);
-  document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-
-  function handleFullscreenChange() {
-    const fsBtn = document.getElementById('fullscreen-btn');
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      fsBtn.innerHTML = "🖥️ เต็มหน้าจอ";
-    } else {
-      fsBtn.innerHTML = "❌ ออกจากเต็มจอ";
     }
   }
 
   function saveStorageData() {
     try {
-      localStorage.setItem('ba2026_imagePool', JSON.stringify(imagePool));
+      localStorage.setItem('ba2026_gallery', JSON.stringify(galleryImages));
       localStorage.setItem('ba2026_imageMapping', JSON.stringify(imageMapping));
       localStorage.setItem('ba2026_appData', JSON.stringify(appData));
       
@@ -456,14 +463,18 @@
       });
       localStorage.setItem('ba2026_formData', JSON.stringify(formData));
     } catch(e) {
-      console.warn('LocalStorage limit exceeded', e);
+      console.warn('Storage quota limit reached', e);
     }
   }
 
   function loadStorageData() {
-    const savedPool = localStorage.getItem('ba2026_imagePool');
+    const savedGallery = localStorage.getItem('ba2026_gallery');
+    if (savedGallery) {
+      galleryImages = JSON.parse(savedGallery);
+      renderGallery();
+    }
+
     const savedMapping = localStorage.getItem('ba2026_imageMapping');
-    if (savedPool) imagePool = JSON.parse(savedPool);
     if (savedMapping) {
       imageMapping = JSON.parse(savedMapping);
       Object.keys(imageMapping).forEach(key => {
@@ -493,7 +504,7 @@
   }
 
   function clearAllData() {
-    if (confirm("คุณแน่ใจหรือไม่ว่าต้องการล้างข้อมูลรายชื่อและรูปภาพทั้งหมด?")) {
+    if (confirm("คุณแน่ใจหรือไม่ว่าต้องการล้างข้อมูลและรูปภาพในคลังทั้งหมด?")) {
       localStorage.clear();
       location.reload();
     }
@@ -503,43 +514,41 @@
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     
-    if(tabId === 'tab-input') {
-      document.querySelectorAll('.tab-btn')[0].classList.add('active');
-    }
-    if(tabId === 'tab-wheel') {
-      document.querySelectorAll('.tab-btn')[1].classList.add('active');
-      drawFullWheel();
-    }
-    if(tabId === 'tab-summary') {
-      document.querySelectorAll('.tab-btn')[2].classList.add('active');
-      renderSummaryTeamView();
-    }
+    const tabs = ['tab-input', 'tab-gallery', 'tab-wheel', 'tab-summary'];
+    const idx = tabs.indexOf(tabId);
+    if(idx !== -1) document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+    
+    if(tabId === 'tab-wheel') drawFullWheel();
+    if(tabId === 'tab-summary') renderSummaryTeamView();
+    
     document.getElementById(tabId).classList.add('active');
   }
 
   function initForm() {
     let coachHtml = '', mentorHtml = '';
     for(let i=1; i<=5; i++) {
+      const keyC = `coach_${i}`;
       coachHtml += `
         <div class="input-row">
           <label>ทีม ${i}:</label>
           <select id="coach_select_${i}" class="coach-select" onchange="updateCoachDropdowns(); saveStorageData();">
             ${coachOptions(COACH_LIST[i-1].id)}
           </select>
-          <img id="preview_coach_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <input type="file" id="file_coach_${i}" accept="image/*" onchange="handleImageUpload(this, 'coach_${i}')">
-          <button type="button" class="btn-del-img" onclick="removeImage('coach_${i}')" title="ลบรูปภาพ">❌</button>
+          <img id="preview_${keyC}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <button type="button" class="btn-pick-library" onclick="openPickerModal('${keyC}')">🖼️ จากคลัง</button>
+          <button type="button" class="btn-del-img" onclick="removeImage('${keyC}')">❌</button>
         </div>`;
       
+      const keyM = `mentor_${i}`;
       mentorHtml += `
         <div class="input-row">
           <label>คนที่ ${i}:</label>
           <select id="mentor_select_${i}" class="mentor-select" onchange="updateMentorDropdowns(); saveStorageData();">
             ${mentorOptions(MENTOR_LIST[i-1].id)}
           </select>
-          <img id="preview_mentor_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <input type="file" id="file_mentor_${i}" accept="image/*" onchange="handleImageUpload(this, 'mentor_${i}')">
-          <button type="button" class="btn-del-img" onclick="removeImage('mentor_${i}')" title="ลบรูปภาพ">❌</button>
+          <img id="preview_${keyM}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
+          <button type="button" class="btn-pick-library" onclick="openPickerModal('${keyM}')">🖼️ จากคลัง</button>
+          <button type="button" class="btn-del-img" onclick="removeImage('${keyM}')">❌</button>
         </div>`;
     }
     document.getElementById('coaches-inputs').innerHTML = coachHtml;
@@ -558,52 +567,36 @@
 
   function coachOptions(selectedId = "") {
     return `<option value="">-- เลือกอาจารย์โค้ช --</option>` + COACH_LIST.map(c => {
-      const selected = c.id === selectedId ? 'selected' : '';
-      return `<option value="${c.id}" ${selected}>${c.name} (${c.branch})</option>`;
+      return `<option value="${c.id}" ${c.id === selectedId ? 'selected' : ''}>${c.name} (${c.branch})</option>`;
     }).join('');
   }
 
   function updateCoachDropdowns() {
     const selects = document.querySelectorAll('.coach-select');
     const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
-
     selects.forEach(select => {
       const currentValue = select.value;
       Array.from(select.options).forEach(option => {
         if (option.value === "") return;
-        if (selectedValues.includes(option.value) && option.value !== currentValue) {
-          option.style.display = 'none';
-          option.disabled = true;
-        } else {
-          option.style.display = 'block';
-          option.disabled = false;
-        }
+        option.disabled = (selectedValues.includes(option.value) && option.value !== currentValue);
       });
     });
   }
 
   function mentorOptions(selectedId = "") {
     return `<option value="">-- เลือกพี่เลี้ยง --</option>` + MENTOR_LIST.map(m => {
-      const selected = m.id === selectedId ? 'selected' : '';
-      return `<option value="${m.id}" ${selected}>${m.name} (${m.branch})</option>`;
+      return `<option value="${m.id}" ${m.id === selectedId ? 'selected' : ''}>${m.name} (${m.branch})</option>`;
     }).join('');
   }
 
   function updateMentorDropdowns() {
     const selects = document.querySelectorAll('.mentor-select');
     const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
-
     selects.forEach(select => {
       const currentValue = select.value;
       Array.from(select.options).forEach(option => {
         if (option.value === "") return;
-        if (selectedValues.includes(option.value) && option.value !== currentValue) {
-          option.style.display = 'none';
-          option.disabled = true;
-        } else {
-          option.style.display = 'block';
-          option.disabled = false;
-        }
+        option.disabled = (selectedValues.includes(option.value) && option.value !== currentValue);
       });
     });
   }
@@ -611,8 +604,7 @@
   function contestantOptions(groupName, selectedId = "") {
     const list = DEFAULT_CONTESTANTS[groupName] || [];
     return `<option value="">-- เลือกผู้เข้าประกวด --</option>` + list.map(item => {
-      const selected = item.id === selectedId ? 'selected' : '';
-      return `<option value="${item.id}">${item.name}</option>`;
+      return `<option value="${item.id}" ${item.id === selectedId ? 'selected' : ''}>${item.name}</option>`;
     }).join('');
   }
 
@@ -630,10 +622,10 @@
           <select id="${prefix}_select_${i}" class="contestant-select" data-group="${groupName}" onchange="onContestantSelect('${prefix}', ${i}, '${groupName}')">
             ${contestantOptions(groupName, defaultItem.id)}
           </select>
-          <input type="text" id="${prefix}_branch_${i}" value="${defaultItem.branch}" readonly style="width: 100px; flex: none; background-color: #f1f5f9; color: #475569; font-weight: bold; text-align: center;" placeholder="สาขา">
+          <input type="text" id="${prefix}_branch_${i}" value="${defaultItem.branch}" readonly style="width: 90px; flex: none; background-color: #f1f5f9; color: #475569; font-weight: bold; text-align: center;" placeholder="สาขา">
           <img id="preview_${key}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <input type="file" id="file_${key}" accept="image/*" onchange="handleImageUpload(this, '${key}')">
-          <button type="button" class="btn-del-img" onclick="removeImage('${key}')" title="ลบรูปภาพ">❌</button>
+          <button type="button" class="btn-pick-library" onclick="openPickerModal('${key}')">🖼️ คลัง</button>
+          <button type="button" class="btn-del-img" onclick="removeImage('${key}')">❌</button>
         </div>`;
     }
     document.getElementById(containerId).innerHTML = html;
@@ -643,16 +635,10 @@
     const selectEl = document.getElementById(`${prefix}_select_${index}`);
     const branchInput = document.getElementById(`${prefix}_branch_${index}`);
     const selectedId = selectEl.value;
-
     const list = DEFAULT_CONTESTANTS[groupName] || [];
     const found = list.find(item => item.id === selectedId);
 
-    if (found) {
-      branchInput.value = found.branch;
-    } else {
-      branchInput.value = "";
-    }
-
+    branchInput.value = found ? found.branch : "";
     updateContestantDropdowns(groupName);
     saveStorageData();
   }
@@ -660,18 +646,11 @@
   function updateContestantDropdowns(groupName) {
     const selects = document.querySelectorAll(`select.contestant-select[data-group="${groupName}"]`);
     const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "");
-
     selects.forEach(select => {
       const currentValue = select.value;
       Array.from(select.options).forEach(option => {
         if (option.value === "") return;
-        if (selectedValues.includes(option.value) && option.value !== currentValue) {
-          option.style.display = 'none';
-          option.disabled = true;
-        } else {
-          option.style.display = 'block';
-          option.disabled = false;
-        }
+        option.disabled = (selectedValues.includes(option.value) && option.value !== currentValue);
       });
     });
   }
@@ -679,8 +658,7 @@
   function getBranchTagHtml(branchName) {
     if (!branchName) return '<span class="tag tag-default">ไม่ระบุ</span>';
     const found = BRANCHES.find(b => b.name === branchName);
-    const className = found ? found.class : 'tag-default';
-    return `<span class="tag ${className}">${branchName}</span>`;
+    return `<span class="tag ${found ? found.class : 'tag-default'}">${branchName}</span>`;
   }
 
   function getBranchColor(branchName) {
@@ -754,28 +732,12 @@
 
   function resetAndReSpin() {
     if (isSpinning) return;
-    
-    const currentPattern = generateCurrentPatternHash();
-    if (currentPattern && !appData.historyPatterns.includes(currentPattern)) {
-      appData.historyPatterns.push(currentPattern);
-    }
-    
     appData.runCount++;
     resetStateData();
   }
 
-  function generateCurrentPatternHash() {
-    return appData.teams.map(t => `${t.boy?.code || ''}-${t.girl?.code || ''}-${t.queen?.code || ''}`).join('|');
-  }
-
   function canCompleteAssignmentWithMentors(qIndex) {
-    if (qIndex >= appData.queue.length) {
-      const futurePattern = generateCurrentPatternHash();
-      if (appData.historyPatterns.includes(futurePattern)) {
-        return false;
-      }
-      return canAssignMentorsStrict();
-    }
+    if (qIndex >= appData.queue.length) return canAssignMentorsStrict();
 
     const item = appData.queue[qIndex];
     const teamIndices = shuffleArray([0, 1, 2, 3, 4]);
@@ -803,7 +765,6 @@
       if (tIdx === 5) return true;
       const team = appData.teams[tIdx];
       const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
-
       const mentorIndices = shuffleArray([0, 1, 2, 3, 4]);
 
       for (let i of mentorIndices) {
@@ -849,11 +810,8 @@
       const isSolvable = canCompleteAssignmentWithMentors(appData.currentQueueIndex + 1);
       team[contestant.type] = null;
 
-      if (isSolvable) {
-        validTeams.push(team);
-      }
+      if (isSolvable) validTeams.push(team);
     }
-
     return validTeams;
   }
 
@@ -892,7 +850,7 @@
       document.getElementById('current-turn').innerHTML = `คิวถัดไป: <strong>[${current.code}] ${current.name}</strong><br>${getBranchTagHtml(current.branch)}`;
       drawFullWheel();
     } else {
-      document.getElementById('current-turn').innerHTML = "🎉 สุ่มผู้เข้าประกวดครบแล้ว!<br><button class='btn btn-success' style='margin-top:10px;' onclick='switchTab(\"tab-summary\")'>➡️ ดูสรุปผลรายทีมเลย</button>";
+      document.getElementById('current-turn').innerHTML = "🎉 สุ่มผู้เข้าประกวดครบแล้ว!<br><button class='btn btn-success' style='margin-top:10px;' onclick='switchTab(\"tab-summary\")'>➡️ ดูสรุปผลรายทีม</button>";
       drawFullWheel();
       assignMentorsToTeams();
     }
@@ -904,24 +862,18 @@
     let validTeams = getValidTeamsForCurrentContestant();
     const contestant = appData.queue[appData.currentQueueIndex];
 
-    if (validTeams.length === 0) {
-      validTeams = appData.teams.filter(t => t[contestant.type] === null);
-    }
-
+    if (validTeams.length === 0) validTeams = appData.teams.filter(t => t[contestant.type] === null);
     if (validTeams.length === 0) return;
 
     isSpinning = true;
-
     const targetTeam = validTeams[Math.floor(Math.random() * validTeams.length)];
     const targetIndex = targetTeam.teamId - 1;
 
-    const spinTime = 5000;
+    const spinTime = 4000;
     const start = performance.now();
-    const totalRounds = 5;
-    
     const arc = (Math.PI * 2) / 5;
     const targetAngleOffset = (Math.PI * 3 / 2) - (targetIndex * arc + arc / 2);
-    const finalAngle = (totalRounds * Math.PI * 2) + targetAngleOffset;
+    const finalAngle = (5 * Math.PI * 2) + targetAngleOffset;
 
     function animate(now) {
       const elapsed = now - start;
@@ -936,7 +888,6 @@
       } else {
         isSpinning = false;
         targetTeam[contestant.type] = contestant;
-
         appData.currentQueueIndex++;
         renderTeamsTable();
         updateTurnDisplay();
@@ -953,7 +904,6 @@
       if (tIdx === 5) return true;
       const team = appData.teams[tIdx];
       const teamBranches = [team.coach?.branch, team.boy?.branch, team.girl?.branch, team.queen?.branch].filter(Boolean);
-
       const mentorIndices = shuffleArray([0, 1, 2, 3, 4]);
 
       for (let i of mentorIndices) {
@@ -962,9 +912,7 @@
         if (!m.branch || !teamBranches.includes(m.branch)) {
           team.mentor = m;
           availableMentors[i] = null;
-
           if (solveMentor(tIdx + 1)) return true;
-
           team.mentor = null;
           availableMentors[i] = m;
         }
@@ -1000,7 +948,6 @@
     let newIndex = appData.selectedViewTeamIndex + direction;
     if (newIndex < 0) newIndex = 4;
     if (newIndex > 4) newIndex = 0;
-    
     selectSummaryTeam(newIndex);
   }
 
@@ -1018,13 +965,10 @@
       buttonsHtml += `<button class="nav-team-btn ${activeClass}" onclick="selectSummaryTeam(${i})">ทีม ${i+1}</button>`;
     }
     document.getElementById('team-selector-buttons').innerHTML = buttonsHtml;
-
     document.getElementById('summary-team-title').innerText = `🏆 สรุปสมาชิก : ทีมที่ ${team.teamId}`;
 
     const mainCard = document.getElementById('team-main-card');
-    if (mainCard) {
-      mainCard.style.borderTopColor = getBranchColor(team.coach?.branch);
-    }
+    if (mainCard) mainCard.style.borderTopColor = getBranchColor(team.coach?.branch);
 
     // Coach
     document.getElementById('summary-coach-img').src = team.coach.img || DEFAULT_AVATAR;
@@ -1059,6 +1003,5 @@
 
   window.onload = initForm;
 </script>
-
 </body>
 </html>
