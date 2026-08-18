@@ -542,7 +542,6 @@
     drawFullWheel();
   }
 
-  /* 🔥 ฟังก์ชันย่อขนาดและบีบอัดไฟล์รูปภาพก่อนบันทึก */
   function handleNewImageUpload(input) {
     if (input.files && input.files[0]) {
       const nameInput = document.getElementById('upload-name-input');
@@ -557,7 +556,7 @@
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 300; // ย่อขนาดความกว้าง
+          const MAX_WIDTH = 300;
           const scale = MAX_WIDTH / img.width;
           
           canvas.width = MAX_WIDTH;
@@ -566,7 +565,6 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-          // บีบอัดเป็น JPEG คุณภาพ 70% เพื่อประหยัดพื้นที่จัดเก็บ
           const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
 
           galleryImages.push({ 
@@ -823,7 +821,7 @@
 
   function contestantOptions(groupName, selectedId = "") {
     const list = DEFAULT_CONTESTANTS[groupName] || [];
-    return `<option value="">-- เลือกผู้เข้าประกวด --</option>` + list.map(item => `<option value="${item.id}" ${item.id === selectedId ? 'selected' : ''}>${item.name}</option>`).join('');
+    return `<option value="">-- เลือกผู้เข้าประกวด --</option>` + list.map(item => `<option value="${item.id}" ${item.id === selectedId ? 'selected' : ''}>${item.name} (${item.branch})</option>`).join('');
   }
 
   function renderCategoryInputs(containerId, prefix, groupName) {
@@ -832,7 +830,7 @@
 
     for(let i=1; i<=5; i++) {
       const key = `${prefix}_${i}`;
-      const defaultItem = defaultList[i-1] || { id: "", branch: "" };
+      const defaultItem = defaultList[i-1] || { id: "" };
 
       html += `
         <div class="input-row">
@@ -840,7 +838,6 @@
           <select id="${prefix}_select_${i}" class="contestant-select" data-group="${groupName}" onchange="onContestantSelect('${prefix}', ${i}, '${groupName}')">
             ${contestantOptions(groupName, defaultItem.id)}
           </select>
-          <input type="text" id="${prefix}_branch_${i}" value="${defaultItem.branch}" readonly style="width: 75px; flex: none; background-color: #f1f5f9; color: #475569; font-weight: bold; text-align: center;" placeholder="สาขา">
           <img id="preview_${key}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
           <button type="button" class="btn-pick-library" onclick="openPickerModal('${key}', '${groupName}')">🖼️ คลัง</button>
           <button type="button" class="btn-del-img" onclick="removeImage('${key}')">❌</button>
@@ -850,13 +847,6 @@
   }
 
   function onContestantSelect(prefix, index, groupName) {
-    const selectEl = document.getElementById(`${prefix}_select_${index}`);
-    const branchInput = document.getElementById(`${prefix}_branch_${index}`);
-    const selectedId = selectEl.value;
-    const list = DEFAULT_CONTESTANTS[groupName] || [];
-    const found = list.find(item => item.id === selectedId);
-
-    branchInput.value = found ? found.branch : "";
     updateContestantDropdowns(groupName);
     saveStorageData();
   }
@@ -934,7 +924,7 @@
           code: `${cat.prefix}${i}`,
           type: cat.type,
           name: contestantObj ? contestantObj.name : `${cat.prefix}${i}`,
-          branch: contestantObj ? contestantObj.branch : document.getElementById(`${cat.prefix}_branch_${i}`).value,
+          branch: contestantObj ? contestantObj.branch : "",
           img: getImageData(key)
         });
       }
