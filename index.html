@@ -219,7 +219,15 @@
     :fullscreen .summary-nav, :-webkit-full-screen .summary-nav {
       margin-bottom: 10px;
       padding: 12px 20px;
+      justify-content: center !important; /* จัดกลุ่มปุ่มตรงกลางเมื่อเปิดเต็มจอ */
     }
+    
+    /* 🔥 ซ่อนปุ่มทีมก่อนหน้า และ ทีมถัดไป เมื่อเปิดเต็มจอ */
+    :fullscreen .summary-nav > .btn-primary,
+    :-webkit-full-screen .summary-nav > .btn-primary {
+      display: none !important;
+    }
+
     :fullscreen .team-display-card, :-webkit-full-screen .team-display-card {
       flex: 1;
       display: flex;
