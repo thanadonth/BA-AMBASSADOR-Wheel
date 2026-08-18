@@ -984,6 +984,177 @@
     document.getElementById('box-queen').style.borderColor = team.queen ? getBranchColor(team.queen.branch) : '#cbd5e1';
   }
 
+  // 1. คลังเก็บรูปภาพแยกหมวดหมู่
+let imagePool = {
+  coaches: {},     // { hash/key: base64Data }
+  mentors: {},     // { hash/key: base64Data }
+  contestants: {}  // { hash/key: base64Data }
+};
+
+// 2. ตัวแมปตำแหน่งบุคคลกับ ID ของรูปภาพ
+let imageMapping = {}; // { 'coach_1': imageKey, 'B_1': imageKey, ... }
+
+// ฟังก์ชันแปลงประเภทให้ตรงกับหมวดหมู่ใน Pool
+function getCategoryGroup(key) {
+  if (key.startsWith('coach_')) return 'coaches';
+  if (key.startsWith('mentor_')) return 'mentors';
+  return 'contestants'; // สำหรับ B_1..5, G_1..5, Q_1..5
+}
+
+// ฟังก์ชันประมวลผลการอัปโหลดรูปภาพ
+function handleImageUpload(input, key) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      const base64Data = e.target.result;
+      const group = getCategoryGroup(key);
+
+      // ตรวจสอบภาพซ้ำภายในหมวดหมู่นั้นๆ
+      let existingImgKey = Object.keys(imagePool[group]).find(
+        imgId => imagePool[group][imgId] === base64Data
+      );
+
+      if (existingImgKey) {
+        // หากพบภาพซ้ำ ให้ผูก key ของบุคคลนั้นเข้ากับรูปเดิมที่มีอยู่แล้ว
+        imageMapping[key] = existingImgKey;
+      } else {
+        // หากเป็นภาพใหม่ ให้สร้าง ID ใหม่และเซฟลง Pool ตามประเภท
+        const newImgKey = `${group}_img_${Date.now()}_${Math.floor(Math.random()*1000)}`;
+        imagePool[group][newImgKey] = base64Data;
+        imageMapping[key] = newImgKey;
+      }
+
+      // แสดงผลรูปภาพบน Preview
+      const preview = document.getElementById(`preview_${key}`);
+      if (preview) preview.src = base64Data;
+
+      saveStorageData();
+    };
+
+    reader.readAsDataURL(file);
+  }
+}
+
+// ฟังก์ชันสำหรับดึง รูปภาพ ออกมาใช้งาน
+function getImageData(key) {
+  const imgKey = imageMapping[key];
+  if (!imgKey) return DEFAULT_AVATAR;
+
+  const group = getCategoryGroup(key);
+  return imagePool[group][imgKey] || DEFAULT_AVATAR;
+}
+
+// 3. ปรับปรุงการเซฟลง LocalStorage
+function saveStorageData() {
+  try {
+    localStorage.setItem('ba2026_imagePool', JSON.stringify(imagePool));
+    localStorage.setItem('ba2026_imageMapping', JSON.stringify(imageMapping));
+    localStorage.setItem('ba2026_appData', JSON.stringify(appData));
+    
+    const formData = {};
+    document.querySelectorAll('input[type="text"], select').forEach(el => {
+      if (el.id) formData[el.id] = el.value;
+    });
+    localStorage.setItem('ba2026_formData', JSON.stringify(formData));
+  } catch(e) {
+    console.warn('LocalStorage limit exceeded', e);
+  }
+}
+
+// 4. ปรับปรุงการโหลดข้อมูลกลับมาใช้งาน
+function loadStorageData() {
+  const savedPool = localStorage.getItem('ba2026_imagePool');
+  const savedMapping = localStorage.getItem('ba2026_imageMapping');
+  
+  if (savedPool) imagePool = JSON.parse(savedPool);
+  if (savedMapping) imageMapping = JSON.parse(savedMapping);
+
+  // อัปเดตพรีวิวรูปภาพทั้งหมด
+  Object.keys(imageMapping).forEach(key => {
+    const preview = document.getElementById(`preview_${key}`);
+    if (preview) {
+      preview.src = getImageData(key);
+    }
+  });
+
+  const savedForm = localStorage.getItem('ba2026_formData');
+  if (savedForm) {
+    const formData = JSON.parse(savedForm);
+    Object.keys(formData).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = formData[id];
+    });
+    updateCoachDropdowns();
+    updateMentorDropdowns();
+    ['boy', 'girl', 'queen'].forEach(g => updateContestantDropdowns(g));
+  }
+
+  const savedApp = localStorage.getItem('ba2026_appData');
+  if (savedApp) {
+    appData = JSON.parse(savedApp);
+    renderTeamsTable();
+    updateTurnDisplay();
+  }
+}
+
+// 5. ปรับจุดอ้างอิงรูปภาพตอนสร้างข้อมูล State (ในฟังก์ชัน resetStateData)
+function resetStateData() {
+  for(let i=1; i<=5; i++) {
+    const coachSelectVal = document.getElementById(`coach_select_${i}`).value;
+    const foundCoach = COACH_LIST.find(c => c.id === coachSelectVal);
+
+    appData.teams[i-1].coach = { 
+      name: foundCoach ? foundCoach.name : `โค้ชทีม ${i}`, 
+      branch: foundCoach ? foundCoach.branch : "",
+      img: getImageData(`coach_${i}`)
+    };
+    appData.teams[i-1].mentor = null; 
+    appData.teams[i-1].boy = null; 
+    appData.teams[i-1].girl = null; 
+    appData.teams[i-1].queen = null; 
+  }
+
+  appData.mentorsList = [];
+  for(let i=1; i<=5; i++) {
+    const mentorSelectVal = document.getElementById(`mentor_select_${i}`).value;
+    const foundMentor = MENTOR_LIST.find(m => m.id === mentorSelectVal);
+
+    appData.mentorsList.push({
+      name: foundMentor ? foundMentor.name : `พี่เลี้ยง ${i}`,
+      branch: foundMentor ? foundMentor.branch : "",
+      img: getImageData(`mentor_${i}`)
+    });
+  }
+
+  appData.queue = [];
+  const categories = [{prefix: 'B', type: 'boy'}, {prefix: 'G', type: 'girl'}, {prefix: 'Q', type: 'queen'}];
+  
+  categories.forEach(cat => {
+    for(let i=1; i<=5; i++) {
+      const key = `${cat.prefix}_${i}`;
+      const selectedId = document.getElementById(`${cat.prefix}_select_${i}`).value;
+      const list = DEFAULT_CONTESTANTS[cat.type] || [];
+      const contestantObj = list.find(item => item.id === selectedId);
+
+      appData.queue.push({
+        code: `${cat.prefix}${i}`,
+        type: cat.type,
+        name: contestantObj ? contestantObj.name : `${cat.prefix}${i}`,
+        branch: contestantObj ? contestantObj.branch : document.getElementById(`${cat.prefix}_branch_${i}`).value,
+        img: getImageData(key)
+      });
+    }
+  });
+
+  appData.currentQueueIndex = 0;
+  document.getElementById('history-badge').innerText = `รอบสุ่มครั้งที่: ${appData.runCount}`;
+  renderTeamsTable();
+  updateTurnDisplay();
+  drawFullWheel();
+  saveStorageData();
+}
   window.onload = initForm;
 </script>
 
