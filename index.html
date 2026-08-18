@@ -11,77 +11,78 @@
       --card-bg: #ffffff;
       --text: #1e293b;
     }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 15px; margin: 0; }
     h1, h2, h3, h4 { color: #0f172a; margin-top: 0; }
     
     .header-container { overflow: hidden; margin-bottom: 10px; }
     .header-controls { float: right; display: flex; gap: 8px; }
     
-    .tab-container { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; }
-    .tab-btn { padding: 10px 20px; font-size: 15px; font-weight: bold; border: none; background: #e2e8f0; color: #475569; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .tab-container { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; flex-wrap: wrap; }
+    .tab-btn { padding: 8px 16px; font-size: 14px; font-weight: bold; border: none; background: #e2e8f0; color: #475569; border-radius: 8px; cursor: pointer; transition: 0.2s; }
     .tab-btn.active { background: var(--primary); color: white; }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    .section-card { background: var(--card-bg); padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
-    .section-header h3 { margin: 0; }
+    .section-card { background: var(--card-bg); padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; }
+    .section-header h3 { margin: 0; font-size: 16px; }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-    .input-row { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
-    .input-row label { width: 40px; font-weight: bold; }
-    input[type="text"], select { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; min-width: 120px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+    .input-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+    .input-row label { width: 40px; font-weight: bold; font-size: 13px; }
+    input[type="text"], select { flex: 1; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; min-width: 110px; }
     
-    .img-preview-sm { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; object-position: top center; border: 1px solid #cbd5e1; background: #e2e8f0; }
+    .img-preview-sm { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; object-position: top center; border: 1px solid #cbd5e1; background: #e2e8f0; }
 
-    .btn { padding: 10px 18px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+    .btn { padding: 8px 14px; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .btn-sm { padding: 4px 10px; font-size: 11px; border-radius: 6px; }
     .btn-primary { background-color: var(--primary); color: white; }
-    .btn-success { background-color: #16a34a; color: white; width: 100%; padding: 14px; font-size: 16px; }
+    .btn-success { background-color: #16a34a; color: white; width: 100%; padding: 12px; font-size: 15px; }
     .btn-success:hover { background-color: #15803d; }
-    .btn-reset { background-color: #dc2626; color: white; margin-top: 10px; width: 100%; font-size: 14px; padding: 12px; }
-    .btn-clear-data { background-color: #64748b; color: white; font-size: 14px; padding: 10px 16px; }
-    .btn-fullscreen { background-color: #0d9488; color: white; font-size: 14px; padding: 10px 16px; }
-    .btn-del-img { background: #ef4444; color: white; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 12px; }
+    .btn-reset { background-color: #dc2626; color: white; width: 100%; font-size: 13px; padding: 8px; margin-top: 10px; }
+    .btn-clear-data { background-color: #64748b; color: white; font-size: 13px; padding: 8px 14px; }
+    .btn-fullscreen { background-color: #0d9488; color: white; font-size: 13px; padding: 8px 14px; }
+    .btn-del-img { background: #ef4444; color: white; border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 11px; }
     .btn-del-img:hover { background: #b91c1c; }
-    .btn-pick-library { background: #8b5cf6; color: white; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 12px; }
+    .btn-pick-library { background: #8b5cf6; color: white; border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 11px; }
     .btn-pick-library:hover { background: #7c3aed; }
 
     /* Gallery Grid & Filter UI */
-    .filter-bar { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
-    .filter-btn { padding: 6px 14px; border: 1px solid #cbd5e1; background: #f1f5f9; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+    .filter-bar { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 5px; }
+    .filter-btn { padding: 4px 12px; border: 1px solid #cbd5e1; background: #f1f5f9; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; }
     .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; margin-top: 10px; }
-    .gallery-item { position: relative; border: 2px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; text-align: center; padding: 6px; display: flex; flex-direction: column; align-items: center; }
-    .gallery-item img { width: 100%; height: 90px; object-fit: cover; object-position: top center; border-radius: 4px; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 8px; }
+    .gallery-item { position: relative; border: 2px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; text-align: center; padding: 5px; display: flex; flex-direction: column; align-items: center; }
+    .gallery-item img { width: 100%; height: 80px; object-fit: cover; object-position: top center; border-radius: 4px; }
     .gallery-item .img-title { font-size: 11px; font-weight: bold; color: #334155; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
-    .gallery-item .img-category { font-size: 9px; padding: 2px 6px; border-radius: 10px; background: #e2e8f0; color: #475569; margin-top: 2px; font-weight: bold; }
-    .gallery-item .btn-del-gallery { position: absolute; top: 4px; right: 4px; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .gallery-item .img-category { font-size: 9px; padding: 1px 5px; border-radius: 8px; background: #e2e8f0; color: #475569; margin-top: 2px; font-weight: bold; }
+    .gallery-item .btn-del-gallery { position: absolute; top: 4px; right: 4px; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
     /* Modal Styles */
     .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-    .modal-content { background: white; border-radius: 12px; padding: 20px; width: 90%; max-width: 650px; max-height: 85vh; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
-    .modal-close { font-size: 20px; font-weight: bold; cursor: pointer; border: none; background: none; }
+    .modal-content { background: white; border-radius: 12px; padding: 15px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
+    .modal-close { font-size: 18px; font-weight: bold; cursor: pointer; border: none; background: none; }
 
-    .upload-box { background: #f8fafc; border: 2px dashed #cbd5e1; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-    .upload-box-inputs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .upload-box { background: #f8fafc; border: 2px dashed #cbd5e1; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+    .upload-box-inputs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
 
-    /* Arena & Summary */
-    .arena-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+    /* Arena & Summary Base */
+    .arena-grid { display: grid; grid-template-columns: 320px 1fr; gap: 15px; }
     .wheel-box { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-    #wheel-canvas { border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s ease; margin-top: 20px; }
+    #wheel-canvas { border-radius: 50%; box-shadow: 0 8px 12px -3px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s ease; margin-top: 10px; }
     #wheel-canvas:hover { transform: scale(1.02); }
-    .pointer { position: absolute; top: 30px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ef4444; z-index: 10; pointer-events: none; }
+    .pointer { position: absolute; top: 20px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 24px solid #ef4444; z-index: 10; pointer-events: none; }
     
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+    th, td { border: 1px solid #cbd5e1; padding: 6px 8px; text-align: left; font-size: 12px; }
     th { background-color: #f1f5f9; }
     
-    .tag { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: bold; color: white; margin-top: 6px; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; color: white; margin-top: 2px; }
     .tag-acc { background-color: #0284c7; }
     .tag-mkt { background-color: #dc2626; }
     .tag-fin { background-color: #16a34a; }
@@ -89,45 +90,121 @@
     .tag-mis { background-color: #db2777; }
     .tag-default { background-color: #64748b; }
 
-    .history-badge { background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+    .history-badge { background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; display: inline-block; }
 
-    .summary-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .team-badge-buttons { display: flex; gap: 8px; }
-    .nav-team-btn { padding: 8px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .summary-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .team-badge-buttons { display: flex; gap: 6px; }
+    .nav-team-btn { padding: 6px 14px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
     .nav-team-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    .team-display-card { background: #ffffff; border-radius: 16px; padding: 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); text-align: center; max-width: 980px; margin: 0 auto; border-top: 8px solid #cbd5e1; transition: border-color 0.3s ease; }
-    .person-box { border: 3px solid #cbd5e1; border-radius: 16px; padding: 20px; background: #ffffff; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
-    .person-box:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+    .team-display-card { background: #ffffff; border-radius: 14px; padding: 15px; box-shadow: 0 8px 20px -5px rgba(0,0,0,0.1); text-align: center; max-width: 950px; margin: 0 auto; border-top: 6px solid #cbd5e1; transition: border-color 0.3s ease; }
+    .person-box { border: 2px solid #cbd5e1; border-radius: 12px; padding: 10px; background: #ffffff; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
     
     .person-img { 
-      width: 160px; 
-      height: 160px; 
+      width: 110px; 
+      height: 110px; 
       border-radius: 50%; 
       object-fit: cover; 
       object-position: top center; 
-      margin-bottom: 15px; 
-      border: 4px solid #ffffff; 
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15); 
+      margin-bottom: 8px; 
+      border: 3px solid #ffffff; 
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
       background: #e2e8f0; 
     }
-    .person-role { font-size: 13px; font-weight: bold; text-transform: uppercase; color: #64748b; margin-bottom: 8px; }
-    .person-name { font-size: 18px; font-weight: bold; color: #0f172a; margin-bottom: 4px; }
+    .person-role { font-size: 11px; font-weight: bold; text-transform: uppercase; color: #64748b; margin-bottom: 4px; }
+    .person-name { font-size: 14px; font-weight: bold; color: #0f172a; margin-bottom: 2px; }
 
-    .center-row { display: flex; justify-content: center; margin-bottom: 20px; }
-    .center-row .person-box { width: 380px; }
+    .center-row { display: flex; justify-content: center; margin-bottom: 10px; }
+    .center-row .person-box { width: 320px; }
 
-    :fullscreen .header-container, :fullscreen .tab-container { display: none !important; }
+    /* Fullscreen Mode Optimization */
+    :fullscreen body, :-webkit-full-screen body {
+      padding: 10px 20px;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    :fullscreen .header-container, :-webkit-full-screen .header-container {
+      display: flex !important;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    :fullscreen .header-container h1, :-webkit-full-screen .header-container h1 {
+      font-size: 18px;
+    }
+
+    :fullscreen .tab-container, :-webkit-full-screen .tab-container {
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+    }
+    :fullscreen .tab-btn, :-webkit-full-screen .tab-btn {
+      padding: 5px 12px;
+      font-size: 12px;
+    }
+
+    :fullscreen .tab-content.active, :-webkit-full-screen .tab-content.active {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    :fullscreen .arena-grid, :-webkit-full-screen .arena-grid {
+      height: 100%;
+      grid-template-columns: 280px 1fr;
+      gap: 12px;
+    }
+    :fullscreen .wheel-box, :-webkit-full-screen .wheel-box {
+      padding: 10px;
+    }
+    :fullscreen #wheel-canvas, :-webkit-full-screen #wheel-canvas {
+      width: 230px !important;
+      height: 230px !important;
+    }
+    :fullscreen .pointer, :-webkit-full-screen .pointer {
+      top: 10px;
+    }
+
+    :fullscreen #tab-summary, :-webkit-full-screen #tab-summary {
+      justify-content: center;
+    }
+    :fullscreen .summary-nav, :-webkit-full-screen .summary-nav {
+      margin-bottom: 8px;
+      padding: 6px 12px;
+    }
+    :fullscreen .team-display-card, :-webkit-full-screen .team-display-card {
+      padding: 12px 20px;
+      max-width: 100%;
+      width: 100%;
+    }
+    :fullscreen #summary-team-title, :-webkit-full-screen #summary-team-title {
+      font-size: 20px !important;
+      margin-bottom: 8px !important;
+    }
+    :fullscreen .person-img, :-webkit-full-screen .person-img {
+      width: 90px;
+      height: 90px;
+      margin-bottom: 4px;
+    }
+    :fullscreen .person-box, :-webkit-full-screen .person-box {
+      padding: 6px;
+    }
+    :fullscreen .center-row, :-webkit-full-screen .center-row {
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
 
   <div class="header-container">
+    <h1 style="margin: 0;">BA AMBASSADOR 2026</h1>
     <div class="header-controls">
       <button id="fullscreen-btn" class="btn btn-fullscreen" onclick="toggleFullscreen()">🖥️ เต็มหน้าจอ</button>
       <button class="btn btn-clear-data" onclick="clearAllData()">🗑️ ล้างข้อมูลระบบ</button>
     </div>
-    <h1 style="margin: 0;">BA AMBASSADOR 2026</h1>
   </div>
 
   <div class="tab-container">
@@ -162,22 +239,22 @@
       </div>
       <div class="grid-3">
         <div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h4 style="margin:0;">♂️ Boy (B1 - B5)</h4>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 style="margin:0; font-size:14px;">♂️ Boy (B1 - B5)</h4>
             <button class="btn btn-pick-library btn-sm" onclick="openManageGalleryModal('boy')">➕ อัปคลัง Boy</button>
           </div>
           <div id="boys-inputs"></div>
         </div>
         <div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h4 style="margin:0;">♀️ Girl (G1 - G5)</h4>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 style="margin:0; font-size:14px;">♀️ Girl (G1 - G5)</h4>
             <button class="btn btn-pick-library btn-sm" onclick="openManageGalleryModal('girl')">➕ อัปคลัง Girl</button>
           </div>
           <div id="girls-inputs"></div>
         </div>
         <div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h4 style="margin:0;">👑 Queen (Q1 - Q5)</h4>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 style="margin:0; font-size:14px;">👑 Queen (Q1 - Q5)</h4>
             <button class="btn btn-pick-library btn-sm" onclick="openManageGalleryModal('queen')">➕ อัปคลัง Queen</button>
           </div>
           <div id="queens-inputs"></div>
@@ -193,15 +270,15 @@
     <div class="arena-grid">
       <div class="section-card wheel-box">
         <div class="pointer"></div>
-        <canvas id="wheel-canvas" width="300" height="300" onclick="spinWheel()" title="คลิกที่วงล้อเพื่อหมุน"></canvas>
-        <span style="font-size: 12px; color: #64748b; margin-top: 5px;">👇 คลิกที่วงล้อเพื่อหมุน</span>
-        <h3 id="current-turn" style="margin-top: 15px; margin-bottom: 20px; color: #2563eb; text-align: center;">เตรียมพร้อมหมุนวงล้อ</h3>
+        <canvas id="wheel-canvas" width="280" height="280" onclick="spinWheel()" title="คลิกที่วงล้อเพื่อหมุน"></canvas>
+        <span style="font-size: 11px; color: #64748b; margin-top: 4px;">👇 คลิกที่วงล้อเพื่อหมุน</span>
+        <h4 id="current-turn" style="margin-top: 8px; margin-bottom: 10px; color: #2563eb; text-align: center; font-size: 14px;">เตรียมพร้อมหมุนวงล้อ</h4>
         <button class="btn btn-reset" onclick="resetAndReSpin()">🔄 สุ่มใหม่ทั้งหมด</button>
       </div>
 
-      <div class="section-card">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h3>📊 ตารางสรุปผลการเข้าทีม (5 ทีม)</h3>
+      <div class="section-card" style="overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <h3 style="font-size: 15px; margin: 0;">📊 ตารางสรุปผลการเข้าทีม (5 ทีม)</h3>
           <span id="history-badge" class="history-badge">รอบสุ่มครั้งที่: 1</span>
         </div>
         <table>
@@ -224,13 +301,13 @@
   <!-- TAB 3: SUMMARY -->
   <div id="tab-summary" class="tab-content">
     <div class="summary-nav">
-      <button class="btn btn-primary" onclick="navigateTeam(-1)">⬅️ ทีมก่อนหน้า</button>
+      <button class="btn btn-primary" onclick="navigateTeam(-1)">⬅️ ทีมก่อนหน้า (A/⬅️)</button>
       <div class="team-badge-buttons" id="team-selector-buttons"></div>
-      <button class="btn btn-primary" onclick="navigateTeam(1)">ทีมถัดไป ➡️</button>
+      <button class="btn btn-primary" onclick="navigateTeam(1)">ทีมถัดไป (D/➡️)</button>
     </div>
 
     <div class="team-display-card" id="team-main-card">
-      <h2 id="summary-team-title" style="font-size: 30px; margin-bottom: 25px; color: #2563eb;">ทีมที่ 1</h2>
+      <h2 id="summary-team-title" style="font-size: 24px; margin-bottom: 12px; color: #2563eb;">ทีมที่ 1</h2>
       
       <div class="center-row">
         <div class="person-box" id="box-coach">
@@ -250,7 +327,7 @@
         </div>
       </div>
 
-      <div class="grid-3" style="margin-top: 25px;">
+      <div class="grid-3" style="margin-top: 10px;">
         <div class="person-box" id="box-boy">
           <div class="person-role">♂️ ผู้เข้าประกวด Boy</div>
           <img id="summary-boy-img" class="person-img" src="" alt="Boy">
@@ -281,9 +358,8 @@
         <button class="modal-close" onclick="closePickerModal()">✖</button>
       </div>
 
-      <!-- Upload New Image Section inside Modal -->
       <div class="upload-box">
-        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">➕ อัปโหลดรูปภาพใหม่เข้าคลัง</div>
+        <div style="font-weight: bold; font-size: 13px; margin-bottom: 4px;">➕ อัปโหลดรูปภาพใหม่เข้าคลัง</div>
         <div class="upload-box-inputs">
           <input type="file" id="upload-file-input" accept="image/*" style="display:none;" onchange="handleNewImageUpload(this)">
           <input type="text" id="upload-name-input" placeholder="ตั้งชื่อรูปภาพ (เช่น อ.สมชาย, B1)" style="flex:2;">
@@ -299,7 +375,6 @@
         </div>
       </div>
 
-      <!-- Category Filter Tabs -->
       <div class="filter-bar">
         <button class="filter-btn active" onclick="filterGalleryCategory('all', this)">ทั้งหมด</button>
         <button class="filter-btn" onclick="filterGalleryCategory('coach', this)">👑 โค้ช</button>
@@ -365,21 +440,46 @@
 
   const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
-  // --- GALLERY STORAGE WITH CATEGORIES & NAMES ---
-  // Object structure: { id, name, category, src }
   let galleryImages = []; 
   let imageMapping = {};
   let activePickerTargetKey = null;
   let currentFilterCategory = 'all';
+  let activeTabId = 'tab-input';
 
-  const CATEGORY_LABELS = {
-    coach: "โค้ช",
-    mentor: "พี่เลี้ยง",
-    boy: "Boy",
-    girl: "Girl",
-    queen: "Queen",
-    other: "อื่นๆ"
-  };
+  const CATEGORY_LABELS = { coach: "โค้ช", mentor: "พี่เลี้ยง", boy: "Boy", girl: "Girl", queen: "Queen", other: "อื่นๆ" };
+
+  /* ==========================================
+     ⌨️ KEYBOARD NAVIGATION CONTROL (ARROW & A/D)
+     ========================================== */
+  document.addEventListener('keydown', function(event) {
+    // ข้ามการทำงานหากผู้ใช้กำลังพิมพ์ข้อความในช่อง Input
+    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+      return;
+    }
+
+    const key = event.key.toLowerCase();
+    
+    // ปุ่มไปหน้าถัดไป (ขวา หรือ D)
+    if (key === 'arrowright' || key === 'd') {
+      if (activeTabId === 'tab-summary') {
+        navigateTeam(1);
+      } else if (activeTabId === 'tab-input') {
+        switchTab('tab-wheel');
+      } else if (activeTabId === 'tab-wheel') {
+        switchTab('tab-summary');
+      }
+    } 
+    // ปุ่มย้อนกลับ (ซ้าย หรือ A)
+    else if (key === 'arrowleft' || key === 'a') {
+      if (activeTabId === 'tab-summary') {
+        navigateTeam(-1);
+      } else if (activeTabId === 'tab-wheel') {
+        switchTab('tab-input');
+      } else if (activeTabId === 'tab-input') {
+        switchTab('tab-summary');
+      }
+    }
+  });
 
   function handleNewImageUpload(input) {
     if (input.files && input.files[0]) {
@@ -390,12 +490,7 @@
 
       const reader = new FileReader();
       reader.onload = function(e) {
-        galleryImages.push({
-          id: 'img_' + Date.now(),
-          name: imgName,
-          category: category,
-          src: e.target.result
-        });
+        galleryImages.push({ id: 'img_' + Date.now(), name: imgName, category: category, src: e.target.result });
         nameInput.value = '';
         renderModalGallery();
         saveStorageData();
@@ -405,10 +500,9 @@
   }
 
   function openManageGalleryModal(defaultCat = 'all') {
-    activePickerTargetKey = null; // Manage mode (not picking)
+    activePickerTargetKey = null;
     document.getElementById('modal-title').innerText = "🖼️ จัดการคลังรูปภาพกลาง";
     document.getElementById('upload-category-input').value = (defaultCat !== 'all') ? defaultCat : 'coach';
-    
     currentFilterCategory = defaultCat;
     updateFilterButtonsUI(defaultCat);
     renderModalGallery();
@@ -419,7 +513,6 @@
     activePickerTargetKey = key;
     document.getElementById('modal-title').innerText = `🖼️ เลือกรูปภาพสำหรับ [${key}]`;
     document.getElementById('upload-category-input').value = category || 'other';
-    
     currentFilterCategory = category || 'all';
     updateFilterButtonsUI(currentFilterCategory);
     renderModalGallery();
@@ -429,9 +522,7 @@
   function updateFilterButtonsUI(category) {
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.classList.remove('active');
-      if (btn.getAttribute('onclick').includes(`'${category}'`)) {
-        btn.classList.add('active');
-      }
+      if (btn.getAttribute('onclick').includes(`'${category}'`)) btn.classList.add('active');
     });
   }
 
@@ -446,14 +537,10 @@
 
   function renderModalGallery() {
     const container = document.getElementById('modal-gallery-container');
-    let items = galleryImages;
-
-    if (currentFilterCategory !== 'all') {
-      items = galleryImages.filter(item => item.category === currentFilterCategory);
-    }
+    let items = (currentFilterCategory !== 'all') ? galleryImages.filter(item => item.category === currentFilterCategory) : galleryImages;
 
     if (items.length === 0) {
-      container.innerHTML = `<p style="grid-column: 1/-1; color: #94a3b8; font-style: italic; text-align:center; padding: 20px;">ไม่มีรูปภาพในหมวดหมู่นี้ กรุณาเลือกไฟล์และกดอัปโหลดด้านบน</p>`;
+      container.innerHTML = `<p style="grid-column: 1/-1; color: #94a3b8; font-style: italic; text-align:center; padding: 20px;">ไม่มีรูปภาพในหมวดหมู่นี้</p>`;
       return;
     }
 
@@ -470,8 +557,7 @@
           <div class="img-title" title="${item.name}">${item.name}</div>
           <div class="img-category">${CATEGORY_LABELS[item.category] || 'อื่นๆ'}</div>
           ${isSelectMode ? '<span style="font-size:10px; color:#2563eb; font-weight:bold; margin-top:2px;">กดเพื่อใช้</span>' : ''}
-        </div>
-      `;
+        </div>`;
     });
     container.innerHTML = html;
   }
@@ -504,19 +590,11 @@
     saveStorageData();
   }
 
-  function getImageData(key) {
-    return imageMapping[key] || DEFAULT_AVATAR;
-  }
+  function getImageData(key) { return imageMapping[key] || DEFAULT_AVATAR; }
 
-  // --- APP STATE & ENGINE ---
   let appData = {
     teams: Array.from({length: 5}, (_, i) => ({ teamId: i + 1, coach: {}, mentor: null, boy: null, girl: null, queen: null })),
-    mentorsList: [],
-    queue: [],
-    currentQueueIndex: 0,
-    historyPatterns: [],
-    runCount: 1,
-    selectedViewTeamIndex: 0
+    mentorsList: [], queue: [], currentQueueIndex: 0, historyPatterns: [], runCount: 1, selectedViewTeamIndex: 0
   };
 
   let isSpinning = false;
@@ -542,20 +620,14 @@
       localStorage.setItem('ba2026_appData', JSON.stringify(appData));
       
       const formData = {};
-      document.querySelectorAll('input[type="text"], select').forEach(el => {
-        if (el.id) formData[el.id] = el.value;
-      });
+      document.querySelectorAll('input[type="text"], select').forEach(el => { if (el.id) formData[el.id] = el.value; });
       localStorage.setItem('ba2026_formData', JSON.stringify(formData));
-    } catch(e) {
-      console.warn('Storage quota limit reached', e);
-    }
+    } catch(e) { console.warn('Storage limit reached', e); }
   }
 
   function loadStorageData() {
     const savedGallery = localStorage.getItem('ba2026_gallery_v2');
-    if (savedGallery) {
-      galleryImages = JSON.parse(savedGallery);
-    }
+    if (savedGallery) galleryImages = JSON.parse(savedGallery);
 
     const savedMapping = localStorage.getItem('ba2026_imageMapping');
     if (savedMapping) {
@@ -587,13 +659,14 @@
   }
 
   function clearAllData() {
-    if (confirm("คุณแน่ใจหรือไม่ว่าต้องการล้างข้อมูลและรูปภาพในคลังทั้งหมด?")) {
+    if (confirm("คุณแน่ใจหรือไม่ว่าต้องการล้างข้อมูลและรูปภาพทั้งหมด?")) {
       localStorage.clear();
       location.reload();
     }
   }
 
   function switchTab(tabId) {
+    activeTabId = tabId;
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     
@@ -610,25 +683,20 @@
   function initForm() {
     let coachHtml = '', mentorHtml = '';
     for(let i=1; i<=5; i++) {
-      const keyC = `coach_${i}`;
+      const keyC = `coach_${i}`, keyM = `mentor_${i}`;
       coachHtml += `
         <div class="input-row">
           <label>ทีม ${i}:</label>
-          <select id="coach_select_${i}" class="coach-select" onchange="updateCoachDropdowns(); saveStorageData();">
-            ${coachOptions(COACH_LIST[i-1].id)}
-          </select>
+          <select id="coach_select_${i}" class="coach-select" onchange="updateCoachDropdowns(); saveStorageData();">${coachOptions(COACH_LIST[i-1].id)}</select>
           <img id="preview_${keyC}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
           <button type="button" class="btn-pick-library" onclick="openPickerModal('${keyC}', 'coach')">🖼️ คลัง</button>
           <button type="button" class="btn-del-img" onclick="removeImage('${keyC}')">❌</button>
         </div>`;
       
-      const keyM = `mentor_${i}`;
       mentorHtml += `
         <div class="input-row">
           <label>คนที่ ${i}:</label>
-          <select id="mentor_select_${i}" class="mentor-select" onchange="updateMentorDropdowns(); saveStorageData();">
-            ${mentorOptions(MENTOR_LIST[i-1].id)}
-          </select>
+          <select id="mentor_select_${i}" class="mentor-select" onchange="updateMentorDropdowns(); saveStorageData();">${mentorOptions(MENTOR_LIST[i-1].id)}</select>
           <img id="preview_${keyM}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
           <button type="button" class="btn-pick-library" onclick="openPickerModal('${keyM}', 'mentor')">🖼️ คลัง</button>
           <button type="button" class="btn-del-img" onclick="removeImage('${keyM}')">❌</button>
@@ -644,14 +712,11 @@
     updateCoachDropdowns();
     updateMentorDropdowns();
     ['boy', 'girl', 'queen'].forEach(g => updateContestantDropdowns(g));
-
     loadStorageData();
   }
 
   function coachOptions(selectedId = "") {
-    return `<option value="">-- เลือกอาจารย์โค้ช --</option>` + COACH_LIST.map(c => {
-      return `<option value="${c.id}" ${c.id === selectedId ? 'selected' : ''}>${c.name} (${c.branch})</option>`;
-    }).join('');
+    return `<option value="">-- เลือกอาจารย์โค้ช --</option>` + COACH_LIST.map(c => `<option value="${c.id}" ${c.id === selectedId ? 'selected' : ''}>${c.name} (${c.branch})</option>`).join('');
   }
 
   function updateCoachDropdowns() {
@@ -667,9 +732,7 @@
   }
 
   function mentorOptions(selectedId = "") {
-    return `<option value="">-- เลือกพี่เลี้ยง --</option>` + MENTOR_LIST.map(m => {
-      return `<option value="${m.id}" ${m.id === selectedId ? 'selected' : ''}>${m.name} (${m.branch})</option>`;
-    }).join('');
+    return `<option value="">-- เลือกพี่เลี้ยง --</option>` + MENTOR_LIST.map(m => `<option value="${m.id}" ${m.id === selectedId ? 'selected' : ''}>${m.name} (${m.branch})</option>`).join('');
   }
 
   function updateMentorDropdowns() {
@@ -686,9 +749,7 @@
 
   function contestantOptions(groupName, selectedId = "") {
     const list = DEFAULT_CONTESTANTS[groupName] || [];
-    return `<option value="">-- เลือกผู้เข้าประกวด --</option>` + list.map(item => {
-      return `<option value="${item.id}" ${item.id === selectedId ? 'selected' : ''}>${item.name}</option>`;
-    }).join('');
+    return `<option value="">-- เลือกผู้เข้าประกวด --</option>` + list.map(item => `<option value="${item.id}" ${item.id === selectedId ? 'selected' : ''}>${item.name}</option>`).join('');
   }
 
   function renderCategoryInputs(containerId, prefix, groupName) {
@@ -705,7 +766,7 @@
           <select id="${prefix}_select_${i}" class="contestant-select" data-group="${groupName}" onchange="onContestantSelect('${prefix}', ${i}, '${groupName}')">
             ${contestantOptions(groupName, defaultItem.id)}
           </select>
-          <input type="text" id="${prefix}_branch_${i}" value="${defaultItem.branch}" readonly style="width: 80px; flex: none; background-color: #f1f5f9; color: #475569; font-weight: bold; text-align: center;" placeholder="สาขา">
+          <input type="text" id="${prefix}_branch_${i}" value="${defaultItem.branch}" readonly style="width: 75px; flex: none; background-color: #f1f5f9; color: #475569; font-weight: bold; text-align: center;" placeholder="สาขา">
           <img id="preview_${key}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
           <button type="button" class="btn-pick-library" onclick="openPickerModal('${key}', '${groupName}')">🖼️ คลัง</button>
           <button type="button" class="btn-del-img" onclick="removeImage('${key}')">❌</button>
@@ -905,6 +966,8 @@
     const total = 5;
     const arc = (Math.PI * 2) / total;
     const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
+    const center = canvas.width / 2;
+    const radius = center - 10;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -913,16 +976,16 @@
       ctx.fillStyle = colors[i];
       
       ctx.beginPath();
-      ctx.arc(150, 150, 140, angle, angle + arc);
-      ctx.lineTo(150, 150);
+      ctx.arc(center, center, radius, angle, angle + arc);
+      ctx.lineTo(center, center);
       ctx.fill();
 
       ctx.save();
       ctx.fillStyle = 'white';
-      ctx.font = 'bold 16px Kanit, sans-serif';
-      ctx.translate(150 + Math.cos(angle + arc / 2) * 90, 150 + Math.sin(angle + arc / 2) * 90);
+      ctx.font = 'bold 14px Kanit, sans-serif';
+      ctx.translate(center + Math.cos(angle + arc / 2) * (radius * 0.6), center + Math.sin(angle + arc / 2) * (radius * 0.6));
       ctx.rotate(angle + arc / 2 + Math.PI / 2);
-      ctx.fillText(`ทีม ${appData.teams[i].teamId}`, -20, 0);
+      ctx.fillText(`ทีม ${appData.teams[i].teamId}`, -18, 0);
       ctx.restore();
     }
   }
@@ -933,7 +996,7 @@
       document.getElementById('current-turn').innerHTML = `คิวถัดไป: <strong>[${current.code}] ${current.name}</strong><br>${getBranchTagHtml(current.branch)}`;
       drawFullWheel();
     } else {
-      document.getElementById('current-turn').innerHTML = "🎉 สุ่มผู้เข้าประกวดครบแล้ว!<br><button class='btn btn-success' style='margin-top:10px;' onclick='switchTab(\"tab-summary\")'>➡️ ดูสรุปผลรายทีม</button>";
+      document.getElementById('current-turn').innerHTML = "🎉 สุ่มผู้เข้าประกวดครบแล้ว!<br><button class='btn btn-success' style='margin-top:6px;' onclick='switchTab(\"tab-summary\")'>➡️ ดูสรุปผลรายทีม</button>";
       drawFullWheel();
       assignMentorsToTeams();
     }
@@ -952,7 +1015,7 @@
     const targetTeam = validTeams[Math.floor(Math.random() * validTeams.length)];
     const targetIndex = targetTeam.teamId - 1;
 
-    const spinTime = 4000;
+    const spinTime = 3500;
     const start = performance.now();
     const arc = (Math.PI * 2) / 5;
     const targetAngleOffset = (Math.PI * 3 / 2) - (targetIndex * arc + arc / 2);
