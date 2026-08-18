@@ -133,22 +133,20 @@
     .center-row .person-box { width: 320px; }
 
     /* ==========================================
-       🖥️ FULLSCREEN MODE OPTIMIZATIONS (ADDED)
+       🖥️ FULLSCREEN MODE OPTIMIZATIONS (IMPROVED)
        ========================================== */
     :fullscreen, :-webkit-full-screen {
       background-color: #f1f5f9 !important;
       overflow: hidden !important;
-      padding: 15px !important;
+      padding: 20px !important;
       width: 100vw !important;
       height: 100vh !important;
       display: flex;
       flex-direction: column;
     }
 
-    /* ซ่อนแถบที่ไม่จำเป็นในโหมดเต็มหน้าจอ */
     :fullscreen .header-container, :-webkit-full-screen .header-container,
     :fullscreen .tab-container, :-webkit-full-screen .tab-container,
-    :fullscreen .btn-reset, :-webkit-full-screen .btn-reset,
     :fullscreen .btn-clear-data, :-webkit-full-screen .btn-clear-data {
       display: none !important;
     }
@@ -161,36 +159,59 @@
       justify-content: center;
     }
 
-    /* ปรับแต่งหน้าหมุนวงล้อในโหมดเต็มจอ */
+    /* 🔥 ปรับแต่งหมุนวงล้อเต็มจอ: ขยายให้เต็มตา ลดพื้นที่ว่าง */
     :fullscreen #tab-wheel, :-webkit-full-screen #tab-wheel {
       height: 100%;
     }
     :fullscreen .arena-grid, :-webkit-full-screen .arena-grid {
-      grid-template-columns: 380px 1fr;
-      height: 100%;
-      gap: 20px;
+      grid-template-columns: 450px 1fr !important; /* ขยายฝั่งวงล้อให้ใหญ่ขึ้น */
+      height: 100% !important;
+      gap: 20px !important;
     }
     :fullscreen .wheel-box, :-webkit-full-screen .wheel-box {
-      margin: 0;
-      height: 100%;
+      margin: 0 !important;
+      height: 100% !important;
+      justify-content: space-evenly !important; /* กระจายองค์ประกอบให้เต็มความสูง */
+      padding: 20px !important;
     }
     :fullscreen #wheel-canvas, :-webkit-full-screen #wheel-canvas {
-      width: 320px !important;
-      height: 320px !important;
+      width: 400px !important; /* ขยายขนาดวงล้อ Canvas */
+      height: 400px !important;
+      margin-top: 0 !important;
     }
     :fullscreen .pointer, :-webkit-full-screen .pointer {
-      top: 15px;
-      border-left-width: 15px;
-      border-right-width: 15px;
-      border-top-width: 28px;
+      top: 35px !important;
+      border-left-width: 18px !important;
+      border-right-width: 18px !important;
+      border-top-width: 32px !important;
+    }
+    :fullscreen #current-turn, :-webkit-full-screen #current-turn {
+      font-size: 18px !important;
+      margin: 0 !important;
+    }
+    :fullscreen .table-card-fullscreen, :-webkit-full-screen .table-card-fullscreen {
+      display: flex !important;
+      flex-direction: column !important;
+      height: 100% !important;
+      margin-bottom: 0 !important;
+    }
+    :fullscreen table, :-webkit-full-screen table {
+      flex: 1;
+      height: 100%;
     }
     :fullscreen table th, :-webkit-full-screen table th,
     :fullscreen table td, :-webkit-full-screen table td {
-      padding: 12px 10px;
-      font-size: 14px;
+      padding: 14px 12px !important;
+      font-size: 15px !important; /* ขยายตัวอักษรในตารางให้อ่านง่ายขึ้น */
+      vertical-align: middle;
+    }
+    :fullscreen .btn-reset, :-webkit-full-screen .btn-reset {
+      margin-top: 0 !important;
+      padding: 12px !important;
+      font-size: 15px !important;
     }
 
-    /* ปรับแต่งหน้าสรุปผลในโหมดเต็มจอ */
+    /* ปรับแต่งหน้าสรุปผลเต็มจอ */
     :fullscreen #tab-summary, :-webkit-full-screen #tab-summary {
       height: 100%;
       justify-content: space-between;
@@ -296,15 +317,15 @@
     <div class="arena-grid">
       <div class="section-card wheel-box">
         <div class="pointer"></div>
-        <canvas id="wheel-canvas" width="280" height="280" onclick="spinWheel()" title="คลิกที่วงล้อเพื่อหมุน"></canvas>
-        <span style="font-size: 11px; color: #64748b; margin-top: 4px;">👇 คลิกที่วงล้อเพื่อหมุน</span>
-        <h4 id="current-turn" style="margin-top: 8px; margin-bottom: 10px; color: #2563eb; text-align: center; font-size: 14px;">เตรียมพร้อมหมุนวงล้อ</h4>
+        <canvas id="wheel-canvas" width="380" height="380" onclick="spinWheel()" title="คลิกที่วงล้อเพื่อหมุน"></canvas>
+        <span style="font-size: 12px; color: #64748b; margin-top: 4px;">👇 คลิกที่วงล้อเพื่อหมุน</span>
+        <h4 id="current-turn" style="color: #2563eb; text-align: center; font-size: 15px;">เตรียมพร้อมหมุนวงล้อ</h4>
         <button class="btn btn-reset" onclick="resetAndReSpin()">🔄 สุ่มใหม่ทั้งหมด</button>
       </div>
 
-      <div class="section-card" style="overflow-y: auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <h3 style="font-size: 15px; margin: 0;">📊 ตารางสรุปผลการเข้าทีม (5 ทีม)</h3>
+      <div class="section-card table-card-fullscreen" style="overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h3 style="font-size: 16px; margin: 0;">📊 ตารางสรุปผลการเข้าทีม (5 ทีม)</h3>
           <span id="history-badge" class="history-badge">รอบสุ่มครั้งที่: 1</span>
         </div>
         <table>
@@ -518,6 +539,7 @@
     } else {
       fsBtn.innerText = "❌ ออกจากเต็มจอ";
     }
+    drawFullWheel();
   }
 
   function handleNewImageUpload(input) {
@@ -1008,10 +1030,10 @@
 
       ctx.save();
       ctx.fillStyle = 'white';
-      ctx.font = 'bold 14px Kanit, sans-serif';
+      ctx.font = 'bold 18px Kanit, sans-serif';
       ctx.translate(center + Math.cos(angle + arc / 2) * (radius * 0.6), center + Math.sin(angle + arc / 2) * (radius * 0.6));
       ctx.rotate(angle + arc / 2 + Math.PI / 2);
-      ctx.fillText(`ทีม ${appData.teams[i].teamId}`, -18, 0);
+      ctx.fillText(`ทีม ${appData.teams[i].teamId}`, -22, 0);
       ctx.restore();
     }
   }
