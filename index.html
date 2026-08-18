@@ -133,11 +133,11 @@
     .center-row { display: flex; justify-content: center; margin-bottom: 16px; }
     .center-row .person-box { width: 420px; }
 
-    /* Fullscreen Mode Optimization (ปรับให้ใหญ่พิเศษยามแชร์ขึ้นจอใหญ่) */
+    /* Fullscreen Mode Optimization (ปรับปรุงใหม่ให้พอดีจอพอดี ไม่ต้อง Scroll) */
     :fullscreen, :-webkit-full-screen {
       background-color: #f1f5f9 !important;
       overflow: hidden !important;
-      padding: 20px !important;
+      padding: 1.5vh 2vw !important;
       width: 100vw !important;
       height: 100vh !important;
       display: flex;
@@ -155,7 +155,8 @@
       height: 100%;
       display: flex !important;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
+      overflow: hidden !important;
     }
 
     :fullscreen #tab-wheel, :-webkit-full-screen #tab-wheel {
@@ -209,57 +210,116 @@
       font-size: 15px !important;
     }
 
+    /* --- ปรับแต่งสรุปผล (TAB 3) ตอนกดเต็มหน้าจอ --- */
     :fullscreen #tab-summary, :-webkit-full-screen #tab-summary {
-      height: 100%;
-      justify-content: space-between;
+      height: 100vh;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      gap: 1.5vh !important;
+      padding: 0 !important;
+      overflow: hidden !important;
     }
+
     :fullscreen .summary-nav, :-webkit-full-screen .summary-nav {
-      margin-bottom: 12px;
-      padding: 14px 24px;
+      margin-bottom: 0 !important;
+      padding: 1.2vh 2vw !important;
       justify-content: center !important;
+      flex-shrink: 0;
     }
+
     :fullscreen .nav-team-btn, :-webkit-full-screen .nav-team-btn {
-      font-size: 18px !important;
-      padding: 10px 24px !important;
+      font-size: 2.2vh !important;
+      padding: 0.8vh 2vw !important;
     }
-    
+
     :fullscreen .summary-nav > .btn-primary,
     :-webkit-full-screen .summary-nav > .btn-primary {
       display: none !important;
     }
 
     :fullscreen .team-display-card, :-webkit-full-screen .team-display-card {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      max-width: 100%;
-      width: 100%;
-      padding: 25px 50px;
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      padding: 1.5vh 2vw !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+      border-top-width: 6px !important;
     }
+
     :fullscreen #summary-team-title, :-webkit-full-screen #summary-team-title {
-      font-size: 36px !important;
-      margin-bottom: 10px !important;
+      font-size: 3.2vh !important;
+      margin-bottom: 0.5vh !important;
+      line-height: 1.1 !important;
     }
-    :fullscreen .person-img, :-webkit-full-screen .person-img {
-      width: 160px !important;
-      height: 160px !important;
+
+    :fullscreen .center-row, :-webkit-full-screen .center-row {
+      margin-bottom: 0 !important;
+      display: flex;
+      justify-content: center;
+      gap: 2vw;
     }
-    :fullscreen .person-role, :-webkit-full-screen .person-role {
-      font-size: 18px !important;
+
+    /* จัดระเบียบการ์ดบุคคลในหน้าจอใหญ่แบบสองแถวประหยัดพื้นที่ vertical */
+    :fullscreen .team-display-card, :-webkit-full-screen .team-display-card {
+      display: grid !important;
+      grid-template-rows: auto 1fr 1.2fr !important;
+      gap: 1.2vh !important;
     }
-    :fullscreen .person-name, :-webkit-full-screen .person-name {
-      font-size: 24px !important;
+
+    :fullscreen .top-roles-row, :-webkit-full-screen .top-roles-row {
+      display: flex;
+      justify-content: center;
+      gap: 2vw;
+      width: 100%;
     }
-    :fullscreen .tag, :-webkit-full-screen .tag {
-      font-size: 16px !important;
-      padding: 6px 16px !important;
-    }
+
     :fullscreen .person-box, :-webkit-full-screen .person-box {
-      padding: 16px !important;
+      padding: 1vh 1vw !important;
+      height: 100% !important;
+      justify-content: center !important;
+      border-width: 2px !important;
     }
+
     :fullscreen .center-row .person-box, :-webkit-full-screen .center-row .person-box {
-      width: 480px !important;
+      width: 45% !important;
+    }
+
+    :fullscreen .grid-3, :-webkit-full-screen .grid-3 {
+      margin-top: 0 !important;
+      gap: 1.5vw !important;
+      height: 100% !important;
+    }
+
+    :fullscreen .person-img, :-webkit-full-screen .person-img {
+      width: min(12vh, 120px) !important;
+      height: min(12vh, 120px) !important;
+      margin-bottom: 0.5vh !important;
+      border-width: 3px !important;
+    }
+
+    :fullscreen .person-role, :-webkit-full-screen .person-role {
+      font-size: 1.8vh !important;
+      margin-bottom: 0.3vh !important;
+    }
+
+    :fullscreen .person-name, :-webkit-full-screen .person-name {
+      font-size: 2.4vh !important;
+      margin-bottom: 0.3vh !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    :fullscreen .tag, :-webkit-full-screen .tag {
+      font-size: 1.6vh !important;
+      padding: 0.3vh 1.2vw !important;
+      margin-top: 0.2vh !important;
     }
   </style>
 </head>
@@ -375,21 +435,23 @@
     <div class="team-display-card" id="team-main-card">
       <h2 id="summary-team-title" style="font-size: 28px; margin-bottom: 16px; color: #2563eb; font-weight: 800;">ทีมที่ 1</h2>
       
-      <div class="center-row">
-        <div class="person-box" id="box-coach">
-          <div class="person-role">👑 อาจารย์โค้ชประจำทีม</div>
-          <img id="summary-coach-img" class="person-img" src="" alt="Coach">
-          <div class="person-name" id="summary-coach-name">-</div>
-          <div id="summary-coach-branch"></div>
+      <div class="top-roles-row">
+        <div class="center-row" style="margin-bottom:0; width:50%;">
+          <div class="person-box" id="box-coach" style="width:100%;">
+            <div class="person-role">👑 อาจารย์โค้ชประจำทีม</div>
+            <img id="summary-coach-img" class="person-img" src="" alt="Coach">
+            <div class="person-name" id="summary-coach-name">-</div>
+            <div id="summary-coach-branch"></div>
+          </div>
         </div>
-      </div>
 
-      <div class="center-row">
-        <div class="person-box" id="box-mentor">
-          <div class="person-role">🤝 พี่เลี้ยงประจำทีม</div>
-          <img id="summary-mentor-img" class="person-img" src="" alt="Mentor">
-          <div class="person-name" id="summary-mentor-name">-</div>
-          <div id="summary-mentor-branch"></div>
+        <div class="center-row" style="margin-bottom:0; width:50%;">
+          <div class="person-box" id="box-mentor" style="width:100%;">
+            <div class="person-role">🤝 พี่เลี้ยงประจำทีม</div>
+            <img id="summary-mentor-img" class="person-img" src="" alt="Mentor">
+            <div class="person-name" id="summary-mentor-name">-</div>
+            <div id="summary-mentor-branch"></div>
+          </div>
         </div>
       </div>
 
