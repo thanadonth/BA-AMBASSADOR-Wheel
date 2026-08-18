@@ -44,6 +44,8 @@
     .btn-reset { background-color: #dc2626; color: white; margin-top: 10px; width: 100%; font-size: 14px; padding: 12px; }
     .btn-clear-data { background-color: #64748b; color: white; font-size: 14px; padding: 10px 16px; }
     .btn-fullscreen { background-color: #0d9488; color: white; font-size: 14px; padding: 10px 16px; }
+    .btn-del-img { background: #ef4444; color: white; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+    .btn-del-img:hover { background: #b91c1c; }
 
     /* Wheel Arena Layout */
     .arena-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
@@ -307,7 +309,7 @@
 
   const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
-  // --- ระบบแยกประเภทรูปภาพ และป้องกันภาพซ้ำ ---
+  // --- ระบบแยกประเภทรูปภาพ ป้องกันภาพซ้ำ และจัดการลบรูป ---
   let imagePool = {
     coaches: {},     // { imageKey: base64Data }
     mentors: {},     // { imageKey: base64Data }
@@ -330,7 +332,12 @@
         const base64Data = e.target.result;
         const group = getCategoryGroup(key);
 
-        // ตรวจสอบภาพซ้ำในหมวดหมู่เดียวกัน
+        if (!imagePool[group]) imagePool[group] = {};
+
+        // ลบอ้างอิงรูปเก่าออกก่อน ถ้าเคยมี
+        const oldImgKey = imageMapping[key];
+
+        // ตรวจสอบภาพซ้ำในหมวดหมู่เดียวกัน (Deduplication)
         let existingImgKey = Object.keys(imagePool[group]).find(
           imgId => imagePool[group][imgId] === base64Data
         );
@@ -343,6 +350,9 @@
           imageMapping[key] = newImgKey;
         }
 
+        // ทำความสะอาดรูปที่ไม่ถูกใช้งานแล้วออกจากคลัง
+        if (oldImgKey) cleanupUnusedImages();
+
         const preview = document.getElementById(`preview_${key}`);
         if (preview) preview.src = base64Data;
 
@@ -351,6 +361,34 @@
 
       reader.readAsDataURL(file);
     }
+  }
+
+  function removeImage(key) {
+    if (imageMapping[key]) {
+      delete imageMapping[key];
+      cleanupUnusedImages();
+    }
+
+    const preview = document.getElementById(`preview_${key}`);
+    if (preview) preview.src = DEFAULT_AVATAR;
+
+    const fileInput = document.getElementById(`file_${key}`);
+    if (fileInput) fileInput.value = '';
+
+    saveStorageData();
+  }
+
+  function cleanupUnusedImages() {
+    const usedKeys = Object.values(imageMapping);
+    ['coaches', 'mentors', 'contestants'].forEach(group => {
+      if (imagePool[group]) {
+        Object.keys(imagePool[group]).forEach(imgKey => {
+          if (!usedKeys.includes(imgKey)) {
+            delete imagePool[group][imgKey];
+          }
+        });
+      }
+    });
   }
 
   function getImageData(key) {
@@ -489,7 +527,8 @@
             ${coachOptions(COACH_LIST[i-1].id)}
           </select>
           <img id="preview_coach_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <input type="file" accept="image/*" onchange="handleImageUpload(this, 'coach_${i}')">
+          <input type="file" id="file_coach_${i}" accept="image/*" onchange="handleImageUpload(this, 'coach_${i}')">
+          <button type="button" class="btn-del-img" onclick="removeImage('coach_${i}')" title="ลบรูปภาพ">❌</button>
         </div>`;
       
       mentorHtml += `
@@ -499,7 +538,8 @@
             ${mentorOptions(MENTOR_LIST[i-1].id)}
           </select>
           <img id="preview_mentor_${i}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <input type="file" accept="image/*" onchange="handleImageUpload(this, 'mentor_${i}')">
+          <input type="file" id="file_mentor_${i}" accept="image/*" onchange="handleImageUpload(this, 'mentor_${i}')">
+          <button type="button" class="btn-del-img" onclick="removeImage('mentor_${i}')" title="ลบรูปภาพ">❌</button>
         </div>`;
     }
     document.getElementById('coaches-inputs').innerHTML = coachHtml;
@@ -592,7 +632,8 @@
           </select>
           <input type="text" id="${prefix}_branch_${i}" value="${defaultItem.branch}" readonly style="width: 100px; flex: none; background-color: #f1f5f9; color: #475569; font-weight: bold; text-align: center;" placeholder="สาขา">
           <img id="preview_${key}" class="img-preview-sm" src="${DEFAULT_AVATAR}">
-          <input type="file" accept="image/*" onchange="handleImageUpload(this, '${key}')">
+          <input type="file" id="file_${key}" accept="image/*" onchange="handleImageUpload(this, '${key}')">
+          <button type="button" class="btn-del-img" onclick="removeImage('${key}')" title="ลบรูปภาพ">❌</button>
         </div>`;
     }
     document.getElementById(containerId).innerHTML = html;
