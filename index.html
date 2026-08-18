@@ -132,9 +132,6 @@
     .center-row { display: flex; justify-content: center; margin-bottom: 10px; }
     .center-row .person-box { width: 320px; }
 
-    /* ==========================================
-       🖥️ FULLSCREEN MODE OPTIMIZATIONS (IMPROVED)
-       ========================================== */
     :fullscreen, :-webkit-full-screen {
       background-color: #f1f5f9 !important;
       overflow: hidden !important;
@@ -159,23 +156,22 @@
       justify-content: center;
     }
 
-    /* 🔥 ปรับแต่งหมุนวงล้อเต็มจอ: ขยายให้เต็มตา ลดพื้นที่ว่าง */
     :fullscreen #tab-wheel, :-webkit-full-screen #tab-wheel {
       height: 100%;
     }
     :fullscreen .arena-grid, :-webkit-full-screen .arena-grid {
-      grid-template-columns: 450px 1fr !important; /* ขยายฝั่งวงล้อให้ใหญ่ขึ้น */
+      grid-template-columns: 450px 1fr !important;
       height: 100% !important;
       gap: 20px !important;
     }
     :fullscreen .wheel-box, :-webkit-full-screen .wheel-box {
       margin: 0 !important;
       height: 100% !important;
-      justify-content: space-evenly !important; /* กระจายองค์ประกอบให้เต็มความสูง */
+      justify-content: space-evenly !important;
       padding: 20px !important;
     }
     :fullscreen #wheel-canvas, :-webkit-full-screen #wheel-canvas {
-      width: 400px !important; /* ขยายขนาดวงล้อ Canvas */
+      width: 400px !important;
       height: 400px !important;
       margin-top: 0 !important;
     }
@@ -202,7 +198,7 @@
     :fullscreen table th, :-webkit-full-screen table th,
     :fullscreen table td, :-webkit-full-screen table td {
       padding: 14px 12px !important;
-      font-size: 15px !important; /* ขยายตัวอักษรในตารางให้อ่านง่ายขึ้น */
+      font-size: 15px !important;
       vertical-align: middle;
     }
     :fullscreen .btn-reset, :-webkit-full-screen .btn-reset {
@@ -211,7 +207,6 @@
       font-size: 15px !important;
     }
 
-    /* ปรับแต่งหน้าสรุปผลเต็มจอ */
     :fullscreen #tab-summary, :-webkit-full-screen #tab-summary {
       height: 100%;
       justify-content: space-between;
@@ -219,10 +214,9 @@
     :fullscreen .summary-nav, :-webkit-full-screen .summary-nav {
       margin-bottom: 10px;
       padding: 12px 20px;
-      justify-content: center !important; /* จัดกลุ่มปุ่มตรงกลางเมื่อเปิดเต็มจอ */
+      justify-content: center !important;
     }
     
-    /* 🔥 ซ่อนปุ่มทีมก่อนหน้า และ ทีมถัดไป เมื่อเปิดเต็มจอ */
     :fullscreen .summary-nav > .btn-primary,
     :-webkit-full-screen .summary-nav > .btn-primary {
       display: none !important;
@@ -503,7 +497,6 @@
 
   const CATEGORY_LABELS = { coach: "โค้ช", mentor: "พี่เลี้ยง", boy: "Boy", girl: "Girl", queen: "Queen", other: "อื่นๆ" };
 
-  /* ⌨️ KEYBOARD NAVIGATION CONTROL */
   document.addEventListener('keydown', function(event) {
     if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
 
@@ -521,7 +514,6 @@
     }
   });
 
-  /* 🖥️ FULLSCREEN HANDLER */
   function toggleFullscreen() {
     const doc = document.documentElement;
     const fsBtn = document.getElementById('fullscreen-btn');
@@ -550,6 +542,7 @@
     drawFullWheel();
   }
 
+  /* 🔥 ฟังก์ชันย่อขนาดและบีบอัดไฟล์รูปภาพก่อนบันทึก */
   function handleNewImageUpload(input) {
     if (input.files && input.files[0]) {
       const nameInput = document.getElementById('upload-name-input');
@@ -557,14 +550,39 @@
       const imgName = nameInput.value.trim() || input.files[0].name.split('.')[0];
       const category = categoryInput.value || 'other';
 
+      const file = input.files[0];
       const reader = new FileReader();
+
       reader.onload = function(e) {
-        galleryImages.push({ id: 'img_' + Date.now(), name: imgName, category: category, src: e.target.result });
-        nameInput.value = '';
-        renderModalGallery();
-        saveStorageData();
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 300; // ย่อขนาดความกว้าง
+          const scale = MAX_WIDTH / img.width;
+          
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scale;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // บีบอัดเป็น JPEG คุณภาพ 70% เพื่อประหยัดพื้นที่จัดเก็บ
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+
+          galleryImages.push({ 
+            id: 'img_' + Date.now(), 
+            name: imgName, 
+            category: category, 
+            src: compressedBase64 
+          });
+
+          nameInput.value = '';
+          renderModalGallery();
+          saveStorageData();
+        };
+        img.src = e.target.result;
       };
-      reader.readAsDataURL(input.files[0]);
+      reader.readAsDataURL(file);
     }
   }
 
