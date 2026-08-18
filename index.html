@@ -31,7 +31,7 @@
     .input-row label { width: 40px; font-weight: bold; }
     input[type="text"], select { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; min-width: 120px; }
     
-    .img-preview-sm { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #cbd5e1; background: #e2e8f0; }
+    .img-preview-sm { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; object-position: top center; border: 1px solid #cbd5e1; background: #e2e8f0; }
 
     .btn { padding: 10px 18px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; }
     .btn-primary { background-color: var(--primary); color: white; }
@@ -48,7 +48,7 @@
     /* Gallery Styles */
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; margin-top: 15px; }
     .gallery-item { position: relative; border: 2px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; text-align: center; padding: 5px; }
-    .gallery-item img { width: 100%; height: 100px; object-fit: cover; border-radius: 4px; }
+    .gallery-item img { width: 100%; height: 110px; object-fit: cover; object-position: top center; border-radius: 4px; }
     .gallery-item .btn-del-gallery { position: absolute; top: 8px; right: 8px; background: rgba(239, 68, 68, 0.85); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
     /* Modal Styles */
@@ -68,7 +68,7 @@
     th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 14px; }
     th { background-color: #f1f5f9; }
     
-    .tag { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; margin-top: 4px; }
+    .tag { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: bold; color: white; margin-top: 6px; }
     .tag-acc { background-color: #0284c7; }
     .tag-mkt { background-color: #dc2626; }
     .tag-fin { background-color: #16a34a; }
@@ -83,15 +83,27 @@
     .nav-team-btn { padding: 8px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-weight: bold; cursor: pointer; }
     .nav-team-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    .team-display-card { background: #ffffff; border-radius: 16px; padding: 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); text-align: center; max-width: 900px; margin: 0 auto; border-top: 8px solid #cbd5e1; transition: border-color 0.3s ease; }
-    .person-box { border: 3px solid #cbd5e1; border-radius: 12px; padding: 15px; background: #ffffff; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
-    .person-box:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    .person-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 3px solid #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: #e2e8f0; }
-    .person-role { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #64748b; margin-bottom: 5px; }
-    .person-name { font-size: 16px; font-weight: bold; color: #0f172a; margin-bottom: 5px; }
+    .team-display-card { background: #ffffff; border-radius: 16px; padding: 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); text-align: center; max-width: 980px; margin: 0 auto; border-top: 8px solid #cbd5e1; transition: border-color 0.3s ease; }
+    .person-box { border: 3px solid #cbd5e1; border-radius: 16px; padding: 20px; background: #ffffff; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
+    .person-box:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+    
+    /* ปรับขนาดรูปภาพใหญ่ขึ้นและโฟกัสส่วนบนไม่ให้ตัดหัว */
+    .person-img { 
+      width: 160px; 
+      height: 160px; 
+      border-radius: 50%; 
+      object-fit: cover; 
+      object-position: top center; 
+      margin-bottom: 15px; 
+      border: 4px solid #ffffff; 
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15); 
+      background: #e2e8f0; 
+    }
+    .person-role { font-size: 13px; font-weight: bold; text-transform: uppercase; color: #64748b; margin-bottom: 8px; }
+    .person-name { font-size: 18px; font-weight: bold; color: #0f172a; margin-bottom: 4px; }
 
     .center-row { display: flex; justify-content: center; margin-bottom: 20px; }
-    .center-row .person-box { width: 320px; }
+    .center-row .person-box { width: 380px; }
 
     :fullscreen .header-container, :fullscreen .tab-container { display: none !important; }
   </style>
@@ -156,9 +168,7 @@
       <input type="file" id="upload-to-gallery" accept="image/*" multiple style="display: none;" onchange="handleGalleryUpload(this)">
       <button class="btn btn-primary" onclick="document.getElementById('upload-to-gallery').click()">➕ อัปโหลดรูปเข้าคลัง</button>
 
-      <div class="gallery-grid" id="gallery-container">
-        <!-- Gallery items populated by JS -->
-      </div>
+      <div class="gallery-grid" id="gallery-container"></div>
     </div>
   </div>
 
@@ -204,7 +214,7 @@
     </div>
 
     <div class="team-display-card" id="team-main-card">
-      <h2 id="summary-team-title" style="font-size: 28px; margin-bottom: 25px; color: #2563eb;">ทีมที่ 1</h2>
+      <h2 id="summary-team-title" style="font-size: 30px; margin-bottom: 25px; color: #2563eb;">ทีมที่ 1</h2>
       
       <div class="center-row">
         <div class="person-box" id="box-coach">
@@ -254,9 +264,7 @@
         <h3 style="margin:0;">เลือกรูปภาพจากคลัง</h3>
         <button class="modal-close" onclick="closePickerModal()">✖</button>
       </div>
-      <div class="gallery-grid" id="modal-gallery-container">
-        <!-- Selectable Gallery Items -->
-      </div>
+      <div class="gallery-grid" id="modal-gallery-container"></div>
     </div>
   </div>
 
@@ -311,9 +319,8 @@
 
   const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
-  // --- STORAGE & GALLERY SYSTEM ---
-  let galleryImages = []; // Array of base64 strings
-  let imageMapping = {};  // Maps key -> image base64
+  let galleryImages = [];
+  let imageMapping = {};
   let activePickerTargetKey = null;
 
   function handleGalleryUpload(input) {
@@ -398,21 +405,6 @@
     saveStorageData();
   }
 
-  function handleDirectFileUpload(input, key) {
-    if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const base64 = e.target.result;
-        if (!galleryImages.includes(base64)) {
-          galleryImages.push(base64); // Auto push to central gallery
-          renderGallery();
-        }
-        setImageDirectly(key, base64);
-      };
-      reader.readAsDataURL(input.files[0]);
-    }
-  }
-
   function removeImage(key) {
     delete imageMapping[key];
     const preview = document.getElementById(`preview_${key}`);
@@ -424,7 +416,6 @@
     return imageMapping[key] || DEFAULT_AVATAR;
   }
 
-  // --- APP STATE & ENGINE ---
   let appData = {
     teams: Array.from({length: 5}, (_, i) => ({ teamId: i + 1, coach: {}, mentor: null, boy: null, girl: null, queen: null })),
     mentorsList: [],
