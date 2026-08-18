@@ -132,11 +132,94 @@
     .center-row { display: flex; justify-content: center; margin-bottom: 10px; }
     .center-row .person-box { width: 320px; }
 
-    /* แก้ไขปัญหาการยืดเมื่ออยู่ในโหมด Fullscreen */
+    /* ==========================================
+       🖥️ FULLSCREEN MODE OPTIMIZATIONS (ADDED)
+       ========================================== */
     :fullscreen, :-webkit-full-screen {
-      background-color: var(--bg) !important;
-      overflow-y: auto !important;
-      padding: 20px !important;
+      background-color: #f1f5f9 !important;
+      overflow: hidden !important;
+      padding: 15px !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ซ่อนแถบที่ไม่จำเป็นในโหมดเต็มหน้าจอ */
+    :fullscreen .header-container, :-webkit-full-screen .header-container,
+    :fullscreen .tab-container, :-webkit-full-screen .tab-container,
+    :fullscreen .btn-reset, :-webkit-full-screen .btn-reset,
+    :fullscreen .btn-clear-data, :-webkit-full-screen .btn-clear-data {
+      display: none !important;
+    }
+
+    :fullscreen .tab-content.active, :-webkit-full-screen .tab-content.active {
+      flex: 1;
+      height: 100%;
+      display: flex !important;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* ปรับแต่งหน้าหมุนวงล้อในโหมดเต็มจอ */
+    :fullscreen #tab-wheel, :-webkit-full-screen #tab-wheel {
+      height: 100%;
+    }
+    :fullscreen .arena-grid, :-webkit-full-screen .arena-grid {
+      grid-template-columns: 380px 1fr;
+      height: 100%;
+      gap: 20px;
+    }
+    :fullscreen .wheel-box, :-webkit-full-screen .wheel-box {
+      margin: 0;
+      height: 100%;
+    }
+    :fullscreen #wheel-canvas, :-webkit-full-screen #wheel-canvas {
+      width: 320px !important;
+      height: 320px !important;
+    }
+    :fullscreen .pointer, :-webkit-full-screen .pointer {
+      top: 15px;
+      border-left-width: 15px;
+      border-right-width: 15px;
+      border-top-width: 28px;
+    }
+    :fullscreen table th, :-webkit-full-screen table th,
+    :fullscreen table td, :-webkit-full-screen table td {
+      padding: 12px 10px;
+      font-size: 14px;
+    }
+
+    /* ปรับแต่งหน้าสรุปผลในโหมดเต็มจอ */
+    :fullscreen #tab-summary, :-webkit-full-screen #tab-summary {
+      height: 100%;
+      justify-content: space-between;
+    }
+    :fullscreen .summary-nav, :-webkit-full-screen .summary-nav {
+      margin-bottom: 10px;
+      padding: 12px 20px;
+    }
+    :fullscreen .team-display-card, :-webkit-full-screen .team-display-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 100%;
+      width: 100%;
+      padding: 20px 40px;
+    }
+    :fullscreen .person-img, :-webkit-full-screen .person-img {
+      width: 130px;
+      height: 130px;
+    }
+    :fullscreen .person-name, :-webkit-full-screen .person-name {
+      font-size: 16px;
+    }
+    :fullscreen .person-box, :-webkit-full-screen .person-box {
+      padding: 12px;
+    }
+    :fullscreen .center-row .person-box, :-webkit-full-screen .center-row .person-box {
+      width: 380px;
     }
   </style>
 </head>
@@ -409,7 +492,7 @@
     }
   });
 
-  /* 🖥️ FULLSCREEN HANDLER (FIXED STRETCH ISSUE) */
+  /* 🖥️ FULLSCREEN HANDLER */
   function toggleFullscreen() {
     const doc = document.documentElement;
     const fsBtn = document.getElementById('fullscreen-btn');
